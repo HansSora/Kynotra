@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00e60a"/>
+      <stop offset="100%" stop-color="#33cc2e"/>
+    </linearGradient>
+    <filter id="neon">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background hexagon shape -->
+  <polygon points="256,32 462,144 462,368 256,480 50,368 50,144"
+           fill="#1a1a2e" stroke="url(#glow)" stroke-width="6"/>
+
+  <!-- Inner hexagon outline -->
+  <polygon points="256,72 422,164 422,348 256,440 90,348 90,164"
+           fill="none" stroke="#00e60a" stroke-width="2" opacity="0.25"/>
+
+  <!-- Stylised K letterform built from bold angular strokes -->
+  <!-- Vertical bar of K -->
+  <rect x="148" y="140" width="36" height="232" rx="4" fill="url(#glow)" filter="url(#neon)"/>
+
+  <!-- Upper diagonal of K -->
+  <polygon points="192,256 192,218 320,140 340,174" fill="url(#glow)" filter="url(#neon)"/>
+
+  <!-- Lower diagonal of K (the kick) -->
+  <polygon points="192,256 192,294 340,388 360,354" fill="url(#glow)" filter="url(#neon)"/>
+
+  <!-- Small accent bolt/slash through center -->
+  <line x1="232" y1="220" x2="284" y2="300" stroke="#ffffff" stroke-width="5" stroke-linecap="round" opacity="0.9"/>
+
+  <!-- Decorative dots -->
+  <circle cx="356" cy="156" r="6" fill="#00e60a" opacity="0.6"/>
+  <circle cx="372" cy="372" r="6" fill="#00e60a" opacity="0.6"/>
+</svg>

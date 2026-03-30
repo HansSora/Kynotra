@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Kynotra Dashboard - Track your workouts, progress, body stats, and manage your personalized programs.">
+  <title>Dashboard — Kynotra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo"><img src="images/favicon.svg" alt="Kynotra" class="logo-icon">KYNOTRA</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="programs.html">Programs</a></li>
+        <li><a href="diet.html">Nutrition</a></li>
+        <li><a href="exercises.html">Exercises</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="shop.html" class="nav-cart">🛒<span class="cart-count" id="cartCount">0</span></a>
+        <a href="dashboard.html" class="btn btn-sm btn-outline">Dashboard</a>
+        <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Dashboard -->
+  <div class="dashboard">
+    <div class="container container-wide">
+      <div class="dashboard-grid">
+
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+          <!-- Profile Card -->
+          <div class="profile-card" style="background: var(--gradient-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--space-xl); text-align: center; margin-bottom: var(--space-lg);">
+            <div class="profile-avatar-wrap" onclick="openAvatarPicker()" title="Change avatar">
+              <div class="profile-avatar" id="dashAvatar">JD</div>
+              <div class="profile-avatar-edit">📷</div>
+            </div>
+            <h3 style="font-size: 1.1rem; margin-bottom: var(--space-xs);" id="dashName">John Doe</h3>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: var(--space-sm);" id="dashEmail"></p>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: var(--space-md);">Pro Member</p>
+            <span class="tag tag-success" style="margin-bottom: var(--space-md); display: inline-block;">Active Plan</span>
+            <button class="btn btn-sm btn-outline btn-block" onclick="openProfileEditor()" style="margin-top: var(--space-sm);">✏️ Edit Profile</button>
+          </div>
+
+          <!-- Menu -->
+          <div class="sidebar-menu">
+            <a href="#overview" class="active">📊 Overview</a>
+            <a href="#workouts">🏋️ My Workouts</a>
+            <a href="#nutrition">🥗 Nutrition</a>
+            <a href="#progress">📈 Progress</a>
+            <a href="#saved">💾 Saved Programs</a>
+            <a href="#" onclick="openProfileEditor(); return false;">⚙️ Settings</a>
+            <a href="#" onclick="handleLogout(); return false;">🚪 Log Out</a>
+          </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main>
+          <!-- Welcome Banner -->
+          <div style="background: var(--gradient-primary); border-radius: var(--radius-xl); padding: var(--space-2xl); margin-bottom: var(--space-xl); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-lg);">
+            <div>
+              <h1 style="font-family: var(--font-heading); font-size: 1.8rem; text-transform: uppercase; margin-bottom: var(--space-sm);">Welcome back, John!</h1>
+              <p style="opacity: 0.9;">Week 6 of Muscle Builder Pro — You're making great progress! 💪</p>
+            </div>
+            <a href="programs.html" class="btn btn-secondary" style="border-color: white; color: white;">Today's Workout →</a>
+          </div>
+
+          <!-- Stats Row -->
+          <div style="display: flex; justify-content: flex-end; margin-bottom: var(--space-md);">
+            <div class="unit-toggle" style="display: flex;">
+              <button type="button" class="btn btn-unit active" id="dashUnitImperial" onclick="setDashUnit('imperial')">lbs / in</button>
+              <button type="button" class="btn btn-unit" id="dashUnitMetric" onclick="setDashUnit('metric')">kg / cm</button>
+            </div>
+          </div>
+          <div class="grid-4" style="margin-bottom: var(--space-xl);" id="overview">
+            <div class="stat-card">
+              <h4>Workouts This Week</h4>
+              <div class="stat-value accent-text">4 / 5</div>
+              <div class="stat-change positive">↑ On track</div>
+            </div>
+            <div class="stat-card">
+              <h4>Current Weight</h4>
+              <div class="stat-value"><span class="wt" data-lbs="182">182 lbs</span></div>
+              <div class="stat-change positive">↑ <span class="wt" data-lbs="3">+3 lbs</span> this month</div>
+            </div>
+            <div class="stat-card">
+              <h4>Calories Today</h4>
+              <div class="stat-value">1,850</div>
+              <div class="stat-change">/ 2,800 target</div>
+            </div>
+            <div class="stat-card">
+              <h4>Bench Press PR</h4>
+              <div class="stat-value accent-text"><span class="wt" data-lbs="225">225 lbs</span></div>
+              <div class="stat-change positive">↑ <span class="wt" data-lbs="10">+10 lbs</span> this month</div>
+            </div>
+          </div>
+
+          <!-- Weekly Progress & Today's Plan -->
+          <div class="grid-2" style="margin-bottom: var(--space-xl);">
+            <!-- Weekly Progress -->
+            <div class="stat-card">
+              <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: var(--space-lg);">Weekly Progress</h3>
+              <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xs);">
+                    <span style="font-size: 0.85rem; color: var(--text-secondary);">Mon — Push Day</span>
+                    <span class="tag tag-success" style="font-size: 0.65rem;">Done</span>
+                  </div>
+                  <div class="progress-bar"><div class="progress-bar-fill" style="width: 100%;"></div></div>
+                </div>
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xs);">
+                    <span style="font-size: 0.85rem; color: var(--text-secondary);">Tue — Pull Day</span>
+                    <span class="tag tag-success" style="font-size: 0.65rem;">Done</span>
+                  </div>
+                  <div class="progress-bar"><div class="progress-bar-fill" style="width: 100%;"></div></div>
+                </div>
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xs);">
+                    <span style="font-size: 0.85rem; color: var(--text-secondary);">Wed — Rest Day</span>
+                    <span class="tag tag-info" style="font-size: 0.65rem;">Rest</span>
+                  </div>
+                  <div class="progress-bar"><div class="progress-bar-fill" style="width: 100%; background: var(--info);"></div></div>
+                </div>
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xs);">
+                    <span style="font-size: 0.85rem; color: var(--text-secondary);">Thu — Legs</span>
+                    <span class="tag tag-success" style="font-size: 0.65rem;">Done</span>
+                  </div>
+                  <div class="progress-bar"><div class="progress-bar-fill" style="width: 100%;"></div></div>
+                </div>
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xs);">
+                    <span style="font-size: 0.85rem; color: var(--text-secondary);">Fri — Upper</span>
+                    <span class="tag tag-primary" style="font-size: 0.65rem;">Today</span>
+                  </div>
+                  <div class="progress-bar"><div class="progress-bar-fill" style="width: 60%;"></div></div>
+                </div>
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xs);">
+                    <span style="font-size: 0.85rem; color: var(--text-secondary);">Sat — Lower</span>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Upcoming</span>
+                  </div>
+                  <div class="progress-bar"><div class="progress-bar-fill" style="width: 0%;"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Today's Workout Preview -->
+            <div class="stat-card" id="workouts">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
+                <h3 style="font-size: 1.1rem; font-weight: 600;">Today's Workout</h3>
+                <span class="tag tag-primary">Day 26 / 84</span>
+              </div>
+              <h4 style="font-family: var(--font-heading); font-size: 1.3rem; text-transform: uppercase; color: var(--accent); margin-bottom: var(--space-lg);">Upper Body</h4>
+              <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
+                <div style="display: flex; justify-content: space-between; padding: var(--space-sm) 0; border-bottom: 1px solid var(--border-color);">
+                  <span style="font-size: 0.9rem;">Dumbbell Bench Press</span>
+                  <span style="font-size: 0.85rem; color: var(--text-muted);">4 × 8-10</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: var(--space-sm) 0; border-bottom: 1px solid var(--border-color);">
+                  <span style="font-size: 0.9rem;">T-Bar Rows</span>
+                  <span style="font-size: 0.85rem; color: var(--text-muted);">4 × 8-10</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: var(--space-sm) 0; border-bottom: 1px solid var(--border-color);">
+                  <span style="font-size: 0.9rem;">Arnold Press</span>
+                  <span style="font-size: 0.85rem; color: var(--text-muted);">3 × 10-12</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: var(--space-sm) 0; border-bottom: 1px solid var(--border-color);">
+                  <span style="font-size: 0.9rem;">Cable Crossovers</span>
+                  <span style="font-size: 0.85rem; color: var(--text-muted);">3 × 12-15</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: var(--space-sm) 0;">
+                  <span style="font-size: 0.9rem;">Superset: Curls + Pushdowns</span>
+                  <span style="font-size: 0.85rem; color: var(--text-muted);">3 × 12</span>
+                </div>
+              </div>
+              <button class="btn btn-primary btn-block" style="margin-top: var(--space-lg);" onclick="startWorkoutTimer()">⏱ Start Workout Timer</button>
+            </div>
+          </div>
+
+          <!-- Body Stats / Progress -->
+          <div class="stat-card" style="margin-bottom: var(--space-xl);" id="progress">
+            <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: var(--space-lg);">Body Stats & Progress</h3>
+            <div class="grid-3" style="gap: var(--space-lg);">
+              <div style="text-align: center;">
+                <div style="font-family: var(--font-heading); font-size: 2rem; color: var(--accent);">24.3</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">BMI (Normal)</div>
+              </div>
+              <div style="text-align: center;">
+                <div style="font-family: var(--font-heading); font-size: 2rem; color: var(--info);">16%</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Body Fat</div>
+              </div>
+              <div style="text-align: center;">
+                <div style="font-family: var(--font-heading); font-size: 2rem; color: var(--success);"><span class="wt" data-lbs="153">153 lbs</span></div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Lean Mass</div>
+              </div>
+            </div>
+
+            <div style="margin-top: var(--space-xl);">
+              <h4 style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: var(--space-md);">Strength Progress (Last 12 Weeks)</h4>
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Exercise</th>
+                      <th>Starting</th>
+                      <th>Current</th>
+                      <th>Change</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Bench Press</td>
+                      <td><span class="wt" data-lbs="185">185 lbs</span></td>
+                      <td><span class="wt" data-lbs="225">225 lbs</span></td>
+                      <td style="color: var(--success);"><span class="wt" data-lbs="40">+40 lbs</span> ↑</td>
+                    </tr>
+                    <tr>
+                      <td>Squat</td>
+                      <td><span class="wt" data-lbs="225">225 lbs</span></td>
+                      <td><span class="wt" data-lbs="285">285 lbs</span></td>
+                      <td style="color: var(--success);"><span class="wt" data-lbs="60">+60 lbs</span> ↑</td>
+                    </tr>
+                    <tr>
+                      <td>Deadlift</td>
+                      <td><span class="wt" data-lbs="275">275 lbs</span></td>
+                      <td><span class="wt" data-lbs="335">335 lbs</span></td>
+                      <td style="color: var(--success);"><span class="wt" data-lbs="60">+60 lbs</span> ↑</td>
+                    </tr>
+                    <tr>
+                      <td>Overhead Press</td>
+                      <td><span class="wt" data-lbs="115">115 lbs</span></td>
+                      <td><span class="wt" data-lbs="140">140 lbs</span></td>
+                      <td style="color: var(--success);"><span class="wt" data-lbs="25">+25 lbs</span> ↑</td>
+                    </tr>
+                    <tr>
+                      <td>Barbell Row</td>
+                      <td><span class="wt" data-lbs="155">155 lbs</span></td>
+                      <td><span class="wt" data-lbs="195">195 lbs</span></td>
+                      <td style="color: var(--success);"><span class="wt" data-lbs="40">+40 lbs</span> ↑</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Nutrition Summary -->
+          <div class="stat-card" style="margin-bottom: var(--space-xl);" id="nutrition">
+            <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: var(--space-lg);">Today's Nutrition</h3>
+            <div class="grid-4" style="gap: var(--space-md);">
+              <div style="text-align: center;">
+                <div style="font-family: var(--font-heading); font-size: 1.5rem;">1,850</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">/ 2,800 cal</div>
+                <div class="progress-bar" style="margin-top: var(--space-sm);"><div class="progress-bar-fill" style="width: 66%;"></div></div>
+              </div>
+              <div style="text-align: center;">
+                <div style="font-family: var(--font-heading); font-size: 1.5rem; color: var(--accent);">132g</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">/ 210g protein</div>
+                <div class="progress-bar" style="margin-top: var(--space-sm);"><div class="progress-bar-fill" style="width: 63%;"></div></div>
+              </div>
+              <div style="text-align: center;">
+                <div style="font-family: var(--font-heading); font-size: 1.5rem; color: var(--info);">195g</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">/ 290g carbs</div>
+                <div class="progress-bar" style="margin-top: var(--space-sm);"><div class="progress-bar-fill" style="width: 67%; background: var(--info);"></div></div>
+              </div>
+              <div style="text-align: center;">
+                <div style="font-family: var(--font-heading); font-size: 1.5rem; color: var(--warning);">58g</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">/ 86g fats</div>
+                <div class="progress-bar" style="margin-top: var(--space-sm);"><div class="progress-bar-fill" style="width: 67%; background: var(--warning);"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Saved Programs -->
+          <div class="stat-card" id="saved">
+            <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: var(--space-lg);">Saved Programs</h3>
+            <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-md); background: var(--primary); border-radius: var(--radius-md);">
+                <div>
+                  <h4 style="font-size: 0.95rem; margin-bottom: var(--space-xs);">Muscle Builder Pro</h4>
+                  <p style="color: var(--text-muted); font-size: 0.8rem;">12 Weeks • Gym • Intermediate</p>
+                </div>
+                <div>
+                  <span class="tag tag-success">Active</span>
+                </div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-md); background: var(--primary); border-radius: var(--radius-md);">
+                <div>
+                  <h4 style="font-size: 0.95rem; margin-bottom: var(--space-xs);">Shred & Lean</h4>
+                  <p style="color: var(--text-muted); font-size: 0.8rem;">8 Weeks • Home/Gym • All Levels</p>
+                </div>
+                <div>
+                  <span class="tag tag-info">Completed</span>
+                </div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-md); background: var(--primary); border-radius: var(--radius-md);">
+                <div>
+                  <h4 style="font-size: 0.95rem; margin-bottom: var(--space-xs);">Beginner Blueprint</h4>
+                  <p style="color: var(--text-muted); font-size: 0.8rem;">8 Weeks • Gym • Beginner</p>
+                </div>
+                <div>
+                  <span class="tag tag-info">Completed</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- Workout Timer Modal -->
+  <div id="timerModal" style="display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center;">
+    <div style="text-align: center;">
+      <h2 style="font-family: var(--font-heading); font-size: 1.5rem; text-transform: uppercase; margin-bottom: var(--space-xl);">Workout Timer</h2>
+      <div id="timerDisplay" style="font-family: var(--font-heading); font-size: 6rem; color: var(--accent); margin-bottom: var(--space-xl);">00:00</div>
+      <div style="display: flex; gap: var(--space-md); justify-content: center;">
+        <button class="btn btn-primary" onclick="toggleTimer()">⏯ Start/Pause</button>
+        <button class="btn btn-secondary" onclick="resetTimer()">🔄 Reset</button>
+        <button class="btn btn-outline" onclick="closeTimer()">✕ Close</button>
+      </div>
+      <div style="margin-top: var(--space-2xl);">
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: var(--space-md);">Quick Rest Timers</p>
+        <div style="display: flex; gap: var(--space-sm); justify-content: center;">
+          <button class="btn btn-sm btn-secondary" onclick="startCountdown(60)">60s</button>
+          <button class="btn btn-sm btn-secondary" onclick="startCountdown(90)">90s</button>
+          <button class="btn btn-sm btn-secondary" onclick="startCountdown(120)">2 min</button>
+          <button class="btn btn-sm btn-secondary" onclick="startCountdown(180)">3 min</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer (minimal for dashboard) -->
+  <footer style="padding: var(--space-xl) 0; border-top: 1px solid var(--border-color); text-align: center;">
+    <p style="color: var(--text-muted); font-size: 0.85rem;">&copy; 2026 Kynotra. All rights reserved.</p>
+  </footer>
+
+  <!-- Profile Edit Modal -->
+  <div class="modal-overlay" id="profileModal">
+    <div class="modal-content" style="max-width: 480px;">
+      <div class="modal-header">
+        <h2>Edit Profile</h2>
+        <button class="modal-close" onclick="closeProfileEditor()">&times;</button>
+      </div>
+      <form id="profileForm" onsubmit="saveProfile(event)">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input type="text" class="form-input" id="editFirstName" placeholder="John" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input type="text" class="form-input" id="editLastName" placeholder="Doe">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" id="editEmail" placeholder="you@example.com" required>
+        </div>
+        <div class="grid-2" style="gap: var(--space-md);">
+          <div class="form-group">
+            <label class="form-label">Age</label>
+            <input type="number" class="form-input" id="editAge" placeholder="25" min="14" max="100">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Gender</label>
+            <select class="form-input form-select" id="editGender">
+              <option value="">Select...</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid-2" style="gap: var(--space-md);">
+          <div class="form-group">
+            <label class="form-label">Weight</label>
+            <input type="number" class="form-input" id="editWeight" placeholder="175" step="0.1">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Height</label>
+            <input type="number" class="form-input" id="editHeight" placeholder="70" step="0.1">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fitness Goal</label>
+          <select class="form-input form-select" id="editGoal">
+            <option value="">Select goal...</option>
+            <option value="weight-loss">Weight Loss</option>
+            <option value="muscle-gain">Muscle Gain</option>
+            <option value="strength">Strength Building</option>
+            <option value="endurance">Endurance</option>
+            <option value="maintenance">General Fitness</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: var(--space-md); margin-top: var(--space-lg);">
+          <button type="button" class="btn btn-secondary" onclick="closeProfileEditor()" style="flex:1;">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="flex:1;">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Avatar Picker Modal -->
+  <div class="modal-overlay" id="avatarModal">
+    <div class="modal-content" style="max-width: 640px;">
+      <div class="modal-header">
+        <h2>Choose Your Avatar</h2>
+        <button class="modal-close" onclick="closeAvatarPicker()">&times;</button>
+      </div>
+
+      <!-- Upload Custom -->
+      <div style="text-align: center; margin-bottom: var(--space-xl); padding: var(--space-lg); border: 2px dashed var(--border-color); border-radius: var(--radius-lg); cursor: pointer; transition: border-color var(--transition-fast);" onclick="document.getElementById('avatarUpload').click()" id="uploadZone">
+        <div style="font-size: 2rem; margin-bottom: var(--space-sm);">📤</div>
+        <p style="font-size: 0.9rem; color: var(--text-secondary);">Upload your own photo</p>
+        <p style="font-size: 0.75rem; color: var(--text-muted);">JPG, PNG or GIF — Max 2 MB</p>
+        <input type="file" id="avatarUpload" accept="image/png,image/jpeg,image/gif" style="display:none;" onchange="handleAvatarUpload(event)">
+      </div>
+
+      <!-- Male Avatars -->
+      <h3 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: var(--space-md);">Male Avatars</h3>
+      <div class="avatar-grid" style="margin-bottom: var(--space-xl);">
+        <button class="avatar-option" onclick="selectAvatar('images/avatars/male-lifter.svg')" title="Lifter">
+          <img src="images/avatars/male-lifter.svg" alt="Male Lifter" loading="lazy">
+        </button>
+        <button class="avatar-option" onclick="selectAvatar('images/avatars/male-boxer.svg')" title="Boxer">
+          <img src="images/avatars/male-boxer.svg" alt="Male Boxer" loading="lazy">
+        </button>
+        <button class="avatar-option" onclick="selectAvatar('images/avatars/male-runner.svg')" title="Runner">
+          <img src="images/avatars/male-runner.svg" alt="Male Runner" loading="lazy">
+        </button>
+        <button class="avatar-option" onclick="selectAvatar('images/avatars/male-gym.svg')" title="Gym">
+          <img src="images/avatars/male-gym.svg" alt="Male Gym" loading="lazy">
+        </button>
+        <button class="avatar-option" onclick="selectAvatar('images/avatars/male-crossfit.svg')" title="CrossFit">
+          <img src="images/avatars/male-crossfit.svg" alt="Male CrossFit" loading="lazy">
+        </button>
+        <button class="avatar-option" onclick="selectAvatar('images/avatars/male-bodybuilder.svg')" title="Bodybuilder">
+          <img src="images/avatars/male-bodybuilder.svg" alt="Male Bodybuilder" loading="lazy">
+        </button>
+        <button class="avatar-option" onclick="selectAvatar('images/avatars/male-swimmer.svg')" title="Swimmer">
+          <img src="images/avatars/male-swimmer.svg" alt="Male Swimmer" loading="lazy">
+        </button>
+        <button class="avatar-option" onclick="selectAvatar('images/avatars/male-trainer.svg')" title="Trainer">
+          <img src="images/avatars/male-trainer.svg" alt="Male Trainer" loading="lazy">
+        </button>
+      </div>
+
+      <!-- Female Avatars -->
+      <h3 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: var(--space-md);">Female Avatars</h3>
+      <div class="avatar-grid">
+        <button class="avatar-option" onclick="selectAvatar('images/avatars/female-lifter.svg')" title="Lifter">
+          <img src="images/avatars/female-lifter.svg" alt="Female Lifter" loading="lazy">
+        </button>
+        <button class="avatar-option" onclick="selectAvatar('images/avatars/female-runner.svg')" title="Runner">
+          <img src="images/avatars/female-runner.svg" alt="Female Runner" loading="lazy">
+        </button>
+        <button class="avatar-option" onclick="selectAvatar('images/avatars/female-yoga.svg')" title="Yoga">
+          <img src="images/avatars/female-yoga.svg" alt="Female Yoga" loading="lazy">
+        </button>
+        <button class="avatar-option" onclick="selectAvatar('images/avatars/female-boxer.svg')" title="Boxer">
+          <img src="images/avatars/female-boxer.svg" alt="Female Boxer" loading="lazy">
+        </button>
+        <button class="avatar-option" onclick="selectAvatar('images/avatars/female-gym.svg')" title="Gym">
+          <img src="images/avatars/female-gym.svg" alt="Female Gym" loading="lazy">
+        </button>
+        <button class="avatar-option" onclick="selectAvatar('images/avatars/female-crossfit.svg')" title="CrossFit">
+          <img src="images/avatars/female-crossfit.svg" alt="Female CrossFit" loading="lazy">
+        </button>
+        <button class="avatar-option" onclick="selectAvatar('images/avatars/female-swimmer.svg')" title="Swimmer">
+          <img src="images/avatars/female-swimmer.svg" alt="Female Swimmer" loading="lazy">
+        </button>
+        <button class="avatar-option" onclick="selectAvatar('images/avatars/female-trainer.svg')" title="Trainer">
+          <img src="images/avatars/female-trainer.svg" alt="Female Trainer" loading="lazy">
+        </button>
+        <button class="avatar-option" onclick="selectAvatar('images/avatars/female-bodybuilder.svg')" title="Bodybuilder">
+          <img src="images/avatars/female-bodybuilder.svg" alt="Female Bodybuilder" loading="lazy">
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

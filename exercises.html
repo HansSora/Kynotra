@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Kynotra Exercise Library - 500+ exercises with instructions, tips, target muscles, and common mistakes. Complete gym terminology glossary.">
+  <title>Exercise Library — Kynotra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo"><img src="images/favicon.svg" alt="Kynotra" class="logo-icon">KYNOTRA</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="programs.html">Programs</a></li>
+        <li><a href="diet.html">Nutrition</a></li>
+        <li><a href="exercises.html" class="active">Exercises</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="shop.html" class="nav-cart">🛒<span class="cart-count" id="cartCount">0</span></a>
+        <a href="login.html" class="btn btn-sm btn-outline">Log In</a>
+        <a href="signup.html" class="btn btn-sm btn-primary">Start Free</a>
+        <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container">
+      <h1>Exercise <span class="accent-text">Library</span></h1>
+      <p>Complete database of exercises with detailed instructions, tips, and muscle targeting</p>
+      <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="separator">›</span>
+        <span>Exercise Library</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter & Search -->
+  <section class="section" style="padding-bottom: 0;">
+    <div class="container">
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterExercises('all', this)">All</button>
+        <button class="filter-btn" onclick="filterExercises('chest', this)">Chest</button>
+        <button class="filter-btn" onclick="filterExercises('back', this)">Back</button>
+        <button class="filter-btn" onclick="filterExercises('shoulders', this)">Shoulders</button>
+        <button class="filter-btn" onclick="filterExercises('legs', this)">Legs</button>
+        <button class="filter-btn" onclick="filterExercises('arms', this)">Arms</button>
+        <button class="filter-btn" onclick="filterExercises('core', this)">Core</button>
+        <div class="search-input">
+          <span>🔍</span>
+          <input type="text" placeholder="Search exercises..." id="exerciseSearch" oninput="searchExercises(this.value)">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Exercise Grid -->
+  <section class="section">
+    <div class="container">
+      <div class="grid-3" id="exerciseGrid">
+
+        <!-- Barbell Bench Press -->
+        <div class="exercise-card" data-muscle="chest" onclick="openExercise(this)">
+          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">🏋️</div>
+          <h3>Barbell Bench Press</h3>
+          <p class="muscle-group">Chest • Triceps • Front Delts</p>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">The king of chest exercises. Compound movement targeting pectorals with heavy load potential.</p>
+          <div class="exercise-tags">
+            <span class="tag tag-primary">Compound</span>
+            <span class="tag tag-info">Barbell</span>
+          </div>
+          <div class="exercise-details" style="display: none;">
+            <div class="exercise-instructions">
+              <h4>Step-by-Step Instructions:</h4>
+              <ol>
+                <li>Lie flat on a bench, feet firmly on the floor</li>
+                <li>Grip the bar slightly wider than shoulder width</li>
+                <li>Unrack the bar and hold it above your chest with arms extended</li>
+                <li>Lower the bar slowly to mid-chest, elbows at ~75° angle</li>
+                <li>Press the bar back up to the starting position</li>
+                <li>Lock out arms at the top without hyperextending elbows</li>
+              </ol>
+              <h4>Tips:</h4>
+              <ul>
+                <li>Retract your shoulder blades and arch your upper back slightly</li>
+                <li>Drive your feet into the floor for leg drive</li>
+                <li>Keep your wrists straight — don't bend them back</li>
+                <li>Breathe in on the way down, exhale on the press</li>
+              </ul>
+              <h4>Common Mistakes:</h4>
+              <ul>
+                <li>Bouncing the bar off the chest</li>
+                <li>Flaring elbows to 90° (injury risk)</li>
+                <li>Lifting hips off the bench</li>
+                <li>Not using a spotter for heavy sets</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Barbell Squat -->
+        <div class="exercise-card" data-muscle="legs" onclick="openExercise(this)">
+          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">🦵</div>
+          <h3>Barbell Back Squat</h3>
+          <p class="muscle-group">Quads • Glutes • Hamstrings • Core</p>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">The most effective lower body exercise. Works nearly every muscle in the body.</p>
+          <div class="exercise-tags">
+            <span class="tag tag-primary">Compound</span>
+            <span class="tag tag-info">Barbell</span>
+          </div>
+          <div class="exercise-details" style="display: none;">
+            <div class="exercise-instructions">
+              <h4>Instructions:</h4>
+              <ol>
+                <li>Position bar on upper traps (high bar) or rear delts (low bar)</li>
+                <li>Stand with feet shoulder-width apart, toes slightly out</li>
+                <li>Brace your core and unrack the bar</li>
+                <li>Descend by pushing hips back and bending knees</li>
+                <li>Go below parallel (hip crease below knee)</li>
+                <li>Drive through heels to stand back up</li>
+              </ol>
+              <h4>Common Mistakes:</h4>
+              <ul>
+                <li>Knees caving inward (valgus)</li>
+                <li>Not hitting proper depth</li>
+                <li>Rounding the lower back</li>
+                <li>Rising on toes instead of driving through heels</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Deadlift -->
+        <div class="exercise-card" data-muscle="back" onclick="openExercise(this)">
+          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">💪</div>
+          <h3>Conventional Deadlift</h3>
+          <p class="muscle-group">Back • Glutes • Hamstrings • Traps</p>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">The ultimate full-body strength builder. Targets the entire posterior chain.</p>
+          <div class="exercise-tags">
+            <span class="tag tag-primary">Compound</span>
+            <span class="tag tag-info">Barbell</span>
+          </div>
+          <div class="exercise-details" style="display: none;">
+            <div class="exercise-instructions">
+              <h4>Instructions:</h4>
+              <ol>
+                <li>Stand with feet hip-width apart, bar over mid-foot</li>
+                <li>Hinge at hips, grip bar just outside knees</li>
+                <li>Flatten back, chest up, shoulders over or slightly in front of bar</li>
+                <li>Drive through the floor, extending hips and knees simultaneously</li>
+                <li>Lock out at top with hips fully extended</li>
+                <li>Lower bar by hinging hips first, then bending knees</li>
+              </ol>
+              <h4>Common Mistakes:</h4>
+              <ul>
+                <li>Rounding the lower back</li>
+                <li>Starting with hips too low (it's not a squat)</li>
+                <li>Bar drifting away from the body</li>
+                <li>Hyperextending at the top</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pull-Ups -->
+        <div class="exercise-card" data-muscle="back" onclick="openExercise(this)">
+          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">🔝</div>
+          <h3>Pull-Ups</h3>
+          <p class="muscle-group">Lats • Biceps • Rhomboids • Core</p>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Essential vertical pulling movement for back width and arm development.</p>
+          <div class="exercise-tags">
+            <span class="tag tag-primary">Compound</span>
+            <span class="tag tag-success">Bodyweight</span>
+          </div>
+        </div>
+
+        <!-- Overhead Press -->
+        <div class="exercise-card" data-muscle="shoulders" onclick="openExercise(this)">
+          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">🔱</div>
+          <h3>Overhead Press</h3>
+          <p class="muscle-group">Front Delts • Side Delts • Triceps</p>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">The primary shoulder compound. Builds impressive shoulder mass and pressing strength.</p>
+          <div class="exercise-tags">
+            <span class="tag tag-primary">Compound</span>
+            <span class="tag tag-info">Barbell</span>
+          </div>
+        </div>
+
+        <!-- Lateral Raises -->
+        <div class="exercise-card" data-muscle="shoulders" onclick="openExercise(this)">
+          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">🤸</div>
+          <h3>Dumbbell Lateral Raises</h3>
+          <p class="muscle-group">Side Deltoids</p>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Isolation movement essential for wide shoulders. Use controlled form with moderate weight.</p>
+          <div class="exercise-tags">
+            <span class="tag tag-primary">Isolation</span>
+            <span class="tag tag-info">Dumbbell</span>
+          </div>
+        </div>
+
+        <!-- Barbell Curls -->
+        <div class="exercise-card" data-muscle="arms" onclick="openExercise(this)">
+          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">💪</div>
+          <h3>Barbell Bicep Curls</h3>
+          <p class="muscle-group">Biceps • Forearms</p>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Classic arm builder. Allows heavy loading for maximum bicep stimulation.</p>
+          <div class="exercise-tags">
+            <span class="tag tag-primary">Isolation</span>
+            <span class="tag tag-info">Barbell</span>
+          </div>
+        </div>
+
+        <!-- Tricep Pushdowns -->
+        <div class="exercise-card" data-muscle="arms" onclick="openExercise(this)">
+          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">⬇️</div>
+          <h3>Tricep Rope Pushdowns</h3>
+          <p class="muscle-group">Triceps (all 3 heads)</p>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Cable isolation movement that targets all three heads of the tricep effectively.</p>
+          <div class="exercise-tags">
+            <span class="tag tag-primary">Isolation</span>
+            <span class="tag tag-info">Cable</span>
+          </div>
+        </div>
+
+        <!-- Plank -->
+        <div class="exercise-card" data-muscle="core" onclick="openExercise(this)">
+          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">🧘</div>
+          <h3>Plank</h3>
+          <p class="muscle-group">Rectus Abdominis • Obliques • Transverse</p>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Foundational core exercise. Builds isometric core strength and stability.</p>
+          <div class="exercise-tags">
+            <span class="tag tag-primary">Isometric</span>
+            <span class="tag tag-success">Bodyweight</span>
+          </div>
+        </div>
+
+        <!-- Romanian Deadlift -->
+        <div class="exercise-card" data-muscle="legs" onclick="openExercise(this)">
+          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">🦵</div>
+          <h3>Romanian Deadlift</h3>
+          <p class="muscle-group">Hamstrings • Glutes • Lower Back</p>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Hip-hinge movement emphasizing the hamstrings and glutes with constant tension.</p>
+          <div class="exercise-tags">
+            <span class="tag tag-primary">Compound</span>
+            <span class="tag tag-info">Barbell/Dumbbell</span>
+          </div>
+        </div>
+
+        <!-- Cable Flyes -->
+        <div class="exercise-card" data-muscle="chest" onclick="openExercise(this)">
+          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">🦋</div>
+          <h3>Cable Flyes</h3>
+          <p class="muscle-group">Chest (inner & outer)</p>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Constant tension chest isolation. Great for chest definition and mind-muscle connection.</p>
+          <div class="exercise-tags">
+            <span class="tag tag-primary">Isolation</span>
+            <span class="tag tag-info">Cable</span>
+          </div>
+        </div>
+
+        <!-- Hanging Leg Raises -->
+        <div class="exercise-card" data-muscle="core" onclick="openExercise(this)">
+          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">🔽</div>
+          <h3>Hanging Leg Raises</h3>
+          <p class="muscle-group">Lower Abs • Hip Flexors • Obliques</p>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Advanced core exercise that heavily targets the lower abdominals.</p>
+          <div class="exercise-tags">
+            <span class="tag tag-primary">Isolation</span>
+            <span class="tag tag-success">Bodyweight</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Gym Terminology -->
+  <section class="section" style="background: var(--primary);">
+    <div class="container">
+      <div class="section-header">
+        <h2>Gym <span class="accent-text">Terminology</span></h2>
+        <p>Essential fitness terms every lifter should know</p>
+      </div>
+
+      <div class="grid-2" style="gap: var(--space-lg);">
+        <div class="feature-card" style="padding: var(--space-lg);">
+          <h3 style="color: var(--accent); font-size: 1rem;">Reps (Repetitions)</h3>
+          <p style="font-size: 0.85rem;">One complete movement of an exercise. Example: lowering and pressing a barbell once = 1 rep.</p>
+        </div>
+        <div class="feature-card" style="padding: var(--space-lg);">
+          <h3 style="color: var(--accent); font-size: 1rem;">Sets</h3>
+          <p style="font-size: 0.85rem;">A group of consecutive reps. Example: 3 sets of 10 reps = performing 10 reps, resting, then repeating 2 more times.</p>
+        </div>
+        <div class="feature-card" style="padding: var(--space-lg);">
+          <h3 style="color: var(--accent); font-size: 1rem;">Progressive Overload</h3>
+          <p style="font-size: 0.85rem;">Gradually increasing the weight, reps, or volume over time to continuously challenge muscles. The #1 principle for growth.</p>
+        </div>
+        <div class="feature-card" style="padding: var(--space-lg);">
+          <h3 style="color: var(--accent); font-size: 1rem;">Hypertrophy</h3>
+          <p style="font-size: 0.85rem;">The increase in muscle size through training. Typically achieved with 8-12 reps, moderate weight, and high volume.</p>
+        </div>
+        <div class="feature-card" style="padding: var(--space-lg);">
+          <h3 style="color: var(--accent); font-size: 1rem;">Compound Exercise</h3>
+          <p style="font-size: 0.85rem;">An exercise that works multiple muscle groups simultaneously. Examples: squat, bench press, deadlift, overhead press.</p>
+        </div>
+        <div class="feature-card" style="padding: var(--space-lg);">
+          <h3 style="color: var(--accent); font-size: 1rem;">Isolation Exercise</h3>
+          <p style="font-size: 0.85rem;">An exercise targeting a single muscle group. Examples: bicep curl, lateral raise, leg extension.</p>
+        </div>
+        <div class="feature-card" style="padding: var(--space-lg);">
+          <h3 style="color: var(--accent); font-size: 1rem;">Superset</h3>
+          <p style="font-size: 0.85rem;">Performing two exercises back-to-back without rest. Can target same or opposing muscle groups for efficiency.</p>
+        </div>
+        <div class="feature-card" style="padding: var(--space-lg);">
+          <h3 style="color: var(--accent); font-size: 1rem;">Drop Set</h3>
+          <p style="font-size: 0.85rem;">Performing a set to failure, then immediately reducing weight and continuing. Great for muscle fatigue and pump.</p>
+        </div>
+        <div class="feature-card" style="padding: var(--space-lg);">
+          <h3 style="color: var(--accent); font-size: 1rem;">1RM (One Rep Max)</h3>
+          <p style="font-size: 0.85rem;">The maximum weight you can lift for one repetition. Used to calculate training percentages.</p>
+        </div>
+        <div class="feature-card" style="padding: var(--space-lg);">
+          <h3 style="color: var(--accent); font-size: 1rem;">Time Under Tension (TUT)</h3>
+          <p style="font-size: 0.85rem;">The total time a muscle is under strain during a set. Slower reps = more TUT = more muscle stimulus.</p>
+        </div>
+        <div class="feature-card" style="padding: var(--space-lg);">
+          <h3 style="color: var(--accent); font-size: 1rem;">RPE (Rate of Perceived Exertion)</h3>
+          <p style="font-size: 0.85rem;">A 1-10 scale measuring effort level. RPE 8 = you could do 2 more reps. RPE 10 = absolute failure.</p>
+        </div>
+        <div class="feature-card" style="padding: var(--space-lg);">
+          <h3 style="color: var(--accent); font-size: 1rem;">DOMS (Delayed Onset Muscle Soreness)</h3>
+          <p style="font-size: 0.85rem;">Muscle soreness appearing 24-72 hours after training. Normal and indicates muscle damage/repair cycle.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>KYNOTRA</h3>
+          <p>AI-powered fitness platform delivering personalized workout programs, nutrition plans, and premium equipment.</p>
+          <div class="footer-social"><a href="#">📷</a><a href="#">🐦</a><a href="#">▶️</a><a href="#">🎵</a></div>
+        </div>
+        <div class="footer-column"><h4>Platform</h4><a href="programs.html">Programs</a><a href="diet.html">Nutrition</a><a href="exercises.html">Exercises</a><a href="shop.html">Shop</a></div>
+        <div class="footer-column"><h4>Company</h4><a href="about.html">About</a><a href="contact.html">Contact</a><a href="#">Blog</a><a href="#">Careers</a></div>
+        <div class="footer-column"><h4>Support</h4><a href="#">Help Center</a><a href="#">FAQ</a><a href="#">Privacy</a><a href="#">Terms</a></div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Kynotra. All rights reserved.</p>
+        <div class="footer-bottom-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Exercise Modal -->
+  <div id="exerciseModal" style="display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.8); overflow-y: auto; padding: var(--space-xl);">
+    <div style="max-width: 700px; margin: 80px auto; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: var(--space-2xl); position: relative;">
+      <button onclick="closeExercise()" style="position: absolute; top: var(--space-lg); right: var(--space-lg); font-size: 1.5rem; color: var(--text-muted); cursor: pointer; background: none; border: none;">✕</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

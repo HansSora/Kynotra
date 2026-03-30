@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Contact Kynotra - Get in touch with our support team, partnerships, or general inquiries.">
+  <title>Contact Us — Kynotra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo"><img src="images/favicon.svg" alt="Kynotra" class="logo-icon">KYNOTRA</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="programs.html">Programs</a></li>
+        <li><a href="diet.html">Nutrition</a></li>
+        <li><a href="exercises.html">Exercises</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html" class="active">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="shop.html" class="nav-cart">🛒<span class="cart-count" id="cartCount">0</span></a>
+        <a href="login.html" class="btn btn-sm btn-outline">Log In</a>
+        <a href="signup.html" class="btn btn-sm btn-primary">Start Free</a>
+        <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container">
+      <h1>Contact <span class="accent-text">Us</span></h1>
+      <p>Have a question, feedback, or partnership inquiry? We'd love to hear from you</p>
+      <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="separator">›</span>
+        <span>Contact</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Section -->
+  <section class="section">
+    <div class="container">
+      <div class="grid-2" style="gap: var(--space-3xl); align-items: start;">
+        
+        <!-- Contact Form -->
+        <div>
+          <h2 style="font-family: var(--font-heading); font-size: 1.6rem; text-transform: uppercase; margin-bottom: var(--space-xl);">
+            Send a <span class="accent-text">Message</span>
+          </h2>
+          <form id="contactForm" onsubmit="handleContactSubmit(event)">
+            <div class="grid-2" style="gap: var(--space-lg);">
+              <div class="form-group">
+                <label class="form-label">First Name *</label>
+                <input type="text" class="form-input" placeholder="John" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Last Name *</label>
+                <input type="text" class="form-input" placeholder="Doe" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email *</label>
+              <input type="email" class="form-input" placeholder="john@example.com" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Subject</label>
+              <select class="form-input form-select">
+                <option value="">Select a topic...</option>
+                <option value="support">Technical Support</option>
+                <option value="billing">Billing & Subscriptions</option>
+                <option value="partnership">Partnership Inquiry</option>
+                <option value="feedback">Feedback & Suggestions</option>
+                <option value="press">Press & Media</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Message *</label>
+              <textarea class="form-input" rows="6" placeholder="How can we help you?" required style="resize: vertical;"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Send Message →</button>
+          </form>
+        </div>
+
+        <!-- Contact Info -->
+        <div>
+          <h2 style="font-family: var(--font-heading); font-size: 1.6rem; text-transform: uppercase; margin-bottom: var(--space-xl);">
+            Get in <span class="accent-text">Touch</span>
+          </h2>
+
+          <div style="display: flex; flex-direction: column; gap: var(--space-xl);">
+            <div class="feature-card" style="padding: var(--space-lg);">
+              <div style="display: flex; gap: var(--space-md); align-items: flex-start;">
+                <div style="font-size: 1.5rem;">📧</div>
+                <div>
+                  <h3 style="font-size: 1rem; margin-bottom: var(--space-xs);">Email</h3>
+                  <p style="color: var(--text-secondary); font-size: 0.9rem;">support@Kynotra.com</p>
+                  <p style="color: var(--text-secondary); font-size: 0.9rem;">partnerships@Kynotra.com</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="feature-card" style="padding: var(--space-lg);">
+              <div style="display: flex; gap: var(--space-md); align-items: flex-start;">
+                <div style="font-size: 1.5rem;">📱</div>
+                <div>
+                  <h3 style="font-size: 1rem; margin-bottom: var(--space-xs);">Phone</h3>
+                  <p style="color: var(--text-secondary); font-size: 0.9rem;">+1 (555) 123-4567</p>
+                  <p style="color: var(--text-muted); font-size: 0.8rem;">Mon-Fri, 9am-6pm EST</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="feature-card" style="padding: var(--space-lg);">
+              <div style="display: flex; gap: var(--space-md); align-items: flex-start;">
+                <div style="font-size: 1.5rem;">📍</div>
+                <div>
+                  <h3 style="font-size: 1rem; margin-bottom: var(--space-xs);">Office</h3>
+                  <p style="color: var(--text-secondary); font-size: 0.9rem;">123 Fitness Avenue, Suite 400</p>
+                  <p style="color: var(--text-secondary); font-size: 0.9rem;">Austin, TX 78701</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="feature-card" style="padding: var(--space-lg);">
+              <div style="display: flex; gap: var(--space-md); align-items: flex-start;">
+                <div style="font-size: 1.5rem;">💬</div>
+                <div>
+                  <h3 style="font-size: 1rem; margin-bottom: var(--space-xs);">Social Media</h3>
+                  <div style="display: flex; gap: var(--space-md); margin-top: var(--space-sm);">
+                    <a href="#" style="color: var(--text-secondary);">Instagram</a>
+                    <a href="#" style="color: var(--text-secondary);">Twitter</a>
+                    <a href="#" style="color: var(--text-secondary);">YouTube</a>
+                    <a href="#" style="color: var(--text-secondary);">TikTok</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ Quick Links -->
+          <div style="margin-top: var(--space-2xl); padding: var(--space-xl); background: var(--gradient-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg);">
+            <h3 style="font-size: 1rem; margin-bottom: var(--space-lg);">Common Questions</h3>
+            <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
+              <a href="#" style="color: var(--text-secondary); font-size: 0.9rem; padding: var(--space-sm) 0; border-bottom: 1px solid var(--border-color);">How do I cancel my subscription?</a>
+              <a href="#" style="color: var(--text-secondary); font-size: 0.9rem; padding: var(--space-sm) 0; border-bottom: 1px solid var(--border-color);">Can I switch plans?</a>
+              <a href="#" style="color: var(--text-secondary); font-size: 0.9rem; padding: var(--space-sm) 0; border-bottom: 1px solid var(--border-color);">What's your refund policy?</a>
+              <a href="#" style="color: var(--text-secondary); font-size: 0.9rem; padding: var(--space-sm) 0;">How does AI program generation work?</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>KYNOTRA</h3>
+          <p>AI-powered fitness platform delivering personalized workout programs, nutrition plans, and premium equipment.</p>
+          <div class="footer-social"><a href="#">📷</a><a href="#">🐦</a><a href="#">▶️</a><a href="#">🎵</a></div>
+        </div>
+        <div class="footer-column"><h4>Platform</h4><a href="programs.html">Programs</a><a href="diet.html">Nutrition</a><a href="exercises.html">Exercises</a><a href="shop.html">Shop</a></div>
+        <div class="footer-column"><h4>Company</h4><a href="about.html">About</a><a href="contact.html">Contact</a><a href="#">Blog</a><a href="#">Careers</a></div>
+        <div class="footer-column"><h4>Support</h4><a href="#">Help Center</a><a href="#">FAQ</a><a href="#">Privacy</a><a href="#">Terms</a></div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Kynotra. All rights reserved.</p>
+        <div class="footer-bottom-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

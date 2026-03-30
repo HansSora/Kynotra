@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Kynotra Nutrition - Personalized diet plans, macro calculators, meal plans for weight loss, muscle gain, and maintenance.">
+  <title>Diet & Nutrition Plans — Kynotra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo"><img src="images/favicon.svg" alt="Kynotra" class="logo-icon">KYNOTRA</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="programs.html">Programs</a></li>
+        <li><a href="diet.html" class="active">Nutrition</a></li>
+        <li><a href="exercises.html">Exercises</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="shop.html" class="nav-cart">🛒<span class="cart-count" id="cartCount">0</span></a>
+        <a href="login.html" class="btn btn-sm btn-outline">Log In</a>
+        <a href="signup.html" class="btn btn-sm btn-primary">Start Free</a>
+        <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container">
+      <h1>Diet & <span class="accent-text">Nutrition</span></h1>
+      <p>Science-based meal plans and macro calculations to fuel your goals</p>
+      <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="separator">›</span>
+        <span>Nutrition</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calorie & Macro Calculator -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Calorie & Macro <span class="accent-text">Calculator</span></h2>
+        <p>Calculate your daily calorie needs and optimal macronutrient breakdown</p>
+      </div>
+
+      <div class="calculator-widget" style="max-width: 600px;">
+        <form id="calorieCalculator">
+          <div class="unit-toggle" style="display: flex; justify-content: center; margin-bottom: var(--space-lg);">
+            <button type="button" class="btn btn-unit active" id="unitImperial" onclick="setUnit('imperial')">Imperial (lbs / in)</button>
+            <button type="button" class="btn btn-unit" id="unitMetric" onclick="setUnit('metric')">Metric (kg / cm)</button>
+          </div>
+          <div class="grid-2" style="gap: var(--space-lg);">
+            <div class="form-group">
+              <label class="form-label">Gender</label>
+              <select class="form-input form-select" id="calcGender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Age</label>
+              <input type="number" class="form-input" id="calcAge" placeholder="25" min="14" max="100">
+            </div>
+            <div class="form-group">
+              <label class="form-label" id="weightLabel">Weight (lbs)</label>
+              <input type="number" class="form-input" id="calcWeight" placeholder="175" min="60" max="500" step="0.1">
+            </div>
+            <div class="form-group">
+              <label class="form-label" id="heightLabel">Height (inches)</label>
+              <input type="number" class="form-input" id="calcHeight" placeholder="70" min="36" max="96" step="0.1">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Activity Level</label>
+              <select class="form-input form-select" id="calcActivity">
+                <option value="1.2">Sedentary (office work)</option>
+                <option value="1.375">Light (1-3 days/week)</option>
+                <option value="1.55" selected>Moderate (3-5 days/week)</option>
+                <option value="1.725">Active (6-7 days/week)</option>
+                <option value="1.9">Very Active (athlete)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Goal</label>
+              <select class="form-input form-select" id="calcGoal">
+                <option value="lose">Weight Loss (-500 cal)</option>
+                <option value="maintain">Maintenance</option>
+                <option value="gain">Muscle Gain (+300 cal)</option>
+                <option value="bulk">Aggressive Bulk (+500 cal)</option>
+              </select>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary btn-block" style="margin-top: var(--space-xl);" onclick="calculateCalories()">
+            🧮 Calculate My Macros
+          </button>
+        </form>
+
+        <div id="calorieResult" style="display: none;">
+          <div class="calculator-result" style="margin-top: var(--space-xl);">
+            <div class="result-value" id="totalCalories">2,400</div>
+            <div class="result-label">Daily Calories</div>
+          </div>
+          <div class="macro-row" style="justify-content: center; margin-top: var(--space-lg);">
+            <div class="macro-item">
+              <div class="macro-value accent-text" id="macroProtein">180g</div>
+              <div class="macro-label">Protein</div>
+            </div>
+            <div class="macro-item">
+              <div class="macro-value" style="color: var(--info);" id="macroCarbs">270g</div>
+              <div class="macro-label">Carbs</div>
+            </div>
+            <div class="macro-item">
+              <div class="macro-value" style="color: var(--warning);" id="macroFats">80g</div>
+              <div class="macro-label">Fats</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Diet Plans -->
+  <section class="section" style="background: var(--primary);">
+    <div class="container">
+      <div class="section-header">
+        <h2>Diet <span class="accent-text">Plans</span></h2>
+        <p>Structured meal plans designed for specific goals</p>
+      </div>
+
+      <div class="grid-3">
+        <!-- Weight Loss Plan -->
+        <div class="card animate-in">
+          <div class="card-image">
+            <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&q=80" alt="Healthy meal prep">
+            <span class="card-badge">Weight Loss</span>
+          </div>
+          <div class="card-body">
+            <h3>Lean & Clean</h3>
+            <p>High-protein, moderate-carb plan for sustainable fat loss. 1,800-2,200 calories with flexible meal timing.</p>
+            <div class="card-meta">
+              <span>🔥 1,800-2,200 cal</span>
+              <span>🥩 40% Protein</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Muscle Gain Plan -->
+        <div class="card animate-in">
+          <div class="card-image">
+            <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80" alt="High protein foods">
+            <span class="card-badge">Muscle Gain</span>
+          </div>
+          <div class="card-body">
+            <h3>Mass Builder</h3>
+            <p>Calorie-surplus plan with optimized protein timing. 2,800-3,400 calories with 5-6 meals per day.</p>
+            <div class="card-meta">
+              <span>🔥 2,800-3,400 cal</span>
+              <span>🥩 35% Protein</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Maintenance Plan -->
+        <div class="card animate-in">
+          <div class="card-image">
+            <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80" alt="Balanced meal">
+            <span class="card-badge">Maintenance</span>
+          </div>
+          <div class="card-body">
+            <h3>Balanced Living</h3>
+            <p>Maintenance-calorie plan for sustained health and performance. Balanced macros with flexible food choices.</p>
+            <div class="card-meta">
+              <span>🔥 2,200-2,600 cal</span>
+              <span>🥩 30% Protein</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sample Daily Menu -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Sample <span class="accent-text">Daily Menu</span></h2>
+        <p>Muscle Gain Plan — Approx. 2,800 calories</p>
+      </div>
+
+      <div class="grid-2" style="max-width: 900px; margin: 0 auto;">
+        <!-- Meal 1 -->
+        <div class="meal-card animate-in">
+          <div class="meal-time">7:00 AM</div>
+          <h4>Meal 1 — Breakfast</h4>
+          <ul style="color: var(--text-secondary); font-size: 0.9rem; padding-left: 0;">
+            <li style="padding: 4px 0;">• 4 whole eggs scrambled</li>
+            <li style="padding: 4px 0;">• 2 slices whole wheat toast</li>
+            <li style="padding: 4px 0;">• 1 avocado (half)</li>
+            <li style="padding: 4px 0;">• 1 banana</li>
+          </ul>
+          <div class="macro-row">
+            <div class="macro-item"><div class="macro-value">42g</div><div class="macro-label">Protein</div></div>
+            <div class="macro-item"><div class="macro-value">58g</div><div class="macro-label">Carbs</div></div>
+            <div class="macro-item"><div class="macro-value">28g</div><div class="macro-label">Fats</div></div>
+            <div class="macro-item"><div class="macro-value">650</div><div class="macro-label">Calories</div></div>
+          </div>
+        </div>
+
+        <!-- Meal 2 -->
+        <div class="meal-card animate-in">
+          <div class="meal-time">10:00 AM</div>
+          <h4>Meal 2 — Snack</h4>
+          <ul style="color: var(--text-secondary); font-size: 0.9rem; padding-left: 0;">
+            <li style="padding: 4px 0;">• Protein shake (whey, 1 scoop)</li>
+            <li style="padding: 4px 0;">• 1 cup oats with berries</li>
+            <li style="padding: 4px 0;">• 1 tbsp peanut butter</li>
+          </ul>
+          <div class="macro-row">
+            <div class="macro-item"><div class="macro-value">38g</div><div class="macro-label">Protein</div></div>
+            <div class="macro-item"><div class="macro-value">52g</div><div class="macro-label">Carbs</div></div>
+            <div class="macro-item"><div class="macro-value">14g</div><div class="macro-label">Fats</div></div>
+            <div class="macro-item"><div class="macro-value">480</div><div class="macro-label">Calories</div></div>
+          </div>
+        </div>
+
+        <!-- Meal 3 -->
+        <div class="meal-card animate-in">
+          <div class="meal-time">1:00 PM</div>
+          <h4>Meal 3 — Lunch</h4>
+          <ul style="color: var(--text-secondary); font-size: 0.9rem; padding-left: 0;">
+            <li style="padding: 4px 0;">• 8oz chicken breast (grilled)</li>
+            <li style="padding: 4px 0;">• 1.5 cups white rice</li>
+            <li style="padding: 4px 0;">• Mixed vegetables (broccoli, peppers)</li>
+            <li style="padding: 4px 0;">• 1 tbsp olive oil</li>
+          </ul>
+          <div class="macro-row">
+            <div class="macro-item"><div class="macro-value">52g</div><div class="macro-label">Protein</div></div>
+            <div class="macro-item"><div class="macro-value">70g</div><div class="macro-label">Carbs</div></div>
+            <div class="macro-item"><div class="macro-value">18g</div><div class="macro-label">Fats</div></div>
+            <div class="macro-item"><div class="macro-value">660</div><div class="macro-label">Calories</div></div>
+          </div>
+        </div>
+
+        <!-- Meal 4 -->
+        <div class="meal-card animate-in">
+          <div class="meal-time">4:00 PM — Post Workout</div>
+          <h4>Meal 4 — Post-Workout</h4>
+          <ul style="color: var(--text-secondary); font-size: 0.9rem; padding-left: 0;">
+            <li style="padding: 4px 0;">• Protein shake (whey, 1 scoop)</li>
+            <li style="padding: 4px 0;">• 2 rice cakes with honey</li>
+            <li style="padding: 4px 0;">• 1 banana</li>
+          </ul>
+          <div class="macro-row">
+            <div class="macro-item"><div class="macro-value">30g</div><div class="macro-label">Protein</div></div>
+            <div class="macro-item"><div class="macro-value">65g</div><div class="macro-label">Carbs</div></div>
+            <div class="macro-item"><div class="macro-value">4g</div><div class="macro-label">Fats</div></div>
+            <div class="macro-item"><div class="macro-value">420</div><div class="macro-label">Calories</div></div>
+          </div>
+        </div>
+
+        <!-- Meal 5 -->
+        <div class="meal-card animate-in" style="grid-column: 1 / -1; max-width: 450px; margin: 0 auto;">
+          <div class="meal-time">7:30 PM</div>
+          <h4>Meal 5 — Dinner</h4>
+          <ul style="color: var(--text-secondary); font-size: 0.9rem; padding-left: 0;">
+            <li style="padding: 4px 0;">• 8oz salmon fillet</li>
+            <li style="padding: 4px 0;">• Sweet potato (medium)</li>
+            <li style="padding: 4px 0;">• Asparagus (grilled)</li>
+            <li style="padding: 4px 0;">• Side salad with olive oil dressing</li>
+          </ul>
+          <div class="macro-row">
+            <div class="macro-item"><div class="macro-value">48g</div><div class="macro-label">Protein</div></div>
+            <div class="macro-item"><div class="macro-value">45g</div><div class="macro-label">Carbs</div></div>
+            <div class="macro-item"><div class="macro-value">22g</div><div class="macro-label">Fats</div></div>
+            <div class="macro-item"><div class="macro-value">570</div><div class="macro-label">Calories</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daily Totals -->
+      <div style="max-width: 600px; margin: var(--space-2xl) auto 0; text-align: center;">
+        <div style="background: var(--bg-card); border: 1px solid var(--accent); border-radius: var(--radius-lg); padding: var(--space-xl);">
+          <h4 style="font-family: var(--font-heading); font-size: 1.2rem; text-transform: uppercase; margin-bottom: var(--space-md);">Daily Totals</h4>
+          <div class="macro-row" style="justify-content: center; border: none; padding: 0; margin: 0;">
+            <div class="macro-item"><div class="macro-value" style="font-size: 1.6rem; color: var(--accent);">2,780</div><div class="macro-label">Calories</div></div>
+            <div class="macro-item"><div class="macro-value" style="font-size: 1.6rem;">210g</div><div class="macro-label">Protein</div></div>
+            <div class="macro-item"><div class="macro-value" style="font-size: 1.6rem;">290g</div><div class="macro-label">Carbs</div></div>
+            <div class="macro-item"><div class="macro-value" style="font-size: 1.6rem;">86g</div><div class="macro-label">Fats</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Food Alternatives & Supplements -->
+  <section class="section" style="background: var(--primary);">
+    <div class="container">
+      <div class="grid-2" style="gap: var(--space-3xl);">
+        <!-- Food Alternatives -->
+        <div>
+          <h2 style="font-family: var(--font-heading); font-size: 1.8rem; text-transform: uppercase; margin-bottom: var(--space-xl);">Food <span class="accent-text">Alternatives</span></h2>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Original</th>
+                  <th>Alternative</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Chicken Breast</td><td>Turkey, Lean Beef, Tofu</td><td>Similar protein per oz</td></tr>
+                <tr><td>White Rice</td><td>Brown Rice, Quinoa, Pasta</td><td>Similar carb content</td></tr>
+                <tr><td>Salmon</td><td>Tuna, Cod, Tilapia</td><td>Adjust fat intake</td></tr>
+                <tr><td>Eggs</td><td>Egg Whites, Greek Yogurt</td><td>Lower fat option</td></tr>
+                <tr><td>Sweet Potato</td><td>Regular Potato, Oats</td><td>Similar carb profile</td></tr>
+                <tr><td>Peanut Butter</td><td>Almond Butter, Cashew Butter</td><td>Similar macros</td></tr>
+                <tr><td>Whey Protein</td><td>Plant Protein, Casein</td><td>Vegan-friendly option</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Supplement Suggestions -->
+        <div>
+          <h2 style="font-family: var(--font-heading); font-size: 1.8rem; text-transform: uppercase; margin-bottom: var(--space-xl);">Supplement <span class="accent-text">Guide</span></h2>
+          <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+            <div class="feature-card" style="padding: var(--space-lg);">
+              <h3 style="font-size: 1rem;">Whey Protein</h3>
+              <p style="font-size: 0.85rem;">Essential for hitting daily protein targets. Take post-workout or between meals. 25-30g per serving.</p>
+              <span class="tag tag-success" style="margin-top: var(--space-sm);">Essential</span>
+            </div>
+            <div class="feature-card" style="padding: var(--space-lg);">
+              <h3 style="font-size: 1rem;">Creatine Monohydrate</h3>
+              <p style="font-size: 0.85rem;">Most researched supplement. 5g daily for strength and muscle gains. No loading phase needed.</p>
+              <span class="tag tag-success" style="margin-top: var(--space-sm);">Highly Recommended</span>
+            </div>
+            <div class="feature-card" style="padding: var(--space-lg);">
+              <h3 style="font-size: 1rem;">Vitamin D3</h3>
+              <p style="font-size: 0.85rem;">Supports immune function and bone health. 2,000-5,000 IU daily, especially if limited sun exposure.</p>
+              <span class="tag tag-info" style="margin-top: var(--space-sm);">Recommended</span>
+            </div>
+            <div class="feature-card" style="padding: var(--space-lg);">
+              <h3 style="font-size: 1rem;">Omega-3 Fish Oil</h3>
+              <p style="font-size: 0.85rem;">Anti-inflammatory, supports heart and joint health. 2-3g EPA/DHA daily.</p>
+              <span class="tag tag-info" style="margin-top: var(--space-sm);">Recommended</span>
+            </div>
+            <div class="feature-card" style="padding: var(--space-lg);">
+              <h3 style="font-size: 1rem;">Caffeine (Pre-Workout)</h3>
+              <p style="font-size: 0.85rem;">Boosts performance and focus. 150-300mg 30 minutes before training. Cycle on/off.</p>
+              <span class="tag tag-primary" style="margin-top: var(--space-sm);">Optional</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>KYNOTRA</h3>
+          <p>AI-powered fitness platform delivering personalized workout programs, nutrition plans, and premium equipment.</p>
+          <div class="footer-social"><a href="#">📷</a><a href="#">🐦</a><a href="#">▶️</a><a href="#">🎵</a></div>
+        </div>
+        <div class="footer-column"><h4>Platform</h4><a href="programs.html">Programs</a><a href="diet.html">Nutrition</a><a href="exercises.html">Exercises</a><a href="shop.html">Shop</a></div>
+        <div class="footer-column"><h4>Company</h4><a href="about.html">About</a><a href="contact.html">Contact</a><a href="#">Blog</a><a href="#">Careers</a></div>
+        <div class="footer-column"><h4>Support</h4><a href="#">Help Center</a><a href="#">FAQ</a><a href="#">Privacy</a><a href="#">Terms</a></div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Kynotra. All rights reserved.</p>
+        <div class="footer-bottom-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

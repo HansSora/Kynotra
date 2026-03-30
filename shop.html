@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Kynotra Shop - Premium fitness equipment, supplements, and apparel. Dumbbells, resistance bands, protein powders, and more.">
+  <title>Fitness Shop — Kynotra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo"><img src="images/favicon.svg" alt="Kynotra" class="logo-icon">KYNOTRA</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="programs.html">Programs</a></li>
+        <li><a href="diet.html">Nutrition</a></li>
+        <li><a href="exercises.html">Exercises</a></li>
+        <li><a href="shop.html" class="active">Shop</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="shop.html" class="nav-cart">🛒<span class="cart-count" id="cartCount">0</span></a>
+        <a href="login.html" class="btn btn-sm btn-outline">Log In</a>
+        <a href="signup.html" class="btn btn-sm btn-primary">Start Free</a>
+        <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container">
+      <h1>Fitness <span class="accent-text">Shop</span></h1>
+      <p>Premium equipment, supplements, and apparel to power your training</p>
+      <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="separator">›</span>
+        <span>Shop</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shop Banner -->
+  <section class="section" style="padding-bottom: 0;">
+    <div class="container">
+      <div style="background: var(--gradient-primary); border-radius: var(--radius-xl); padding: var(--space-2xl) var(--space-3xl); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-xl);">
+        <div>
+          <h2 style="font-family: var(--font-heading); font-size: 1.8rem; text-transform: uppercase; margin-bottom: var(--space-sm);">Free Shipping on Orders Over $75</h2>
+          <p style="opacity: 0.9; font-size: 1rem;">Use code <strong>Kynotra20</strong> for 20% off your first order</p>
+        </div>
+        <a href="#products" class="btn btn-secondary" style="border-color: white; color: white;">Shop Now ↓</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filter & Products -->
+  <section class="section" id="products">
+    <div class="container">
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterProducts('all', this)">All Products</button>
+        <button class="filter-btn" onclick="filterProducts('equipment', this)">Equipment</button>
+        <button class="filter-btn" onclick="filterProducts('supplements', this)">Supplements</button>
+        <button class="filter-btn" onclick="filterProducts('apparel', this)">Apparel</button>
+        <button class="filter-btn" onclick="filterProducts('accessories', this)">Accessories</button>
+        <div class="search-input">
+          <span>🔍</span>
+          <input type="text" placeholder="Search products..." id="productSearch">
+        </div>
+      </div>
+
+      <div class="grid-4" id="productsGrid">
+
+        <!-- Adjustable Dumbbells -->
+        <div class="product-card" data-category="equipment">
+          <div class="product-image">
+            🏋️
+            <span class="product-tag tag tag-success">Best Seller</span>
+          </div>
+          <div class="product-info">
+            <p class="product-category">Equipment</p>
+            <h3>Adjustable Dumbbells (5-52.5 lbs)</h3>
+            <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: var(--space-md);">
+              Space-saving adjustable dumbbell set. Quick-change weight dial system. Replaces 15 pairs of dumbbells.
+            </div>
+            <div class="product-price-row">
+              <div class="product-price">$349.99</div>
+              <div class="product-rating">★★★★★ (428)</div>
+            </div>
+            <button class="btn btn-sm btn-primary btn-block" style="margin-top: var(--space-md);" onclick="addToCart('Adjustable Dumbbells', 349.99)">Add to Cart</button>
+          </div>
+        </div>
+
+        <!-- Resistance Bands Set -->
+        <div class="product-card" data-category="equipment accessories">
+          <div class="product-image">
+            🔗
+            <span class="product-tag tag tag-primary">Sale</span>
+          </div>
+          <div class="product-info">
+            <p class="product-category">Equipment</p>
+            <h3>Resistance Bands Set (5 Levels)</h3>
+            <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: var(--space-md);">
+              5 resistance levels from 10-50 lbs. Includes door anchor, ankle straps, and carry bag. Natural latex.
+            </div>
+            <div class="product-price-row">
+              <div class="product-price">$29.99 <span class="original-price">$44.99</span></div>
+              <div class="product-rating">★★★★★ (1,247)</div>
+            </div>
+            <button class="btn btn-sm btn-primary btn-block" style="margin-top: var(--space-md);" onclick="addToCart('Resistance Bands Set', 29.99)">Add to Cart</button>
+          </div>
+        </div>
+
+        <!-- Adjustable Bench -->
+        <div class="product-card" data-category="equipment">
+          <div class="product-image">
+            🪑
+          </div>
+          <div class="product-info">
+            <p class="product-category">Equipment</p>
+            <h3>Adjustable Weight Bench</h3>
+            <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: var(--space-md);">
+              7 back positions + 3 seat positions. 800 lb capacity. Foldable for storage. Commercial-grade padding.
+            </div>
+            <div class="product-price-row">
+              <div class="product-price">$189.99</div>
+              <div class="product-rating">★★★★☆ (312)</div>
+            </div>
+            <button class="btn btn-sm btn-primary btn-block" style="margin-top: var(--space-md);" onclick="addToCart('Adjustable Bench', 189.99)">Add to Cart</button>
+          </div>
+        </div>
+
+        <!-- Whey Protein -->
+        <div class="product-card" data-category="supplements">
+          <div class="product-image">
+            🥛
+            <span class="product-tag tag tag-success">Best Seller</span>
+          </div>
+          <div class="product-info">
+            <p class="product-category">Supplements</p>
+            <h3>Gold Standard Whey Protein (5 lbs)</h3>
+            <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: var(--space-md);">
+              24g protein per serving. Low carb, low fat. 73 servings. Double Rich Chocolate. By Optimum Nutrition.
+            </div>
+            <div class="product-price-row">
+              <div class="product-price">$62.99</div>
+              <div class="product-rating">★★★★★ (28,400)</div>
+            </div>
+            <button class="btn btn-sm btn-primary btn-block" style="margin-top: var(--space-md);" onclick="addToCart('Whey Protein 5lb', 62.99)">Add to Cart</button>
+          </div>
+        </div>
+
+        <!-- Creatine -->
+        <div class="product-card" data-category="supplements">
+          <div class="product-image">
+            💊
+          </div>
+          <div class="product-info">
+            <p class="product-category">Supplements</p>
+            <h3>Creatine Monohydrate (500g)</h3>
+            <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: var(--space-md);">
+              100 servings of pure micronized creatine monohydrate. Unflavored, mixes easily. Third-party tested.
+            </div>
+            <div class="product-price-row">
+              <div class="product-price">$24.99</div>
+              <div class="product-rating">★★★★★ (8,200)</div>
+            </div>
+            <button class="btn btn-sm btn-primary btn-block" style="margin-top: var(--space-md);" onclick="addToCart('Creatine 500g', 24.99)">Add to Cart</button>
+          </div>
+        </div>
+
+        <!-- Pre-Workout -->
+        <div class="product-card" data-category="supplements">
+          <div class="product-image">
+            ⚡
+            <span class="product-tag tag tag-primary">New</span>
+          </div>
+          <div class="product-info">
+            <p class="product-category">Supplements</p>
+            <h3>Kynotra Pre-Workout (30 servings)</h3>
+            <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: var(--space-md);">
+              200mg caffeine, 6g citrulline, 3.2g beta-alanine. Fruit punch flavor. No artificial colors.
+            </div>
+            <div class="product-price-row">
+              <div class="product-price">$39.99</div>
+              <div class="product-rating">★★★★☆ (156)</div>
+            </div>
+            <button class="btn btn-sm btn-primary btn-block" style="margin-top: var(--space-md);" onclick="addToCart('Pre-Workout', 39.99)">Add to Cart</button>
+          </div>
+        </div>
+
+        <!-- Performance T-Shirt -->
+        <div class="product-card" data-category="apparel">
+          <div class="product-image">
+            👕
+          </div>
+          <div class="product-info">
+            <p class="product-category">Apparel</p>
+            <h3>Kynotra Performance Tee</h3>
+            <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: var(--space-md);">
+              Moisture-wicking, 4-way stretch fabric. Anti-odor technology. Slim athletic fit. Black/White/Red.
+            </div>
+            <div class="product-price-row">
+              <div class="product-price">$34.99</div>
+              <div class="product-rating">★★★★★ (523)</div>
+            </div>
+            <button class="btn btn-sm btn-primary btn-block" style="margin-top: var(--space-md);" onclick="addToCart('Performance Tee', 34.99)">Add to Cart</button>
+          </div>
+        </div>
+
+        <!-- Gym Shorts -->
+        <div class="product-card" data-category="apparel">
+          <div class="product-image">
+            🩳
+          </div>
+          <div class="product-info">
+            <p class="product-category">Apparel</p>
+            <h3>Kynotra Training Shorts</h3>
+            <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: var(--space-md);">
+              Lightweight, breathable fabric. 7" inseam. Zippered pocket. Perfect for squats and deadlifts.
+            </div>
+            <div class="product-price-row">
+              <div class="product-price">$29.99</div>
+              <div class="product-rating">★★★★☆ (389)</div>
+            </div>
+            <button class="btn btn-sm btn-primary btn-block" style="margin-top: var(--space-md);" onclick="addToCart('Training Shorts', 29.99)">Add to Cart</button>
+          </div>
+        </div>
+
+        <!-- Gym Bag -->
+        <div class="product-card" data-category="accessories">
+          <div class="product-image">
+            🎒
+          </div>
+          <div class="product-info">
+            <p class="product-category">Accessories</p>
+            <h3>Kynotra Gym Duffle Bag</h3>
+            <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: var(--space-md);">
+              40L capacity. Shoe compartment, wet pocket, water bottle holder. Durable ripstop nylon.
+            </div>
+            <div class="product-price-row">
+              <div class="product-price">$49.99</div>
+              <div class="product-rating">★★★★★ (278)</div>
+            </div>
+            <button class="btn btn-sm btn-primary btn-block" style="margin-top: var(--space-md);" onclick="addToCart('Gym Duffle Bag', 49.99)">Add to Cart</button>
+          </div>
+        </div>
+
+        <!-- Lifting Belt -->
+        <div class="product-card" data-category="accessories equipment">
+          <div class="product-image">
+            🔧
+          </div>
+          <div class="product-info">
+            <p class="product-category">Accessories</p>
+            <h3>Leather Lifting Belt (10mm)</h3>
+            <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: var(--space-md);">
+              Full grain leather, single prong buckle. 4" width. Break-in period for perfect molding. IPF approved.
+            </div>
+            <div class="product-price-row">
+              <div class="product-price">$79.99</div>
+              <div class="product-rating">★★★★★ (612)</div>
+            </div>
+            <button class="btn btn-sm btn-primary btn-block" style="margin-top: var(--space-md);" onclick="addToCart('Lifting Belt', 79.99)">Add to Cart</button>
+          </div>
+        </div>
+
+        <!-- Shaker Bottle -->
+        <div class="product-card" data-category="accessories">
+          <div class="product-image">
+            🥤
+            <span class="product-tag tag tag-primary">Sale</span>
+          </div>
+          <div class="product-info">
+            <p class="product-category">Accessories</p>
+            <h3>Kynotra Shaker Bottle (28oz)</h3>
+            <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: var(--space-md);">
+              BPA-free, leak-proof lid. Built-in mixing ball. Measurement markings. Dishwasher safe.
+            </div>
+            <div class="product-price-row">
+              <div class="product-price">$12.99 <span class="original-price">$17.99</span></div>
+              <div class="product-rating">★★★★☆ (1,890)</div>
+            </div>
+            <button class="btn btn-sm btn-primary btn-block" style="margin-top: var(--space-md);" onclick="addToCart('Shaker Bottle', 12.99)">Add to Cart</button>
+          </div>
+        </div>
+
+        <!-- Wrist Wraps -->
+        <div class="product-card" data-category="accessories">
+          <div class="product-image">
+            🧤
+          </div>
+          <div class="product-info">
+            <p class="product-category">Accessories</p>
+            <h3>Wrist Wraps (18" Pair)</h3>
+            <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: var(--space-md);">
+              Heavy-duty wrist support for bench press and overhead movements. Thumb loop, adjustable tension.
+            </div>
+            <div class="product-price-row">
+              <div class="product-price">$19.99</div>
+              <div class="product-rating">★★★★★ (945)</div>
+            </div>
+            <button class="btn btn-sm btn-primary btn-block" style="margin-top: var(--space-md);" onclick="addToCart('Wrist Wraps', 19.99)">Add to Cart</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Shopping Cart Sidebar -->
+  <div id="cartSidebar" style="display: none; position: fixed; top: 0; right: 0; width: 400px; height: 100vh; background: var(--bg-card); border-left: 1px solid var(--border-color); z-index: 10001; padding: var(--space-xl); overflow-y: auto; box-shadow: var(--shadow-lg);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xl);">
+      <h3 style="font-family: var(--font-heading); font-size: 1.4rem; text-transform: uppercase;">Your Cart</h3>
+      <button onclick="toggleCart()" style="font-size: 1.5rem; color: var(--text-muted); cursor: pointer; background: none; border: none;">✕</button>
+    </div>
+    <div id="cartItems"></div>
+    <div id="cartTotal" style="border-top: 1px solid var(--border-color); padding-top: var(--space-lg); margin-top: var(--space-lg);"></div>
+    <button class="btn btn-primary btn-block" style="margin-top: var(--space-lg);" onclick="alert('Checkout coming soon! This is a demo.')">Proceed to Checkout</button>
+  </div>
+  <div id="cartOverlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000;" onclick="toggleCart()"></div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>KYNOTRA</h3>
+          <p>AI-powered fitness platform delivering personalized workout programs, nutrition plans, and premium equipment.</p>
+          <div class="footer-social"><a href="#">📷</a><a href="#">🐦</a><a href="#">▶️</a><a href="#">🎵</a></div>
+        </div>
+        <div class="footer-column"><h4>Platform</h4><a href="programs.html">Programs</a><a href="diet.html">Nutrition</a><a href="exercises.html">Exercises</a><a href="shop.html">Shop</a></div>
+        <div class="footer-column"><h4>Company</h4><a href="about.html">About</a><a href="contact.html">Contact</a><a href="#">Blog</a><a href="#">Careers</a></div>
+        <div class="footer-column"><h4>Support</h4><a href="#">Help Center</a><a href="#">FAQ</a><a href="#">Privacy</a><a href="#">Terms</a></div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Kynotra. All rights reserved.</p>
+        <div class="footer-bottom-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

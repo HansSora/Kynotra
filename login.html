@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log In — Kynotra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <div class="auth-page">
+    <div class="auth-container">
+      <!-- Back to Home -->
+      <div style="text-align: center; margin-bottom: var(--space-xl);">
+        <a href="index.html" class="nav-logo" style="display: inline-flex; font-size: 2rem;">
+          <img src="images/favicon.svg" alt="Kynotra" class="logo-icon">
+          KYNOTRA
+        </a>
+      </div>
+
+      <div class="auth-card">
+        <div class="auth-header">
+          <h1>Welcome Back</h1>
+          <p>Log in to access your personalized programs</p>
+        </div>
+
+        <!-- Social Login -->
+        <button class="btn btn-secondary btn-block" style="margin-bottom: var(--space-md);">
+          🔵 Continue with Google
+        </button>
+        <button class="btn btn-secondary btn-block">
+          🍎 Continue with Apple
+        </button>
+
+        <div class="auth-divider">or</div>
+
+        <!-- Login Form -->
+        <form id="loginForm" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-input" placeholder="you@example.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-input" placeholder="Enter your password" required minlength="8">
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
+            <label class="form-checkbox">
+              <input type="checkbox">
+              <span style="font-size: 0.85rem; color: var(--text-secondary);">Remember me</span>
+            </label>
+            <a href="#" style="font-size: 0.85rem; color: var(--accent);">Forgot password?</a>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Log In →</button>
+        </form>
+
+        <div class="auth-footer">
+          Don't have an account? <a href="signup.html">Sign up free</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
