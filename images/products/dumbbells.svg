@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" rx="8" fill="#1a1a2e"/>
+  <rect x="80" y="220" width="240" height="8" rx="4" fill="#555"/>
+  <!-- Left dumbbell -->
+  <rect x="100" y="100" width="30" height="80" rx="4" fill="#333"/>
+  <rect x="95" y="110" width="40" height="60" rx="3" fill="#444"/>
+  <rect x="90" y="120" width="50" height="40" rx="3" fill="#555"/>
+  <!-- Bar -->
+  <rect x="140" y="135" width="120" height="10" rx="5" fill="#888"/>
+  <!-- Right dumbbell -->
+  <rect x="270" y="100" width="30" height="80" rx="4" fill="#333"/>
+  <rect x="265" y="110" width="40" height="60" rx="3" fill="#444"/>
+  <rect x="260" y="120" width="50" height="40" rx="3" fill="#555"/>
+  <!-- Weight labels -->
+  <text x="115" y="145" fill="#00e60a" font-size="12" font-weight="bold" font-family="sans-serif" text-anchor="middle">52.5</text>
+  <text x="285" y="145" fill="#00e60a" font-size="12" font-weight="bold" font-family="sans-serif" text-anchor="middle">52.5</text>
+  <!-- Shine -->
+  <rect x="142" y="136" width="60" height="3" rx="1.5" fill="rgba(255,255,255,0.15)"/>
+</svg>

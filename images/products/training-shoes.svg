@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" rx="8" fill="#1a1a2e"/>
+  <!-- Shoe side view -->
+  <path d="M80 200 L80 170 Q80 130 120 120 L280 110 Q320 108 340 130 L350 160 Q355 180 340 190 L330 200Z" fill="#111"/>
+  <!-- Sole -->
+  <path d="M70 200 L340 200 Q355 200 355 195 L358 185 Q360 170 340 190 L330 200Z" fill="#333"/>
+  <rect x="70" y="198" width="270" height="12" rx="3" fill="#222"/>
+  <!-- Sole tread -->
+  <line x1="90" y1="206" x2="100" y2="206" stroke="#444" stroke-width="2"/>
+  <line x1="110" y1="206" x2="120" y2="206" stroke="#444" stroke-width="2"/>
+  <line x1="130" y1="206" x2="140" y2="206" stroke="#444" stroke-width="2"/>
+  <line x1="150" y1="206" x2="160" y2="206" stroke="#444" stroke-width="2"/>
+  <line x1="170" y1="206" x2="180" y2="206" stroke="#444" stroke-width="2"/>
+  <line x1="190" y1="206" x2="200" y2="206" stroke="#444" stroke-width="2"/>
+  <!-- Mesh upper -->
+  <path d="M120 120 L280 110 Q310 108 320 130 L300 150 L100 155Z" fill="#1a1a1a"/>
+  <!-- Swoosh / accent stripe -->
+  <path d="M100 170 Q180 130 310 140" fill="none" stroke="#00e60a" stroke-width="4" stroke-linecap="round"/>
+  <!-- Laces -->
+  <line x1="160" y1="115" x2="180" y2="118" stroke="#555" stroke-width="1.5"/>
+  <line x1="190" y1="113" x2="210" y2="116" stroke="#555" stroke-width="1.5"/>
+  <line x1="220" y1="112" x2="240" y2="114" stroke="#555" stroke-width="1.5"/>
+  <!-- Tongue -->
+  <rect x="145" y="100" width="25" height="25" rx="3" fill="#222"/>
+  <!-- Logo -->
+  <text x="200" y="180" fill="#00e60a" font-size="9" font-weight="bold" font-family="sans-serif" text-anchor="middle" opacity="0.6">KYNOTRA</text>
+</svg>

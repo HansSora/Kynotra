@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" rx="8" fill="#1a1a2e"/>
+  <!-- Roller body -->
+  <ellipse cx="200" cy="160" rx="100" ry="50" fill="#222"/>
+  <rect x="100" y="110" width="200" height="100" rx="0" fill="#222"/>
+  <ellipse cx="200" cy="110" rx="100" ry="50" fill="#333"/>
+  <!-- Texture pattern -->
+  <ellipse cx="200" cy="110" rx="90" ry="42" fill="#2a2a2a"/>
+  <!-- Grid pattern -->
+  <line x1="140" y1="90" x2="140" y2="130" stroke="#444" stroke-width="2"/>
+  <line x1="170" y1="80" x2="170" y2="140" stroke="#444" stroke-width="2"/>
+  <line x1="200" y1="75" x2="200" y2="145" stroke="#444" stroke-width="2"/>
+  <line x1="230" y1="80" x2="230" y2="140" stroke="#444" stroke-width="2"/>
+  <line x1="260" y1="90" x2="260" y2="130" stroke="#444" stroke-width="2"/>
+  <path d="M120 100 Q200 85 280 100" fill="none" stroke="#444" stroke-width="2"/>
+  <path d="M110 115 Q200 100 290 115" fill="none" stroke="#444" stroke-width="2"/>
+  <!-- Side stripes -->
+  <ellipse cx="200" cy="160" rx="95" ry="45" fill="none" stroke="#00e60a" stroke-width="2" opacity="0.4"/>
+  <!-- Shadow -->
+  <ellipse cx="200" cy="220" rx="80" ry="8" fill="rgba(0,0,0,0.3)"/>
+</svg>

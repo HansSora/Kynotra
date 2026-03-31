@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" rx="8" fill="#1a1a2e"/>
+  <!-- Hoodie body -->
+  <path d="M110 110 L110 250 L290 250 L290 110 Q270 90 250 85 L230 100 Q200 115 170 100 L150 85 Q130 90 110 110Z" fill="#1a1a1a"/>
+  <!-- Hood -->
+  <path d="M150 85 Q140 50 200 40 Q260 50 250 85 L230 100 Q200 115 170 100Z" fill="#222"/>
+  <path d="M155 82 Q145 52 200 44 Q255 52 245 82" fill="none" stroke="#333" stroke-width="1"/>
+  <!-- Front pocket -->
+  <rect x="140" y="175" width="120" height="45" rx="8" fill="#222"/>
+  <path d="M155 175 Q200 185 245 175" fill="none" stroke="#333" stroke-width="1"/>
+  <!-- Drawstrings -->
+  <line x1="185" y1="105" x2="180" y2="135" stroke="#555" stroke-width="1.5"/>
+  <line x1="215" y1="105" x2="220" y2="135" stroke="#555" stroke-width="1.5"/>
+  <circle cx="180" cy="137" r="3" fill="#555"/>
+  <circle cx="220" cy="137" r="3" fill="#555"/>
+  <!-- Sleeves -->
+  <path d="M110 110 L70 130 L65 200 L105 190 L110 150" fill="#1a1a1a"/>
+  <path d="M290 110 L330 130 L335 200 L295 190 L290 150" fill="#1a1a1a"/>
+  <!-- Logo -->
+  <text x="200" y="165" fill="#00e60a" font-size="12" font-weight="bold" font-family="sans-serif" text-anchor="middle">KYNOTRA</text>
+  <!-- Center zipper line -->
+  <line x1="200" y1="108" x2="200" y2="250" stroke="#333" stroke-width="1"/>
+</svg>

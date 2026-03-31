@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" rx="8" fill="#1a1a2e"/>
+  <!-- Pull-up bar -->
+  <rect x="60" y="70" width="280" height="12" rx="6" fill="#666"/>
+  <!-- Grips -->
+  <rect x="90" y="66" width="30" height="20" rx="4" fill="#444"/>
+  <rect x="165" y="66" width="30" height="20" rx="4" fill="#444"/>
+  <rect x="205" y="66" width="30" height="20" rx="4" fill="#444"/>
+  <rect x="280" y="66" width="30" height="20" rx="4" fill="#444"/>
+  <!-- Angled grips -->
+  <rect x="60" y="72" width="12" height="50" rx="4" fill="#555"/>
+  <rect x="328" y="72" width="12" height="50" rx="4" fill="#555"/>
+  <!-- Door frame mount -->
+  <rect x="50" y="50" width="300" height="12" rx="3" fill="#555"/>
+  <rect x="50" y="50" width="10" height="80" rx="2" fill="#555"/>
+  <rect x="340" y="50" width="10" height="80" rx="2" fill="#555"/>
+  <!-- Foam padding -->
+  <rect x="92" y="68" width="26" height="16" rx="3" fill="#333" stroke="#00e60a" stroke-width="0.5"/>
+  <rect x="167" y="68" width="26" height="16" rx="3" fill="#333" stroke="#00e60a" stroke-width="0.5"/>
+  <rect x="207" y="68" width="26" height="16" rx="3" fill="#333" stroke="#00e60a" stroke-width="0.5"/>
+  <rect x="282" y="68" width="26" height="16" rx="3" fill="#333" stroke="#00e60a" stroke-width="0.5"/>
+  <!-- Weight capacity badge -->
+  <rect x="150" y="180" width="100" height="30" rx="6" fill="#111" stroke="#333" stroke-width="1"/>
+  <text x="200" y="200" fill="#00e60a" font-size="10" font-weight="bold" font-family="sans-serif" text-anchor="middle">300 LB RATED</text>
+</svg>

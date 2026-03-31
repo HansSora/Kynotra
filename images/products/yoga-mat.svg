@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" rx="8" fill="#1a1a2e"/>
+  <!-- Mat -->
+  <path d="M40 200 L360 200 L340 100 L60 100Z" fill="#222"/>
+  <path d="M45 198 L355 198 L336 105 L64 105Z" fill="#2a2a3a"/>
+  <!-- Rolled end -->
+  <ellipse cx="60" cy="150" rx="20" ry="50" fill="#333"/>
+  <ellipse cx="60" cy="150" rx="15" ry="45" fill="#2a2a3a"/>
+  <ellipse cx="60" cy="150" rx="8" ry="38" fill="#222"/>
+  <!-- Surface texture -->
+  <line x1="100" y1="110" x2="80" y2="195" stroke="#333" stroke-width="0.5" opacity="0.5"/>
+  <line x1="150" y1="108" x2="130" y2="196" stroke="#333" stroke-width="0.5" opacity="0.5"/>
+  <line x1="200" y1="105" x2="185" y2="197" stroke="#333" stroke-width="0.5" opacity="0.5"/>
+  <line x1="250" y1="104" x2="240" y2="197" stroke="#333" stroke-width="0.5" opacity="0.5"/>
+  <line x1="300" y1="102" x2="295" y2="198" stroke="#333" stroke-width="0.5" opacity="0.5"/>
+  <!-- Logo on mat -->
+  <text x="210" y="162" fill="#00e60a" font-size="14" font-weight="bold" font-family="sans-serif" text-anchor="middle" opacity="0.4" transform="rotate(-5 210 162)">KYNOTRA</text>
+  <!-- Carry strap -->
+  <path d="M55 110 Q40 80 60 70 Q80 80 75 110" fill="none" stroke="#00e60a" stroke-width="3"/>
+</svg>

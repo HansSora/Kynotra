@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" rx="8" fill="#1a1a2e"/>
+  <!-- Band 1 - Red -->
+  <path d="M100 80 Q200 120 300 80 Q310 140 300 200 Q200 160 100 200 Q90 140 100 80Z" fill="#e63946" opacity="0.9"/>
+  <!-- Band 2 - Blue -->
+  <path d="M120 90 Q200 125 280 90 Q290 140 280 190 Q200 155 120 190 Q110 140 120 90Z" fill="#457b9d" opacity="0.85"/>
+  <!-- Band 3 - Green -->
+  <path d="M140 100 Q200 130 260 100 Q268 140 260 180 Q200 150 140 180 Q132 140 140 100Z" fill="#00e60a" opacity="0.8"/>
+  <!-- Band 4 - Yellow -->
+  <path d="M155 108 Q200 132 245 108 Q252 138 245 172 Q200 148 155 172 Q148 138 155 108Z" fill="#f4a261" opacity="0.85"/>
+  <!-- Band 5 - Purple -->
+  <path d="M170 116 Q200 134 230 116 Q236 138 230 164 Q200 146 170 164 Q164 138 170 116Z" fill="#7b2cbf" opacity="0.85"/>
+  <!-- Handle left -->
+  <rect x="85" y="125" width="30" height="30" rx="6" fill="#333" stroke="#555" stroke-width="1"/>
+  <!-- Handle right -->
+  <rect x="285" y="125" width="30" height="30" rx="6" fill="#333" stroke="#555" stroke-width="1"/>
+  <text x="200" y="260" fill="#888" font-size="14" font-family="sans-serif" text-anchor="middle">5 RESISTANCE LEVELS</text>
+</svg>

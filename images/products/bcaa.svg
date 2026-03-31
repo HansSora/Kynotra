@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" rx="8" fill="#1a1a2e"/>
+  <!-- Bottle -->
+  <rect x="155" y="55" width="90" height="190" rx="10" fill="#0a2040"/>
+  <rect x="160" y="60" width="80" height="180" rx="8" fill="#0f2a50"/>
+  <!-- Label area -->
+  <rect x="165" y="90" width="70" height="80" rx="4" fill="#0a1a30"/>
+  <!-- BCAA text -->
+  <text x="200" y="118" fill="#00bfff" font-size="18" font-weight="bold" font-family="sans-serif" text-anchor="middle">BCAA</text>
+  <text x="200" y="135" fill="#fff" font-size="8" font-weight="bold" font-family="sans-serif" text-anchor="middle">2:1:1 RATIO</text>
+  <text x="200" y="155" fill="#aaa" font-size="7" font-family="sans-serif" text-anchor="middle">BLUE RASPBERRY</text>
+  <!-- Ratio visualization -->
+  <rect x="172" y="142" width="20" height="4" rx="2" fill="#00bfff"/>
+  <rect x="195" y="142" width="10" height="4" rx="2" fill="#00bfff" opacity="0.6"/>
+  <rect x="208" y="142" width="10" height="4" rx="2" fill="#00bfff" opacity="0.4"/>
+  <!-- Servings -->
+  <rect x="175" y="200" width="50" height="20" rx="4" fill="#00bfff"/>
+  <text x="200" y="214" fill="#0f0f1a" font-size="8" font-weight="bold" font-family="sans-serif" text-anchor="middle">60 SRV</text>
+  <!-- Lid -->
+  <rect x="168" y="50" width="64" height="14" rx="7" fill="#0a1a30"/>
+  <!-- Drop icons -->
+  <path d="M310 120 Q315 105 320 120 Q320 128 315 130 Q310 128 310 120Z" fill="#00bfff" opacity="0.3"/>
+  <path d="M330 140 Q333 130 336 140 Q336 146 333 147 Q330 146 330 140Z" fill="#00bfff" opacity="0.2"/>
+</svg>

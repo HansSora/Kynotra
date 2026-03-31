@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" rx="8" fill="#1a1a2e"/>
+  <!-- Container -->
+  <rect x="140" y="45" width="120" height="200" rx="10" fill="#1a1a00"/>
+  <rect x="145" y="50" width="110" height="190" rx="8" fill="#2a2a00"/>
+  <!-- Label -->
+  <rect x="152" y="75" width="96" height="100" rx="4" fill="#333300"/>
+  <!-- Fish oil capsule icon -->
+  <ellipse cx="200" cy="105" rx="20" ry="10" fill="#daa520" opacity="0.8"/>
+  <ellipse cx="200" cy="105" rx="18" ry="8" fill="#f0c060" opacity="0.6"/>
+  <text x="200" y="130" fill="#f0c060" font-size="10" font-weight="bold" font-family="sans-serif" text-anchor="middle">OMEGA-3</text>
+  <text x="200" y="145" fill="#fff" font-size="8" font-family="sans-serif" text-anchor="middle">FISH OIL</text>
+  <text x="200" y="162" fill="#aaa" font-size="7" font-family="sans-serif" text-anchor="middle">1000mg EPA/DHA</text>
+  <!-- Serving count -->
+  <rect x="170" y="190" width="60" height="20" rx="4" fill="#daa520"/>
+  <text x="200" y="204" fill="#0f0f1a" font-size="8" font-weight="bold" font-family="sans-serif" text-anchor="middle">180 CAPS</text>
+  <!-- Lid -->
+  <rect x="155" y="43" width="90" height="14" rx="7" fill="#333"/>
+  <!-- Capsule decorations -->
+  <ellipse cx="310" cy="120" rx="12" ry="6" fill="#daa520" opacity="0.2" transform="rotate(30 310 120)"/>
+  <ellipse cx="90" cy="180" rx="12" ry="6" fill="#daa520" opacity="0.15" transform="rotate(-20 90 180)"/>
+</svg>

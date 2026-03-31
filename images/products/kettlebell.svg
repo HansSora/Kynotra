@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" rx="8" fill="#1a1a2e"/>
+  <!-- Kettlebell body -->
+  <circle cx="200" cy="185" r="70" fill="#444"/>
+  <circle cx="200" cy="185" r="65" fill="#555"/>
+  <!-- Flat bottom -->
+  <rect x="155" y="240" width="90" height="10" rx="3" fill="#444"/>
+  <!-- Handle -->
+  <path d="M155 120 Q155 60 200 55 Q245 60 245 120" fill="none" stroke="#444" stroke-width="16" stroke-linecap="round"/>
+  <path d="M155 120 Q155 65 200 60 Q245 65 245 120" fill="none" stroke="#555" stroke-width="12" stroke-linecap="round"/>
+  <!-- Weight text -->
+  <text x="200" y="195" fill="#1a1a2e" font-size="28" font-weight="bold" font-family="sans-serif" text-anchor="middle">24</text>
+  <text x="200" y="215" fill="#1a1a2e" font-size="12" font-weight="bold" font-family="sans-serif" text-anchor="middle">KG</text>
+  <!-- Shine -->
+  <ellipse cx="175" cy="165" rx="15" ry="25" fill="rgba(255,255,255,0.06)" transform="rotate(-20 175 165)"/>
+</svg>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" rx="8" fill="#1a1a2e"/>
+  <!-- Container -->
+  <rect x="140" y="45" width="120" height="195" rx="10" fill="#0a0a1a"/>
+  <rect x="145" y="50" width="110" height="185" rx="8" fill="#111"/>
+  <!-- Label -->
+  <rect x="152" y="75" width="96" height="100" rx="4" fill="#1a0020"/>
+  <!-- Lightning bolts -->
+  <path d="M185 82 L195 98 L188 98 L198 118" stroke="#ff6b00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M205 82 L215 98 L208 98 L218 118" stroke="#ff6b00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <text x="200" y="140" fill="#ff6b00" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="middle">PRE-WORKOUT</text>
+  <text x="200" y="155" fill="#00e60a" font-size="8" font-weight="bold" font-family="sans-serif" text-anchor="middle">KYNOTRA</text>
+  <text x="200" y="168" fill="#aaa" font-size="7" font-family="sans-serif" text-anchor="middle">FRUIT PUNCH • 30 SRV</text>
+  <!-- Glow effect -->
+  <ellipse cx="200" cy="100" rx="40" ry="30" fill="#ff6b00" opacity="0.06"/>
+  <!-- Lid -->
+  <rect x="155" y="42" width="90" height="16" rx="8" fill="#222"/>
+  <!-- Energy particles -->
+  <circle cx="120" cy="80" r="2" fill="#ff6b00" opacity="0.4"/>
+  <circle cx="290" cy="120" r="3" fill="#ff6b00" opacity="0.3"/>
+  <circle cx="310" cy="90" r="1.5" fill="#ff6b00" opacity="0.5"/>
+</svg>

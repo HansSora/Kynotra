@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" rx="8" fill="#1a1a2e"/>
+  <!-- Bar -->
+  <rect x="40" y="138" width="320" height="10" rx="5" fill="#888"/>
+  <rect x="42" y="139" width="160" height="3" rx="1.5" fill="rgba(255,255,255,0.1)"/>
+  <!-- Knurl marks -->
+  <rect x="120" y="136" width="40" height="14" rx="2" fill="#777" stroke="#999" stroke-width="0.5"/>
+  <rect x="240" y="136" width="40" height="14" rx="2" fill="#777" stroke="#999" stroke-width="0.5"/>
+  <!-- Left plates -->
+  <rect x="55" y="95" width="15" height="96" rx="3" fill="#e63946"/>
+  <rect x="38" y="105" width="15" height="76" rx="3" fill="#457b9d"/>
+  <rect x="23" y="115" width="13" height="56" rx="3" fill="#00e60a"/>
+  <!-- Right plates -->
+  <rect x="330" y="95" width="15" height="96" rx="3" fill="#e63946"/>
+  <rect x="347" y="105" width="15" height="76" rx="3" fill="#457b9d"/>
+  <rect x="364" y="115" width="13" height="56" rx="3" fill="#00e60a"/>
+  <!-- Collars -->
+  <rect x="72" y="130" width="12" height="26" rx="2" fill="#666"/>
+  <rect x="316" y="130" width="12" height="26" rx="2" fill="#666"/>
+  <!-- Weight text -->
+  <text x="200" y="260" fill="#666" font-size="12" font-family="sans-serif" text-anchor="middle">OLYMPIC BARBELL • 20KG / 45LBS</text>
+</svg>

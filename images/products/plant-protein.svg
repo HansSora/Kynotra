@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" rx="8" fill="#1a1a2e"/>
+  <!-- Container -->
+  <rect x="140" y="45" width="120" height="200" rx="10" fill="#0a1a0a"/>
+  <rect x="145" y="50" width="110" height="190" rx="8" fill="#0f2a0f"/>
+  <!-- Label -->
+  <rect x="152" y="75" width="96" height="100" rx="4" fill="#1a4a1a"/>
+  <!-- Leaf icon -->
+  <path d="M195 95 Q200 80 215 90 Q210 105 195 95Z" fill="#00e60a"/>
+  <path d="M205 85 Q200 95 195 95" fill="none" stroke="#00e60a" stroke-width="1"/>
+  <text x="200" y="118" fill="#fff" font-size="10" font-weight="bold" font-family="sans-serif" text-anchor="middle">PLANT</text>
+  <text x="200" y="132" fill="#00e60a" font-size="12" font-weight="bold" font-family="sans-serif" text-anchor="middle">PROTEIN</text>
+  <text x="200" y="148" fill="#aaa" font-size="7" font-family="sans-serif" text-anchor="middle">PEA + RICE BLEND</text>
+  <text x="200" y="165" fill="#00e60a" font-size="8" font-family="sans-serif" text-anchor="middle">VANILLA • 2 LBS</text>
+  <!-- Weight badge -->
+  <rect x="168" y="190" width="64" height="20" rx="4" fill="#00e60a"/>
+  <text x="200" y="204" fill="#0f0f1a" font-size="9" font-weight="bold" font-family="sans-serif" text-anchor="middle">25g / SRV</text>
+  <!-- Lid -->
+  <rect x="155" y="43" width="90" height="14" rx="7" fill="#1a3a1a"/>
+</svg>

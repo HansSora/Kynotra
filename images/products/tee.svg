@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" rx="8" fill="#1a1a2e"/>
+  <!-- T-shirt shape -->
+  <path d="M140 80 L120 100 L100 95 L110 130 L145 120 L145 240 L255 240 L255 120 L290 130 L300 95 L280 100 L260 80 L230 95 Q200 105 170 95Z" fill="#111"/>
+  <!-- Collar -->
+  <path d="M170 95 Q200 108 230 95" fill="none" stroke="#222" stroke-width="2"/>
+  <!-- Logo -->
+  <text x="200" y="175" fill="#00e60a" font-size="16" font-weight="bold" font-family="sans-serif" text-anchor="middle" letter-spacing="3">KYNOTRA</text>
+  <!-- Sleeve seams -->
+  <line x1="145" y1="120" x2="140" y2="80" stroke="#222" stroke-width="1"/>
+  <line x1="255" y1="120" x2="260" y2="80" stroke="#222" stroke-width="1"/>
+  <!-- Fabric texture lines -->
+  <line x1="160" y1="130" x2="160" y2="235" stroke="#1a1a1a" stroke-width="0.5" opacity="0.5"/>
+  <line x1="180" y1="125" x2="180" y2="235" stroke="#1a1a1a" stroke-width="0.5" opacity="0.5"/>
+  <line x1="200" y1="108" x2="200" y2="235" stroke="#1a1a1a" stroke-width="0.5" opacity="0.5"/>
+  <line x1="220" y1="125" x2="220" y2="235" stroke="#1a1a1a" stroke-width="0.5" opacity="0.5"/>
+  <line x1="240" y1="130" x2="240" y2="235" stroke="#1a1a1a" stroke-width="0.5" opacity="0.5"/>
+</svg>

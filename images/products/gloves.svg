@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" rx="8" fill="#1a1a2e"/>
+  <!-- Left glove -->
+  <path d="M80 120 L80 220 Q80 240 100 240 L150 240 Q170 240 170 220 L170 120 Q170 100 150 90 L130 80 Q110 80 100 90Z" fill="#111"/>
+  <rect x="85" y="125" width="80" height="60" rx="6" fill="#1a1a1a"/>
+  <!-- Padding dots -->
+  <circle cx="105" cy="145" r="6" fill="#222"/>
+  <circle cx="125" cy="145" r="6" fill="#222"/>
+  <circle cx="145" cy="145" r="6" fill="#222"/>
+  <circle cx="115" cy="165" r="6" fill="#222"/>
+  <circle cx="135" cy="165" r="6" fill="#222"/>
+  <!-- Thumb -->
+  <path d="M80 140 Q60 140 60 160 Q60 175 75 175 L80 175" fill="#111"/>
+  <!-- Wrist strap -->
+  <rect x="82" y="200" width="86" height="18" rx="3" fill="#00e60a"/>
+  <text x="125" y="213" fill="#0f0f1a" font-size="7" font-weight="bold" font-family="sans-serif" text-anchor="middle">KYNOTRA</text>
+  <!-- Right glove -->
+  <path d="M230 120 L230 220 Q230 240 250 240 L300 240 Q320 240 320 220 L320 120 Q320 100 300 90 L280 80 Q260 80 250 90Z" fill="#111"/>
+  <rect x="235" y="125" width="80" height="60" rx="6" fill="#1a1a1a"/>
+  <circle cx="255" cy="145" r="6" fill="#222"/>
+  <circle cx="275" cy="145" r="6" fill="#222"/>
+  <circle cx="295" cy="145" r="6" fill="#222"/>
+  <circle cx="265" cy="165" r="6" fill="#222"/>
+  <circle cx="285" cy="165" r="6" fill="#222"/>
+  <path d="M320 140 Q340 140 340 160 Q340 175 325 175 L320 175" fill="#111"/>
+  <rect x="232" y="200" width="86" height="18" rx="3" fill="#00e60a"/>
+  <text x="275" y="213" fill="#0f0f1a" font-size="7" font-weight="bold" font-family="sans-serif" text-anchor="middle">KYNOTRA</text>
+</svg>

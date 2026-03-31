@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" rx="8" fill="#1a1a2e"/>
+  <!-- Belt shape - curved -->
+  <path d="M60 140 Q60 100 200 90 Q340 100 340 140 Q340 180 200 190 Q60 180 60 140Z" fill="#6b3a1f"/>
+  <path d="M65 140 Q65 105 200 95 Q335 105 335 140 Q335 175 200 185 Q65 175 65 140Z" fill="#8b4c2a"/>
+  <!-- Stitching -->
+  <path d="M75 140 Q75 110 200 100 Q325 110 325 140" fill="none" stroke="#5a2d0e" stroke-width="1" stroke-dasharray="4,4"/>
+  <path d="M75 140 Q75 170 200 180 Q325 170 325 140" fill="none" stroke="#5a2d0e" stroke-width="1" stroke-dasharray="4,4"/>
+  <!-- Buckle -->
+  <rect x="60" y="118" width="40" height="44" rx="4" fill="#888"/>
+  <rect x="65" y="123" width="30" height="34" rx="2" fill="#666"/>
+  <rect x="72" y="128" width="16" height="24" rx="1" fill="#1a1a2e"/>
+  <!-- Prong -->
+  <rect x="96" y="136" width="15" height="4" rx="2" fill="#999"/>
+  <circle cx="97" cy="138" r="3" fill="#888"/>
+  <!-- Belt holes -->
+  <circle cx="200" cy="140" r="4" fill="#5a2d0e"/>
+  <circle cx="225" cy="140" r="4" fill="#5a2d0e"/>
+  <circle cx="250" cy="140" r="4" fill="#5a2d0e"/>
+  <circle cx="275" cy="140" r="4" fill="#5a2d0e"/>
+  <circle cx="300" cy="140" r="4" fill="#00e60a" opacity="0.6"/>
+  <!-- Leather grain -->
+  <text x="200" y="260" fill="#666" font-size="10" font-family="sans-serif" text-anchor="middle">FULL GRAIN LEATHER • 10MM</text>
+</svg>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" rx="8" fill="#1a1a2e"/>
+  <!-- Container -->
+  <rect x="130" y="40" width="140" height="200" rx="12" fill="#1a0a00"/>
+  <rect x="135" y="45" width="130" height="190" rx="10" fill="#2a1500"/>
+  <!-- Label -->
+  <rect x="145" y="70" width="110" height="100" rx="6" fill="#c4944a"/>
+  <rect x="148" y="73" width="104" height="94" rx="4" fill="#daa520"/>
+  <!-- Brand text -->
+  <text x="200" y="100" fill="#1a0a00" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="middle">GOLD STANDARD</text>
+  <text x="200" y="118" fill="#1a0a00" font-size="16" font-weight="bold" font-family="sans-serif" text-anchor="middle">100% WHEY</text>
+  <text x="200" y="135" fill="#1a0a00" font-size="10" font-family="sans-serif" text-anchor="middle">PROTEIN</text>
+  <text x="200" y="155" fill="#fff" font-size="9" font-family="sans-serif" text-anchor="middle" opacity="0.8">DOUBLE RICH CHOCOLATE</text>
+  <!-- Weight -->
+  <rect x="165" y="185" width="70" height="24" rx="4" fill="#00e60a"/>
+  <text x="200" y="202" fill="#0f0f1a" font-size="12" font-weight="bold" font-family="sans-serif" text-anchor="middle">5 LBS</text>
+  <!-- Lid -->
+  <rect x="150" y="40" width="100" height="16" rx="8" fill="#333"/>
+  <!-- Scoop icon -->
+  <path d="M280 200 Q290 170 310 180 L305 210 Q295 215 285 210Z" fill="#daa520" opacity="0.5"/>
+</svg>
