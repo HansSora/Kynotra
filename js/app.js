@@ -15,6 +15,9 @@
     if (!href || href.startsWith('#') || href.startsWith('http') || href.startsWith('mailto:')
         || href.startsWith('tel:') || href.startsWith('javascript:') || link.target === '_blank') return;
 
+    // Skip cart icon when cart sidebar is on this page
+    if (link.classList.contains('nav-cart') && document.getElementById('cartSidebar')) return;
+
     e.preventDefault();
     document.body.classList.add('page-exit');
 
