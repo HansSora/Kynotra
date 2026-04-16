@@ -2,12 +2,46 @@
   <defs>
     <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#00e60a"/>
-      <stop offset="100%" stop-color="#33cc2e"/>
+      <stop offset="100%" stop-color="#1fa50a"/>
     </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00e60a" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#1fa50a" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="shieldClip">
+      <path d="M32 2 L58 12 L58 38 Q58 52 32 62 Q6 52 6 38 L6 12 Z"/>
+    </clipPath>
   </defs>
-  <polygon points="32,2 60,17 60,47 32,62 4,47 4,17" fill="#1a1a2e" stroke="url(#g)" stroke-width="2"/>
-  <rect x="18" y="16" width="5" height="32" rx="1" fill="url(#g)"/>
-  <polygon points="24,32 24,28 42,16 44,20" fill="url(#g)"/>
-  <polygon points="24,32 24,36 44,48 46,44" fill="url(#g)"/>
-  <line x1="29" y1="26" x2="36" y2="38" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
+
+  <!-- Outer glow -->
+  <path d="M32 2 L58 12 L58 38 Q58 52 32 62 Q6 52 6 38 L6 12 Z" fill="url(#glow)"/>
+
+  <!-- Shield background -->
+  <path d="M32 4 L56 13 L56 37.5 Q56 50.5 32 60 Q8 50.5 8 37.5 L8 13 Z" fill="#12122a"/>
+
+  <!-- Shield border -->
+  <path d="M32 4 L56 13 L56 37.5 Q56 50.5 32 60 Q8 50.5 8 37.5 L8 13 Z" fill="none" stroke="url(#g)" stroke-width="1.8"/>
+
+  <!-- Accent diagonal slash across shield -->
+  <line x1="46" y1="10" x2="18" y2="56" stroke="url(#g)" stroke-width="0.6" opacity="0.15" clip-path="url(#shieldClip)"/>
+
+  <!-- K letterform — bold geometric -->
+  <!-- Vertical stem -->
+  <rect x="19" y="17" width="6.5" height="30" rx="1.2" fill="url(#g)"/>
+
+  <!-- Upper diagonal arm -->
+  <polygon points="25.5,31 25.5,27.5 43,16 45.5,20.5" fill="url(#g)"/>
+
+  <!-- Lower diagonal leg -->
+  <polygon points="25.5,33 25.5,36.5 45.5,48 43,52" fill="url(#g)"/>
+
+  <!-- Inner cutout details for depth -->
+  <polygon points="25.5,31.2 25.5,29.8 37,22 38.2,23.5" fill="#12122a" opacity="0.35"/>
+  <polygon points="25.5,33.5 25.5,34.8 38.5,44 37.3,42.2" fill="#12122a" opacity="0.35"/>
+
+  <!-- Small accent dot -->
+  <circle cx="44.5" cy="18" r="1.5" fill="url(#g)" opacity="0.7"/>
+
+  <!-- Subtle highlight on stem -->
+  <rect x="19.8" y="18" width="1.8" height="28" rx="0.9" fill="#fff" opacity="0.08"/>
 </svg>

@@ -2,6 +2,13 @@
    Kynotra - Main JavaScript
    ============================================ */
 
+// Resolve base path from the script src (handles pages at any folder depth)
+const _base = (function() {
+  const s = document.querySelector('script[src$="app.js"]');
+  if (!s) return '';
+  return s.getAttribute('src').replace(/js\/app\.js$/, '');
+})();
+
 // ==========================================
 // PAGE TRANSITIONS
 // ==========================================
@@ -15,8 +22,8 @@
     if (!href || href.startsWith('#') || href.startsWith('http') || href.startsWith('mailto:')
         || href.startsWith('tel:') || href.startsWith('javascript:') || link.target === '_blank') return;
 
-    // Skip cart icon when cart sidebar is on this page
-    if (link.classList.contains('nav-cart') && document.getElementById('cartSidebar')) return;
+    // Skip cart icon — handled by cart popup
+    if (link.classList.contains('nav-cart')) return;
 
     e.preventDefault();
     document.body.classList.add('page-exit');
@@ -372,7 +379,7 @@ function generateProgram() {
   html += `
       </div>
       <div style="margin-top: var(--space-2xl); text-align: center;">
-        <a href="signup.html" class="btn btn-primary">Save This Program — Sign Up Free →</a>
+        <a href="${_base}pages/auth/signup.html" class="btn btn-primary">Save This Program — Sign Up Free →</a>
       </div>
     </div>
   `;
@@ -659,9 +666,22 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ==========================================
-// SHOPPING CART
+// SHOPPING CART & CHECKOUT
 // ==========================================
 let cart = JSON.parse(localStorage.getItem('Kynotra_cart') || '[]');
+let checkoutStep = 0; // 0=cart, 1=shipping, 2=payment, 3=confirmation
+let appliedPromo = null;
+
+const PROMO_CODES = {
+  'KYNOTRA20': { type: 'percent', value: 20, label: '20% off' },
+  'FIT10':    { type: 'percent', value: 10, label: '10% off' },
+  'SHIP0':    { type: 'shipping', value: 0,  label: 'Free shipping' },
+  'SAVE5':    { type: 'flat',    value: 5,   label: '$5 off' },
+};
+
+const TAX_RATE = 0.08;
+const FREE_SHIPPING_THRESHOLD = 75;
+const SHIPPING_COST = 7.99;
 
 function addToCart(name, price) {
   const existing = cart.find(item => item.name === name);
@@ -677,7 +697,7 @@ function addToCart(name, price) {
 function removeFromCart(index) {
   cart.splice(index, 1);
   saveCart();
-  renderCart();
+  renderCartView();
 }
 
 function updateCartQty(index, delta) {
@@ -686,7 +706,7 @@ function updateCartQty(index, delta) {
     cart.splice(index, 1);
   }
   saveCart();
-  renderCart();
+  renderCartView();
 }
 
 function saveCart() {
@@ -700,69 +720,585 @@ function updateCartCount() {
   countEls.forEach(el => el.textContent = total);
 }
 
-function toggleCart() {
-  const sidebar = document.getElementById('cartSidebar');
-  const overlay = document.getElementById('cartOverlay');
-  if (!sidebar || !overlay) return;
+function getCartTotals() {
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  let discount = 0;
+  let shippingFree = subtotal >= FREE_SHIPPING_THRESHOLD;
 
-  const isOpen = sidebar.style.display === 'block';
-  sidebar.style.display = isOpen ? 'none' : 'block';
-  overlay.style.display = isOpen ? 'none' : 'block';
+  if (appliedPromo) {
+    if (appliedPromo.type === 'percent') discount = subtotal * (appliedPromo.value / 100);
+    else if (appliedPromo.type === 'flat') discount = Math.min(appliedPromo.value, subtotal);
+    else if (appliedPromo.type === 'shipping') shippingFree = true;
+  }
 
-  if (!isOpen) renderCart();
+  const afterDiscount = Math.max(subtotal - discount, 0);
+  const shipping = shippingFree ? 0 : SHIPPING_COST;
+  const tax = Math.round(afterDiscount * TAX_RATE * 100) / 100;
+  const total = Math.round((afterDiscount + shipping + tax) * 100) / 100;
+
+  return { subtotal, discount, afterDiscount, shipping, shippingFree, tax, total };
 }
 
-function renderCart() {
-  const itemsEl = document.getElementById('cartItems');
-  const totalEl = document.getElementById('cartTotal');
-  if (!itemsEl || !totalEl) return;
+// ---- Popup injection ----
+function ensureCartPopup() {
+  if (document.getElementById('cartSidebar')) return;
+  const popup = document.createElement('div');
+  popup.id = 'cartSidebar';
+  popup.className = 'cart-popup';
+  popup.innerHTML = `
+    <div class="cart-popup-header">
+      <h3 id="cartPopupTitle">Your Cart</h3>
+      <button onclick="closeCart()" class="cart-popup-close">✕</button>
+    </div>
+    <div class="cart-popup-body" id="cartPopupBody"></div>
+    <div class="cart-popup-footer" id="cartPopupFooter"></div>
+  `;
+  const overlay = document.createElement('div');
+  overlay.id = 'cartOverlay';
+  overlay.className = 'cart-overlay';
+  overlay.onclick = closeCart;
+  document.body.appendChild(overlay);
+  document.body.appendChild(popup);
+}
+
+function toggleCart() {
+  ensureCartPopup();
+  const sidebar = document.getElementById('cartSidebar');
+  const overlay = document.getElementById('cartOverlay');
+
+  const isOpen = sidebar.style.display === 'flex';
+  if (isOpen) {
+    closeCart();
+  } else {
+    checkoutStep = 0;
+    sidebar.classList.remove('checkout-mode');
+    sidebar.style.display = 'flex';
+    overlay.style.display = 'block';
+    renderCartView();
+  }
+}
+
+function closeCart() {
+  const sidebar = document.getElementById('cartSidebar');
+  const overlay = document.getElementById('cartOverlay');
+  if (sidebar) {
+    sidebar.style.display = 'none';
+    sidebar.classList.remove('checkout-mode');
+  }
+  if (overlay) overlay.style.display = 'none';
+  checkoutStep = 0;
+}
+
+// ---- Step 0: Cart View ----
+function renderCartView() {
+  const body = document.getElementById('cartPopupBody');
+  const footer = document.getElementById('cartPopupFooter');
+  const title = document.getElementById('cartPopupTitle');
+  if (!body || !footer) return;
+
+  title.textContent = 'Your Cart';
+  document.getElementById('cartSidebar').classList.remove('checkout-mode');
 
   if (cart.length === 0) {
-    itemsEl.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: var(--space-2xl) 0;">Your cart is empty</p>';
-    totalEl.innerHTML = '';
+    body.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: var(--space-2xl) 0;">Your cart is empty</p>';
+    footer.innerHTML = '';
     return;
   }
 
-  let html = '';
-  let total = 0;
+  const safeName = (name) => typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(name) : name.replace(/</g, '&lt;');
 
+  let itemsHTML = '<div class="cart-popup-items">';
   cart.forEach((item, i) => {
-    const itemTotal = item.price * item.qty;
-    total += itemTotal;
-    html += `
-      <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-md) 0; border-bottom: 1px solid var(--border-color);">
-        <div>
-          <h4 style="font-size: 0.9rem; margin-bottom: var(--space-xs);">${DOMPurify ? DOMPurify.sanitize(item.name) : item.name}</h4>
-          <p style="color: var(--accent); font-size: 0.85rem;">$${item.price.toFixed(2)}</p>
+    itemsHTML += `
+      <div class="cart-item">
+        <div class="cart-item-info">
+          <h4>${safeName(item.name)}</h4>
+          <p>$${item.price.toFixed(2)}</p>
         </div>
-        <div style="display: flex; align-items: center; gap: var(--space-sm);">
-          <button onclick="updateCartQty(${i}, -1)" style="width: 28px; height: 28px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-secondary); cursor: pointer; background: none;">−</button>
-          <span style="font-size: 0.9rem; min-width: 20px; text-align: center;">${item.qty}</span>
-          <button onclick="updateCartQty(${i}, 1)" style="width: 28px; height: 28px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-secondary); cursor: pointer; background: none;">+</button>
-          <button onclick="removeFromCart(${i})" style="color: var(--text-muted); cursor: pointer; margin-left: var(--space-sm); background: none; border: none;">✕</button>
+        <div class="cart-item-actions">
+          <button class="cart-qty-btn" onclick="updateCartQty(${i}, -1)">−</button>
+          <span style="font-size: 0.88rem; min-width: 20px; text-align: center;">${item.qty}</span>
+          <button class="cart-qty-btn" onclick="updateCartQty(${i}, 1)">+</button>
+          <button class="cart-remove-btn" onclick="removeFromCart(${i})">✕</button>
         </div>
+      </div>`;
+  });
+  itemsHTML += '</div>';
+
+  const t = getCartTotals();
+
+  let promoHTML = '';
+  if (appliedPromo) {
+    promoHTML = `
+      <div class="promo-applied">
+        <span>✓ ${appliedPromo.code} — ${appliedPromo.label}</span>
+        <button onclick="removePromo()">✕</button>
+      </div>`;
+  } else {
+    promoHTML = `
+      <div class="promo-row">
+        <input type="text" id="promoInput" placeholder="Promo code" maxlength="20">
+        <button class="btn btn-sm btn-outline" onclick="applyPromo()">Apply</button>
+      </div>`;
+  }
+
+  let summaryHTML = `
+    <div class="cart-popup-total">
+      <div class="checkout-summary-row"><span>Subtotal</span><span>$${t.subtotal.toFixed(2)}</span></div>
+      ${t.discount > 0 ? `<div class="checkout-summary-row" style="color: var(--success);"><span>Discount</span><span>−$${t.discount.toFixed(2)}</span></div>` : ''}
+      <div class="checkout-summary-row"><span>Shipping</span><span>${t.shippingFree ? '<span style="color: var(--success);">Free</span>' : '$' + t.shipping.toFixed(2)}</span></div>
+      <div class="checkout-summary-row"><span>Tax (8%)</span><span>$${t.tax.toFixed(2)}</span></div>
+      <div class="checkout-summary-row total-row"><span>Total</span><span>$${t.total.toFixed(2)}</span></div>
+      ${!t.shippingFree && !appliedPromo ? `<p style="color: var(--text-muted); font-size: 0.78rem; margin-top: 4px;">Add $${(FREE_SHIPPING_THRESHOLD - t.subtotal).toFixed(2)} more for free shipping</p>` : ''}
+    </div>`;
+
+  body.innerHTML = itemsHTML + promoHTML + summaryHTML;
+  footer.innerHTML = `<button class="btn btn-primary btn-block" onclick="startCheckout()">Proceed to Checkout</button>`;
+}
+
+// ---- Promo Codes ----
+function applyPromo() {
+  const input = document.getElementById('promoInput');
+  if (!input) return;
+  const code = input.value.trim().toUpperCase();
+  const promo = PROMO_CODES[code];
+  if (!promo) {
+    showToast('Invalid promo code', 'error');
+    input.classList.add('invalid');
+    return;
+  }
+  appliedPromo = { ...promo, code };
+  showToast(`Code ${code} applied!`, 'success');
+  renderCartView();
+}
+
+function removePromo() {
+  appliedPromo = null;
+  renderCartView();
+}
+
+// ---- Step 1: Shipping ----
+function startCheckout() {
+  if (cart.length === 0) return;
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || 'null');
+  if (!user) {
+    showToast('Please log in to checkout', 'error');
+    return;
+  }
+  checkoutStep = 1;
+  renderShippingStep();
+}
+
+function renderCheckoutSteps(active) {
+  const steps = [
+    { num: 1, label: 'Shipping' },
+    { num: 2, label: 'Payment' },
+    { num: 3, label: 'Confirm' },
+  ];
+  return `<div class="checkout-steps">${steps.map((s, i) => {
+    let cls = '';
+    if (s.num < active) cls = 'completed';
+    else if (s.num === active) cls = 'active';
+    return `<div class="checkout-step ${cls}">
+      <span class="step-num">${s.num < active ? '✓' : s.num}</span>${s.label}
+    </div>${i < steps.length - 1 ? '<span class="checkout-step-sep">›</span>' : ''}`;
+  }).join('')}</div>`;
+}
+
+function renderShippingStep() {
+  const sidebar = document.getElementById('cartSidebar');
+  const body = document.getElementById('cartPopupBody');
+  const footer = document.getElementById('cartPopupFooter');
+  const title = document.getElementById('cartPopupTitle');
+  if (!body) return;
+
+  sidebar.classList.add('checkout-mode');
+  title.textContent = 'Checkout';
+
+  const saved = JSON.parse(localStorage.getItem('Kynotra_shipping') || 'null');
+
+  body.innerHTML = renderCheckoutSteps(1) + `
+    <div class="checkout-form-group">
+      <label>Full Name *</label>
+      <input type="text" id="shipName" placeholder="John Doe" value="${saved?.name || ''}" maxlength="100">
+    </div>
+    <div class="checkout-form-group">
+      <label>Email *</label>
+      <input type="email" id="shipEmail" placeholder="john@example.com" value="${saved?.email || ''}" maxlength="200">
+    </div>
+    <div class="checkout-form-group">
+      <label>Phone</label>
+      <input type="tel" id="shipPhone" placeholder="(555) 123-4567" value="${saved?.phone || ''}" maxlength="20">
+    </div>
+    <div class="checkout-form-group">
+      <label>Address *</label>
+      <input type="text" id="shipAddress" placeholder="123 Main St, Apt 4" value="${saved?.address || ''}" maxlength="300">
+    </div>
+    <div class="checkout-form-row">
+      <div class="checkout-form-group">
+        <label>City *</label>
+        <input type="text" id="shipCity" placeholder="New York" value="${saved?.city || ''}" maxlength="100">
       </div>
-    `;
+      <div class="checkout-form-group">
+        <label>State *</label>
+        <select id="shipState">
+          <option value="">Select</option>
+          ${US_STATES.map(s => `<option value="${s}" ${saved?.state === s ? 'selected' : ''}>${s}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="checkout-form-row">
+      <div class="checkout-form-group">
+        <label>ZIP Code *</label>
+        <input type="text" id="shipZip" placeholder="10001" value="${saved?.zip || ''}" maxlength="10">
+      </div>
+      <div class="checkout-form-group">
+        <label>Country</label>
+        <input type="text" id="shipCountry" value="United States" disabled>
+      </div>
+    </div>
+  `;
+
+  footer.innerHTML = `
+    <div class="checkout-nav">
+      <button class="btn-back" onclick="backToCart()">← Cart</button>
+      <button class="btn btn-primary" style="flex:1;" onclick="goToPayment()">Continue to Payment</button>
+    </div>`;
+}
+
+function backToCart() {
+  checkoutStep = 0;
+  renderCartView();
+}
+
+function validateShipping() {
+  const fields = {
+    name: document.getElementById('shipName'),
+    email: document.getElementById('shipEmail'),
+    address: document.getElementById('shipAddress'),
+    city: document.getElementById('shipCity'),
+    state: document.getElementById('shipState'),
+    zip: document.getElementById('shipZip'),
+  };
+
+  let valid = true;
+  Object.values(fields).forEach(f => f.classList.remove('invalid'));
+
+  if (!fields.name.value.trim()) { fields.name.classList.add('invalid'); valid = false; }
+  if (!fields.email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email.value)) { fields.email.classList.add('invalid'); valid = false; }
+  if (!fields.address.value.trim()) { fields.address.classList.add('invalid'); valid = false; }
+  if (!fields.city.value.trim()) { fields.city.classList.add('invalid'); valid = false; }
+  if (!fields.state.value) { fields.state.classList.add('invalid'); valid = false; }
+  if (!fields.zip.value.trim() || !/^\d{5}(-\d{4})?$/.test(fields.zip.value.trim())) { fields.zip.classList.add('invalid'); valid = false; }
+
+  if (valid) {
+    const data = {
+      name: fields.name.value.trim(),
+      email: fields.email.value.trim(),
+      phone: document.getElementById('shipPhone')?.value.trim() || '',
+      address: fields.address.value.trim(),
+      city: fields.city.value.trim(),
+      state: fields.state.value,
+      zip: fields.zip.value.trim(),
+    };
+    localStorage.setItem('Kynotra_shipping', JSON.stringify(data));
+    return data;
+  }
+  return null;
+}
+
+function goToPayment() {
+  const shipping = validateShipping();
+  if (!shipping) {
+    showToast('Please fill in all required fields', 'error');
+    return;
+  }
+  checkoutStep = 2;
+  renderPaymentStep();
+}
+
+// ---- Step 2: Payment ----
+function renderPaymentStep() {
+  const body = document.getElementById('cartPopupBody');
+  const footer = document.getElementById('cartPopupFooter');
+  if (!body) return;
+
+  const t = getCartTotals();
+
+  body.innerHTML = renderCheckoutSteps(2) + `
+    <div class="card-type-icons">
+      <span class="active">VISA</span>
+      <span>MasterCard</span>
+      <span>AMEX</span>
+    </div>
+    <div class="checkout-form-group">
+      <label>Card Number *</label>
+      <input type="text" id="payCard" placeholder="4242 4242 4242 4242" maxlength="19" oninput="formatCardNumber(this)">
+    </div>
+    <div class="checkout-form-group">
+      <label>Cardholder Name *</label>
+      <input type="text" id="payName" placeholder="Name on card" maxlength="100">
+    </div>
+    <div class="checkout-form-row-3">
+      <div class="checkout-form-group">
+        <label>Expiry *</label>
+        <input type="text" id="payExpiry" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this)">
+      </div>
+      <div class="checkout-form-group">
+        <label>CVC *</label>
+        <input type="text" id="payCVC" placeholder="123" maxlength="4">
+      </div>
+      <div></div>
+    </div>
+
+    <div style="margin-top: var(--space-lg); padding-top: var(--space-md); border-top: 1px solid var(--border-color);">
+      <div class="checkout-summary-row"><span>Subtotal</span><span>$${t.subtotal.toFixed(2)}</span></div>
+      ${t.discount > 0 ? `<div class="checkout-summary-row" style="color:var(--success);"><span>Discount</span><span>−$${t.discount.toFixed(2)}</span></div>` : ''}
+      <div class="checkout-summary-row"><span>Shipping</span><span>${t.shippingFree ? '<span style="color:var(--success);">Free</span>' : '$' + t.shipping.toFixed(2)}</span></div>
+      <div class="checkout-summary-row"><span>Tax</span><span>$${t.tax.toFixed(2)}</span></div>
+      <div class="checkout-summary-row total-row"><span>Total</span><span>$${t.total.toFixed(2)}</span></div>
+    </div>
+
+    <div class="secure-badge">🔒 Secure SSL encrypted payment</div>
+  `;
+
+  footer.innerHTML = `
+    <div class="checkout-nav">
+      <button class="btn-back" onclick="checkoutStep=1; renderShippingStep();">← Shipping</button>
+      <button class="btn btn-primary" style="flex:1;" onclick="goToReview()">Review Order</button>
+    </div>`;
+}
+
+function formatCardNumber(input) {
+  let val = input.value.replace(/\D/g, '').slice(0, 16);
+  input.value = val.replace(/(.{4})/g, '$1 ').trim();
+}
+
+function formatExpiry(input) {
+  let val = input.value.replace(/\D/g, '').slice(0, 4);
+  if (val.length >= 3) val = val.slice(0, 2) + '/' + val.slice(2);
+  input.value = val;
+}
+
+function detectCardType(number) {
+  const n = number.replace(/\s/g, '');
+  if (/^4/.test(n)) return 'VISA';
+  if (/^5[1-5]/.test(n) || /^2[2-7]/.test(n)) return 'MasterCard';
+  if (/^3[47]/.test(n)) return 'AMEX';
+  return null;
+}
+
+function validatePayment() {
+  const card = document.getElementById('payCard');
+  const name = document.getElementById('payName');
+  const expiry = document.getElementById('payExpiry');
+  const cvc = document.getElementById('payCVC');
+
+  [card, name, expiry, cvc].forEach(f => f.classList.remove('invalid'));
+  let valid = true;
+
+  const cardNum = card.value.replace(/\s/g, '');
+  if (cardNum.length < 13 || cardNum.length > 16 || !/^\d+$/.test(cardNum)) { card.classList.add('invalid'); valid = false; }
+  if (!name.value.trim()) { name.classList.add('invalid'); valid = false; }
+  if (!/^\d{2}\/\d{2}$/.test(expiry.value)) {
+    expiry.classList.add('invalid'); valid = false;
+  } else {
+    const [mm, yy] = expiry.value.split('/').map(Number);
+    if (mm < 1 || mm > 12) { expiry.classList.add('invalid'); valid = false; }
+    const now = new Date();
+    const expDate = new Date(2000 + yy, mm);
+    if (expDate <= now) { expiry.classList.add('invalid'); valid = false; }
+  }
+  if (!/^\d{3,4}$/.test(cvc.value)) { cvc.classList.add('invalid'); valid = false; }
+
+  return valid;
+}
+
+function goToReview() {
+  if (!validatePayment()) {
+    showToast('Please check your payment details', 'error');
+    return;
+  }
+  checkoutStep = 3;
+  renderReviewStep();
+}
+
+// ---- Step 3: Review & Confirm ----
+function renderReviewStep() {
+  const body = document.getElementById('cartPopupBody');
+  const footer = document.getElementById('cartPopupFooter');
+  if (!body) return;
+
+  const t = getCartTotals();
+  const shipping = JSON.parse(localStorage.getItem('Kynotra_shipping') || '{}');
+  const cardNum = (document.getElementById('payCard')?.value || '').replace(/\s/g, '');
+  const lastFour = cardNum.slice(-4);
+  const cardType = detectCardType(cardNum) || 'Card';
+
+  const safeName = (name) => typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(name) : name.replace(/</g, '&lt;');
+
+  let itemsHTML = cart.map(item => `
+    <div class="checkout-summary-row">
+      <span>${safeName(item.name)} × ${item.qty}</span>
+      <span>$${(item.price * item.qty).toFixed(2)}</span>
+    </div>`).join('');
+
+  body.innerHTML = renderCheckoutSteps(3) + `
+    <div style="margin-bottom: var(--space-md);">
+      <h4 style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: var(--space-sm);">Items</h4>
+      ${itemsHTML}
+    </div>
+
+    <div style="margin-bottom: var(--space-md);">
+      ${t.discount > 0 ? `<div class="checkout-summary-row" style="color:var(--success);"><span>Discount (${appliedPromo?.code})</span><span>−$${t.discount.toFixed(2)}</span></div>` : ''}
+      <div class="checkout-summary-row"><span>Shipping</span><span>${t.shippingFree ? '<span style="color:var(--success);">Free</span>' : '$' + t.shipping.toFixed(2)}</span></div>
+      <div class="checkout-summary-row"><span>Tax</span><span>$${t.tax.toFixed(2)}</span></div>
+      <div class="checkout-summary-row total-row"><span>Total</span><span>$${t.total.toFixed(2)}</span></div>
+    </div>
+
+    <div class="order-detail-grid">
+      <dt>Ship To</dt>
+      <dd>${safeName(shipping.name || '')}</dd>
+      <dt>Address</dt>
+      <dd>${safeName(shipping.address || '')}, ${safeName(shipping.city || '')} ${safeName(shipping.state || '')} ${safeName(shipping.zip || '')}</dd>
+      <dt>Email</dt>
+      <dd>${safeName(shipping.email || '')}</dd>
+      <dt>Payment</dt>
+      <dd>${cardType} ···· ${lastFour}</dd>
+    </div>
+
+    <div class="secure-badge">🔒 Your order is secure</div>
+  `;
+
+  footer.innerHTML = `
+    <div class="checkout-nav">
+      <button class="btn-back" onclick="checkoutStep=2; renderPaymentStep();">← Payment</button>
+      <button class="btn btn-primary" style="flex:1;" id="placeOrderBtn" onclick="placeOrder()">Place Order — $${t.total.toFixed(2)}</button>
+    </div>`;
+}
+
+// ---- Place Order ----
+function placeOrder() {
+  const btn = document.getElementById('placeOrderBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Processing...'; }
+
+  const t = getCartTotals();
+  const shipping = JSON.parse(localStorage.getItem('Kynotra_shipping') || '{}');
+
+  // Simulate order processing
+  setTimeout(() => {
+    const orderNum = 'KYN-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+    const orderDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+    // Save order to history
+    const orders = JSON.parse(localStorage.getItem('Kynotra_orders') || '[]');
+    orders.unshift({
+      id: orderNum,
+      date: new Date().toISOString(),
+      items: [...cart],
+      subtotal: t.subtotal,
+      discount: t.discount,
+      shipping: t.shipping,
+      tax: t.tax,
+      total: t.total,
+      promo: appliedPromo?.code || null,
+      shippingInfo: shipping,
+      status: 'Processing',
+    });
+    localStorage.setItem('Kynotra_orders', JSON.stringify(orders));
+
+    // Clear cart
+    cart = [];
+    appliedPromo = null;
+    saveCart();
+
+    renderConfirmation(orderNum, orderDate, t, shipping);
+  }, 1500);
+}
+
+function renderConfirmation(orderNum, orderDate, totals, shipping) {
+  const body = document.getElementById('cartPopupBody');
+  const footer = document.getElementById('cartPopupFooter');
+  const title = document.getElementById('cartPopupTitle');
+  if (!body) return;
+
+  title.textContent = 'Order Placed!';
+
+  body.innerHTML = `
+    <div class="order-confirmed">
+      <div class="order-confirmed-icon">✓</div>
+      <h3>Thank You!</h3>
+      <p>Your order has been placed successfully.</p>
+      <div class="order-number">${orderNum}</div>
+      <div class="order-detail-grid">
+        <dt>Date</dt><dd>${orderDate}</dd>
+        <dt>Total</dt><dd>$${totals.total.toFixed(2)}</dd>
+        <dt>Ship To</dt><dd>${shipping.name || ''}</dd>
+        <dt>Status</dt><dd style="color: var(--accent);">Processing</dd>
+      </div>
+      <p style="margin-top: var(--space-md); font-size: 0.82rem;">A confirmation email will be sent to <strong>${shipping.email || ''}</strong></p>
+    </div>
+  `;
+
+  footer.innerHTML = `
+    <div class="checkout-nav">
+      <button class="btn btn-outline" style="flex:1;" onclick="viewOrderHistory()">Order History</button>
+      <button class="btn btn-primary" style="flex:1;" onclick="closeCart()">Continue Shopping</button>
+    </div>`;
+}
+
+// ---- Order History ----
+function viewOrderHistory() {
+  const body = document.getElementById('cartPopupBody');
+  const footer = document.getElementById('cartPopupFooter');
+  const title = document.getElementById('cartPopupTitle');
+  const sidebar = document.getElementById('cartSidebar');
+  if (!body) return;
+
+  sidebar.classList.add('checkout-mode');
+  title.textContent = 'Order History';
+
+  const orders = JSON.parse(localStorage.getItem('Kynotra_orders') || '[]');
+
+  if (orders.length === 0) {
+    body.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: var(--space-2xl) 0;">No orders yet</p>';
+    footer.innerHTML = `<button class="btn btn-primary btn-block" onclick="backToCart()">Back to Cart</button>`;
+    return;
+  }
+
+  const safeName = (name) => typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(name) : name.replace(/</g, '&lt;');
+
+  let html = '';
+  orders.forEach(order => {
+    const date = new Date(order.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const itemNames = order.items.map(it => safeName(it.name)).join(', ');
+    html += `
+      <div style="padding: var(--space-md); border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: var(--space-sm);">
+        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+          <span style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent);">${order.id}</span>
+          <span style="font-size: 0.78rem; color: var(--text-muted);">${date}</span>
+        </div>
+        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${itemNames}</p>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-weight:600; font-size:0.9rem;">$${order.total.toFixed(2)}</span>
+          <span style="font-size: 0.78rem; padding: 2px 10px; border-radius: var(--radius-full); background: rgba(0,230,10,0.1); color: var(--accent);">${order.status}</span>
+        </div>
+      </div>`;
   });
 
-  itemsEl.innerHTML = html;
-  totalEl.innerHTML = `
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-      <span style="font-size: 1rem; font-weight: 600;">Total</span>
-      <span style="font-family: var(--font-heading); font-size: 1.5rem; color: var(--accent);">$${total.toFixed(2)}</span>
-    </div>
-    ${total >= 75 ? '<p style="color: var(--success); font-size: 0.8rem; margin-top: var(--space-sm);">✓ Free shipping!</p>' : `<p style="color: var(--text-muted); font-size: 0.8rem; margin-top: var(--space-sm);">Add $${(75 - total).toFixed(2)} more for free shipping</p>`}
-  `;
+  body.innerHTML = html;
+  footer.innerHTML = `<button class="btn btn-primary btn-block" onclick="backToCart()">Back to Cart</button>`;
 }
+
+// ---- US States ----
+const US_STATES = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
 
 // Open cart from nav
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.nav-cart').forEach(el => {
     el.addEventListener('click', (e) => {
-      if (document.getElementById('cartSidebar')) {
-        e.preventDefault();
-        toggleCart();
-      }
+      e.preventDefault();
+      toggleCart();
     });
   });
 });
@@ -866,7 +1402,7 @@ function handleLogin(e) {
   localStorage.setItem('Kynotra_user', JSON.stringify(user));
   showToast('Logging in...', 'success');
   setTimeout(() => {
-    window.location.href = 'dashboard.html';
+    window.location.href = _base + 'pages/dashboard/dashboard.html';
   }, 1000);
 }
 
@@ -879,7 +1415,7 @@ function handleSignup(e) {
   localStorage.setItem('Kynotra_user', JSON.stringify(user));
   showToast('Account created! Redirecting...', 'success');
   setTimeout(() => {
-    window.location.href = 'dashboard.html';
+    window.location.href = _base + 'pages/dashboard/dashboard.html';
   }, 1000);
 }
 
@@ -887,7 +1423,7 @@ function handleLogout() {
   localStorage.removeItem('Kynotra_user');
   showToast('Logged out', 'success');
   setTimeout(() => {
-    window.location.href = 'index.html';
+    window.location.href = _base + 'index.html';
   }, 500);
 }
 
@@ -897,8 +1433,8 @@ function initAuth() {
   if (!user || !navActions) return;
 
   // Remove Log In / Start Free buttons
-  const loginBtn = navActions.querySelector('a[href="login.html"]');
-  const signupBtn = navActions.querySelector('a[href="signup.html"]');
+  const loginBtn = navActions.querySelector('a[href$="login.html"]');
+  const signupBtn = navActions.querySelector('a[href$="signup.html"]');
   if (loginBtn) loginBtn.remove();
   if (signupBtn) signupBtn.remove();
 
@@ -930,7 +1466,7 @@ function initAuth() {
       <span class="nav-user-name">${fullName}</span>
     </button>
     <div class="nav-user-dropdown">
-      <a href="dashboard.html">Dashboard</a>
+      <a href="${_base}pages/dashboard/dashboard.html">Dashboard</a>
       <a href="#" onclick="handleLogout(); return false;">Log Out</a>
     </div>
   `;
