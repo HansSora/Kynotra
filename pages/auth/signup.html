@@ -59,22 +59,59 @@
             <p style="font-size: 0.85rem; font-weight: 600; margin-bottom: var(--space-md);">Tell us about your goals:</p>
             <div class="form-group" style="margin-bottom: var(--space-md);">
               <label class="form-label" style="font-size: 0.75rem;">Fitness Goal</label>
-              <select class="form-input form-select" required>
-                <option value="">Select goal...</option>
-                <option value="weight-loss">Weight Loss</option>
-                <option value="muscle-gain">Muscle Gain</option>
-                <option value="strength">Strength Building</option>
-                <option value="maintenance">General Fitness</option>
-              </select>
+              <div class="custom-select" id="signupGoalWrapper">
+                <input type="hidden" id="signupGoal" value="" required>
+                <div class="custom-select-trigger">
+                  <span class="custom-select-value">Select goal...</span>
+                  <svg class="custom-select-arrow" width="12" height="12" viewBox="0 0 12 12">
+                    <path fill="currentColor" d="M6 8L1 3h10z"/>
+                  </svg>
+                </div>
+                <div class="custom-select-options">
+                  <div class="custom-select-option" data-value="weight-loss">
+                    <span class="option-icon">🔥</span>
+                    <span class="option-text">Weight Loss</span>
+                  </div>
+                  <div class="custom-select-option" data-value="muscle-gain">
+                    <span class="option-icon">💪</span>
+                    <span class="option-text">Muscle Gain</span>
+                  </div>
+                  <div class="custom-select-option" data-value="strength">
+                    <span class="option-icon">🏋️</span>
+                    <span class="option-text">Strength Building</span>
+                  </div>
+                  <div class="custom-select-option" data-value="maintenance">
+                    <span class="option-icon">⚖️</span>
+                    <span class="option-text">General Fitness</span>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="form-group" style="margin-bottom: 0;">
               <label class="form-label" style="font-size: 0.75rem;">Experience Level</label>
-              <select class="form-input form-select" required>
-                <option value="">Select level...</option>
-                <option value="beginner">Beginner (0-6 months)</option>
-                <option value="intermediate">Intermediate (6-24 months)</option>
-                <option value="advanced">Advanced (2+ years)</option>
-              </select>
+              <div class="custom-select" id="signupLevelWrapper">
+                <input type="hidden" id="signupLevel" value="" required>
+                <div class="custom-select-trigger">
+                  <span class="custom-select-value">Select level...</span>
+                  <svg class="custom-select-arrow" width="12" height="12" viewBox="0 0 12 12">
+                    <path fill="currentColor" d="M6 8L1 3h10z"/>
+                  </svg>
+                </div>
+                <div class="custom-select-options">
+                  <div class="custom-select-option" data-value="beginner">
+                    <span class="option-icon">🟢</span>
+                    <span class="option-text">Beginner (0-6 months)</span>
+                  </div>
+                  <div class="custom-select-option" data-value="intermediate">
+                    <span class="option-icon">🟡</span>
+                    <span class="option-text">Intermediate (6-24 months)</span>
+                  </div>
+                  <div class="custom-select-option" data-value="advanced">
+                    <span class="option-icon">🔴</span>
+                    <span class="option-text">Advanced (2+ years)</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 

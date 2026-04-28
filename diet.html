@@ -64,10 +64,25 @@
           <div class="grid-2" style="gap: var(--space-lg);">
             <div class="form-group">
               <label class="form-label">Gender</label>
-              <select class="form-input form-select" id="calcGender">
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-              </select>
+              <div class="custom-select has-value" id="calcGenderWrapper">
+                <input type="hidden" id="calcGender" value="male">
+                <div class="custom-select-trigger">
+                  <span class="custom-select-value">Male</span>
+                  <svg class="custom-select-arrow" width="12" height="12" viewBox="0 0 12 12">
+                    <path fill="currentColor" d="M6 8L1 3h10z"/>
+                  </svg>
+                </div>
+                <div class="custom-select-options">
+                  <div class="custom-select-option selected" data-value="male">
+                    <span class="option-icon">♂</span>
+                    <span class="option-text">Male</span>
+                  </div>
+                  <div class="custom-select-option" data-value="female">
+                    <span class="option-icon">♀</span>
+                    <span class="option-text">Female</span>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="form-group">
               <label class="form-label">Age</label>
@@ -83,22 +98,67 @@
             </div>
             <div class="form-group">
               <label class="form-label">Activity Level</label>
-              <select class="form-input form-select" id="calcActivity">
-                <option value="1.2">Sedentary (office work)</option>
-                <option value="1.375">Light (1-3 days/week)</option>
-                <option value="1.55" selected>Moderate (3-5 days/week)</option>
-                <option value="1.725">Active (6-7 days/week)</option>
-                <option value="1.9">Very Active (athlete)</option>
-              </select>
+              <div class="custom-select has-value" id="calcActivityWrapper">
+                <input type="hidden" id="calcActivity" value="1.55">
+                <div class="custom-select-trigger">
+                  <span class="custom-select-value">Moderate (3-5 days/week)</span>
+                  <svg class="custom-select-arrow" width="12" height="12" viewBox="0 0 12 12">
+                    <path fill="currentColor" d="M6 8L1 3h10z"/>
+                  </svg>
+                </div>
+                <div class="custom-select-options">
+                  <div class="custom-select-option" data-value="1.2">
+                    <span class="option-icon">💼</span>
+                    <span class="option-text">Sedentary (office work)</span>
+                  </div>
+                  <div class="custom-select-option" data-value="1.375">
+                    <span class="option-icon">🚶</span>
+                    <span class="option-text">Light (1-3 days/week)</span>
+                  </div>
+                  <div class="custom-select-option selected" data-value="1.55">
+                    <span class="option-icon">🏋️</span>
+                    <span class="option-text">Moderate (3-5 days/week)</span>
+                  </div>
+                  <div class="custom-select-option" data-value="1.725">
+                    <span class="option-icon">🏃</span>
+                    <span class="option-text">Active (6-7 days/week)</span>
+                  </div>
+                  <div class="custom-select-option" data-value="1.9">
+                    <span class="option-icon">🏆</span>
+                    <span class="option-text">Very Active (athlete)</span>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="form-group">
               <label class="form-label">Goal</label>
-              <select class="form-input form-select" id="calcGoal">
-                <option value="lose">Weight Loss (-500 cal)</option>
-                <option value="maintain">Maintenance</option>
-                <option value="gain">Muscle Gain (+300 cal)</option>
-                <option value="bulk">Aggressive Bulk (+500 cal)</option>
-              </select>
+              <div class="custom-select" id="calcGoalWrapper">
+                <input type="hidden" id="calcGoal" value="">
+                <div class="custom-select-trigger">
+                  <span class="custom-select-value">Select goal...</span>
+                  <svg class="custom-select-arrow" width="12" height="12" viewBox="0 0 12 12">
+                    <path fill="currentColor" d="M6 8L1 3h10z"/>
+                  </svg>
+                </div>
+                <div class="custom-select-options">
+                  <div class="custom-select-option" data-value="lose">
+                    <span class="option-icon">🔥</span>
+                    <span class="option-text">Weight Loss (-500 cal)</span>
+                  </div>
+                  <div class="custom-select-option" data-value="maintain">
+                    <span class="option-icon">⚖️</span>
+                    <span class="option-text">Maintenance</span>
+                  </div>
+                  <div class="custom-select-option" data-value="gain">
+                    <span class="option-icon">💪</span>
+                    <span class="option-text">Muscle Gain (+300 cal)</span>
+                  </div>
+                  <div class="custom-select-option" data-value="bulk">
+                    <span class="option-icon">🚀</span>
+                    <span class="option-text">Aggressive Bulk (+500 cal)</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <button type="button" class="btn btn-primary btn-block" style="margin-top: var(--space-xl);" onclick="calculateCalories()">

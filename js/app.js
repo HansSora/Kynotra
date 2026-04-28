@@ -41,8 +41,19 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavigation();
   initAuth();
   initScrollAnimations();
+  initCustomDropdowns();
+  disableNumberInputScroll();
   updateCartCount();
 });
+
+// Disable mouse wheel scroll on number inputs
+function disableNumberInputScroll() {
+  document.addEventListener('wheel', (e) => {
+    if (document.activeElement.type === 'number') {
+      document.activeElement.blur();
+    }
+  }, { passive: true });
+}
 
 function initNavigation() {
   const navbar = document.getElementById('navbar');
@@ -89,6 +100,62 @@ function initScrollAnimations() {
   document.querySelectorAll('.animate-in').forEach(el => {
     el.style.animationPlayState = 'paused';
     observer.observe(el);
+  });
+}
+
+// ==========================================
+// CUSTOM DROPDOWNS
+// ==========================================
+function initCustomDropdowns() {
+  document.querySelectorAll('.custom-select').forEach(select => {
+    const trigger = select.querySelector('.custom-select-trigger');
+    const options = select.querySelectorAll('.custom-select-option');
+    const hiddenInput = select.querySelector('input[type="hidden"]');
+    const valueDisplay = select.querySelector('.custom-select-value');
+
+    // Toggle dropdown
+    trigger?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      // Close other dropdowns
+      document.querySelectorAll('.custom-select.open').forEach(s => {
+        if (s !== select) s.classList.remove('open');
+      });
+      select.classList.toggle('open');
+    });
+
+    // Select option
+    options.forEach(option => {
+      option.addEventListener('click', () => {
+        const value = option.dataset.value;
+        const text = option.querySelector('.option-text')?.textContent || option.textContent;
+
+        // Update hidden input
+        if (hiddenInput) hiddenInput.value = value;
+
+        // Update display
+        if (valueDisplay) valueDisplay.textContent = text;
+
+        // Update visual state
+        options.forEach(o => o.classList.remove('selected'));
+        option.classList.add('selected');
+        select.classList.add('has-value');
+        select.classList.remove('open');
+      });
+    });
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.custom-select')) {
+      document.querySelectorAll('.custom-select.open').forEach(s => s.classList.remove('open'));
+    }
+  });
+
+  // Close dropdown on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.custom-select.open').forEach(s => s.classList.remove('open'));
+    }
   });
 }
 
@@ -1526,10 +1593,12 @@ function openProfileEditor() {
   document.getElementById('editHeight').value = user.height || '';
   document.getElementById('editGoal').value = user.goal || '';
   document.getElementById('profileModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
 
 function closeProfileEditor() {
   document.getElementById('profileModal').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 function saveProfile(e) {
@@ -1570,10 +1639,12 @@ function openAvatarPicker() {
     btn.classList.toggle('selected', img && user.avatar && img.getAttribute('src') === user.avatar);
   });
   document.getElementById('avatarModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
 
 function closeAvatarPicker() {
   document.getElementById('avatarModal').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 function selectAvatar(src) {

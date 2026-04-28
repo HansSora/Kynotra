@@ -73,7 +73,7 @@
               <h1 style="font-family: var(--font-heading); font-size: 1.8rem; text-transform: uppercase; margin-bottom: var(--space-sm);">Welcome back, John!</h1>
               <p style="opacity: 0.9;">Week 6 of Muscle Builder Pro — You're making great progress! 💪</p>
             </div>
-            <a href="programs.html" class="btn btn-secondary" style="border-color: white; color: white;">Today's Workout →</a>
+            <a href="../../programs.html" class="btn btn-secondary" style="border-color: white; color: white;">Today's Workout →</a>
           </div>
 
           <!-- Stats Row -->
@@ -352,63 +352,103 @@
 
   <!-- Profile Edit Modal -->
   <div class="modal-overlay" id="profileModal">
-    <div class="modal-content" style="max-width: 480px;">
-      <div class="modal-header">
+    <div class="modal-content" style="max-width: 600px; padding: var(--space-xl);">
+      <div class="modal-header" style="margin-bottom: var(--space-md);">
         <h2>Edit Profile</h2>
         <button class="modal-close" onclick="closeProfileEditor()">&times;</button>
       </div>
       <form id="profileForm" onsubmit="saveProfile(event)">
-        <div class="form-group">
-          <label class="form-label">First Name</label>
-          <input type="text" class="form-input" id="editFirstName" placeholder="John" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Last Name</label>
-          <input type="text" class="form-input" id="editLastName" placeholder="Doe">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Email</label>
-          <input type="email" class="form-input" id="editEmail" placeholder="you@example.com" required>
-        </div>
-        <div class="grid-2" style="gap: var(--space-md);">
-          <div class="form-group">
-            <label class="form-label">Age</label>
-            <input type="number" class="form-input" id="editAge" placeholder="25" min="14" max="100">
+        <div class="grid-2" style="gap: var(--space-sm);">
+          <div class="form-group" style="margin-bottom: var(--space-sm);">
+            <label class="form-label" style="font-size: 0.75rem; margin-bottom: 4px;">First Name</label>
+            <input type="text" class="form-input" id="editFirstName" placeholder="John" required style="padding: 10px 12px;">
           </div>
-          <div class="form-group">
-            <label class="form-label">Gender</label>
-            <select class="form-input form-select" id="editGender">
-              <option value="">Select...</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-            </select>
+          <div class="form-group" style="margin-bottom: var(--space-sm);">
+            <label class="form-label" style="font-size: 0.75rem; margin-bottom: 4px;">Last Name</label>
+            <input type="text" class="form-input" id="editLastName" placeholder="Doe" style="padding: 10px 12px;">
           </div>
         </div>
-        <div class="grid-2" style="gap: var(--space-md);">
-          <div class="form-group">
-            <label class="form-label">Weight</label>
-            <input type="number" class="form-input" id="editWeight" placeholder="175" step="0.1">
+        <div class="form-group" style="margin-bottom: var(--space-sm);">
+          <label class="form-label" style="font-size: 0.75rem; margin-bottom: 4px;">Email</label>
+          <input type="email" class="form-input" id="editEmail" placeholder="you@example.com" required style="padding: 10px 12px;">
+        </div>
+        <div class="grid-4" style="gap: var(--space-sm);">
+          <div class="form-group" style="margin-bottom: var(--space-sm);">
+            <label class="form-label" style="font-size: 0.75rem; margin-bottom: 4px;">Age</label>
+            <input type="number" class="form-input" id="editAge" placeholder="25" min="14" max="100" style="padding: 10px 12px;">
           </div>
-          <div class="form-group">
-            <label class="form-label">Height</label>
-            <input type="number" class="form-input" id="editHeight" placeholder="70" step="0.1">
+          <div class="form-group" style="margin-bottom: var(--space-sm);">
+            <label class="form-label" style="font-size: 0.75rem; margin-bottom: 4px;">Gender</label>
+            <div class="custom-select" id="editGenderWrapper">
+              <input type="hidden" id="editGender" value="">
+              <div class="custom-select-trigger" style="padding: 10px 12px;">
+                <span class="custom-select-value">Select...</span>
+                <svg class="custom-select-arrow" width="10" height="10" viewBox="0 0 12 12">
+                  <path fill="currentColor" d="M6 8L1 3h10z"/>
+                </svg>
+              </div>
+              <div class="custom-select-options">
+                <div class="custom-select-option" data-value="male">
+                  <span class="option-icon">♂</span>
+                  <span class="option-text">Male</span>
+                </div>
+                <div class="custom-select-option" data-value="female">
+                  <span class="option-icon">♀</span>
+                  <span class="option-text">Female</span>
+                </div>
+                <div class="custom-select-option" data-value="other">
+                  <span class="option-icon">⚧</span>
+                  <span class="option-text">Other</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom: var(--space-sm);">
+            <label class="form-label" style="font-size: 0.75rem; margin-bottom: 4px;">Weight</label>
+            <input type="number" class="form-input" id="editWeight" placeholder="175" step="0.1" style="padding: 10px 12px;">
+          </div>
+          <div class="form-group" style="margin-bottom: var(--space-sm);">
+            <label class="form-label" style="font-size: 0.75rem; margin-bottom: 4px;">Height</label>
+            <input type="number" class="form-input" id="editHeight" placeholder="70" step="0.1" style="padding: 10px 12px;">
           </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Fitness Goal</label>
-          <select class="form-input form-select" id="editGoal">
-            <option value="">Select goal...</option>
-            <option value="weight-loss">Weight Loss</option>
-            <option value="muscle-gain">Muscle Gain</option>
-            <option value="strength">Strength Building</option>
-            <option value="endurance">Endurance</option>
-            <option value="maintenance">General Fitness</option>
-          </select>
+        <div class="form-group" style="margin-bottom: var(--space-sm);">
+          <label class="form-label" style="font-size: 0.75rem; margin-bottom: 4px;">Fitness Goal</label>
+          <div class="custom-select" id="editGoalWrapper">
+            <input type="hidden" id="editGoal" value="">
+            <div class="custom-select-trigger" style="padding: 10px 12px;">
+              <span class="custom-select-value">Select goal...</span>
+              <svg class="custom-select-arrow" width="10" height="10" viewBox="0 0 12 12">
+                <path fill="currentColor" d="M6 8L1 3h10z"/>
+              </svg>
+            </div>
+            <div class="custom-select-options">
+              <div class="custom-select-option" data-value="weight-loss">
+                <span class="option-icon">🔥</span>
+                <span class="option-text">Weight Loss</span>
+              </div>
+              <div class="custom-select-option" data-value="muscle-gain">
+                <span class="option-icon">💪</span>
+                <span class="option-text">Muscle Gain</span>
+              </div>
+              <div class="custom-select-option" data-value="strength">
+                <span class="option-icon">🏋️</span>
+                <span class="option-text">Strength Building</span>
+              </div>
+              <div class="custom-select-option" data-value="endurance">
+                <span class="option-icon">🏃</span>
+                <span class="option-text">Endurance</span>
+              </div>
+              <div class="custom-select-option" data-value="maintenance">
+                <span class="option-icon">⚖️</span>
+                <span class="option-text">General Fitness</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div style="display: flex; gap: var(--space-md); margin-top: var(--space-lg);">
-          <button type="button" class="btn btn-secondary" onclick="closeProfileEditor()" style="flex:1;">Cancel</button>
-          <button type="submit" class="btn btn-primary" style="flex:1;">Save Changes</button>
+        <div style="display: flex; gap: var(--space-md); margin-top: var(--space-md);">
+          <button type="button" class="btn btn-secondary" onclick="closeProfileEditor()" style="flex:1; padding: 10px;">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="flex:1; padding: 10px;">Save Changes</button>
         </div>
       </form>
     </div>

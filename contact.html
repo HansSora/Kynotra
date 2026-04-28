@@ -74,15 +74,41 @@
             </div>
             <div class="form-group">
               <label class="form-label">Subject</label>
-              <select class="form-input form-select">
-                <option value="">Select a topic...</option>
-                <option value="support">Technical Support</option>
-                <option value="billing">Billing & Subscriptions</option>
-                <option value="partnership">Partnership Inquiry</option>
-                <option value="feedback">Feedback & Suggestions</option>
-                <option value="press">Press & Media</option>
-                <option value="other">Other</option>
-              </select>
+              <div class="custom-select" id="contactSubjectWrapper">
+                <input type="hidden" id="contactSubject" value="">
+                <div class="custom-select-trigger">
+                  <span class="custom-select-value">Select a topic...</span>
+                  <svg class="custom-select-arrow" width="12" height="12" viewBox="0 0 12 12">
+                    <path fill="currentColor" d="M6 8L1 3h10z"/>
+                  </svg>
+                </div>
+                <div class="custom-select-options">
+                  <div class="custom-select-option" data-value="support">
+                    <span class="option-icon">🛠️</span>
+                    <span class="option-text">Technical Support</span>
+                  </div>
+                  <div class="custom-select-option" data-value="billing">
+                    <span class="option-icon">💳</span>
+                    <span class="option-text">Billing & Subscriptions</span>
+                  </div>
+                  <div class="custom-select-option" data-value="partnership">
+                    <span class="option-icon">🤝</span>
+                    <span class="option-text">Partnership Inquiry</span>
+                  </div>
+                  <div class="custom-select-option" data-value="feedback">
+                    <span class="option-icon">💬</span>
+                    <span class="option-text">Feedback & Suggestions</span>
+                  </div>
+                  <div class="custom-select-option" data-value="press">
+                    <span class="option-icon">📰</span>
+                    <span class="option-text">Press & Media</span>
+                  </div>
+                  <div class="custom-select-option" data-value="other">
+                    <span class="option-icon">📋</span>
+                    <span class="option-text">Other</span>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="form-group">
               <label class="form-label">Message *</label>

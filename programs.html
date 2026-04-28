@@ -89,19 +89,37 @@
             <h3 style="font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 1px; margin-bottom: var(--space-xs); font-size: 1.3rem;">Tell Us About Yourself</h3>
             <p style="color: var(--text-secondary); margin-bottom: var(--space-xl); font-size: 0.95rem;">We'll use this to personalize your rep ranges, volume, and intensity.</p>
 
-            <div class="unit-toggle" style="display: flex; justify-content: center; margin-bottom: var(--space-lg);">
-              <button type="button" class="btn btn-unit active" id="progUnitImperial" onclick="setProgUnit('imperial')">Imperial (lbs / in)</button>
-              <button type="button" class="btn btn-unit" id="progUnitMetric" onclick="setProgUnit('metric')">Metric (kg / cm)</button>
+            <div class="unit-toggle" style="display: flex; width: fit-content; margin: 0 auto var(--space-lg) auto;">
+              <button type="button" class="btn btn-unit active" id="progUnitImperial" onclick="setProgUnit('imperial')">
+                Imperial (lbs / in)
+              </button>
+              <button type="button" class="btn btn-unit" id="progUnitMetric" onclick="setProgUnit('metric')">
+                Metric (kg / cm)
+              </button>
             </div>
 
             <div class="grid-2" style="gap: var(--space-lg);">
               <div class="form-group">
                 <label class="form-label">Gender</label>
-                <select class="form-input form-select" id="progGender">
-                  <option value="">Select...</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                </select>
+                <div class="custom-select" id="progGenderSelect">
+                  <input type="hidden" id="progGender" value="">
+                  <div class="custom-select-trigger">
+                    <span class="custom-select-value">Select...</span>
+                    <svg class="custom-select-arrow" width="12" height="12" viewBox="0 0 12 12">
+                      <path fill="currentColor" d="M6 8L1 3h10z"/>
+                    </svg>
+                  </div>
+                  <div class="custom-select-options">
+                    <div class="custom-select-option" data-value="male">
+                      <span class="option-icon">♂</span>
+                      <span class="option-text">Male</span>
+                    </div>
+                    <div class="custom-select-option" data-value="female">
+                      <span class="option-icon">♀</span>
+                      <span class="option-text">Female</span>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div class="form-group">
                 <label class="form-label">Age</label>
@@ -130,23 +148,63 @@
             <div class="grid-2" style="gap: var(--space-lg);">
               <div class="form-group" style="grid-column: 1 / -1;">
                 <label class="form-label">Primary Goal</label>
-                <select class="form-input form-select" id="goalSelect">
-                  <option value="">Select goal...</option>
-                  <option value="weight-loss">🔥 Weight Loss / Fat Burn</option>
-                  <option value="muscle-gain">💪 Muscle Gain / Hypertrophy</option>
-                  <option value="strength">🏋️ Strength Building</option>
-                  <option value="maintenance">⚖️ General Fitness / Maintenance</option>
-                  <option value="endurance">🏃 Endurance & Cardio</option>
-                </select>
+                <div class="custom-select" id="goalSelectWrapper">
+                  <input type="hidden" id="goalSelect" value="">
+                  <div class="custom-select-trigger">
+                    <span class="custom-select-value">Select goal...</span>
+                    <svg class="custom-select-arrow" width="12" height="12" viewBox="0 0 12 12">
+                      <path fill="currentColor" d="M6 8L1 3h10z"/>
+                    </svg>
+                  </div>
+                  <div class="custom-select-options">
+                    <div class="custom-select-option" data-value="weight-loss">
+                      <span class="option-icon">🔥</span>
+                      <span class="option-text">Weight Loss / Fat Burn</span>
+                    </div>
+                    <div class="custom-select-option" data-value="muscle-gain">
+                      <span class="option-icon">💪</span>
+                      <span class="option-text">Muscle Gain / Hypertrophy</span>
+                    </div>
+                    <div class="custom-select-option" data-value="strength">
+                      <span class="option-icon">🏋️</span>
+                      <span class="option-text">Strength Building</span>
+                    </div>
+                    <div class="custom-select-option" data-value="maintenance">
+                      <span class="option-icon">⚖️</span>
+                      <span class="option-text">General Fitness / Maintenance</span>
+                    </div>
+                    <div class="custom-select-option" data-value="endurance">
+                      <span class="option-icon">🏃</span>
+                      <span class="option-text">Endurance & Cardio</span>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div class="form-group" style="grid-column: 1 / -1;">
                 <label class="form-label">Experience Level</label>
-                <select class="form-input form-select" id="levelSelect">
-                  <option value="">Select level...</option>
-                  <option value="beginner">🟢 Beginner (0-6 months)</option>
-                  <option value="intermediate">🟡 Intermediate (6-24 months)</option>
-                  <option value="advanced">🔴 Advanced (2+ years)</option>
-                </select>
+                <div class="custom-select" id="levelSelectWrapper">
+                  <input type="hidden" id="levelSelect" value="">
+                  <div class="custom-select-trigger">
+                    <span class="custom-select-value">Select level...</span>
+                    <svg class="custom-select-arrow" width="12" height="12" viewBox="0 0 12 12">
+                      <path fill="currentColor" d="M6 8L1 3h10z"/>
+                    </svg>
+                  </div>
+                  <div class="custom-select-options">
+                    <div class="custom-select-option" data-value="beginner">
+                      <span class="option-icon">🟢</span>
+                      <span class="option-text">Beginner (0-6 months)</span>
+                    </div>
+                    <div class="custom-select-option" data-value="intermediate">
+                      <span class="option-icon">🟡</span>
+                      <span class="option-text">Intermediate (6-24 months)</span>
+                    </div>
+                    <div class="custom-select-option" data-value="advanced">
+                      <span class="option-icon">🔴</span>
+                      <span class="option-text">Advanced (2+ years)</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -164,22 +222,59 @@
             <div class="grid-2" style="gap: var(--space-lg);">
               <div class="form-group" style="grid-column: 1 / -1;">
                 <label class="form-label">Training Location</label>
-                <select class="form-input form-select" id="locationSelect">
-                  <option value="">Select location...</option>
-                  <option value="gym">🏢 Full Gym Access</option>
-                  <option value="home">🏠 Home (Minimal Equipment)</option>
-                  <option value="home-equipped">🏗️ Home Gym (Equipped)</option>
-                </select>
+                <div class="custom-select" id="locationSelectWrapper">
+                  <input type="hidden" id="locationSelect" value="">
+                  <div class="custom-select-trigger">
+                    <span class="custom-select-value">Select location...</span>
+                    <svg class="custom-select-arrow" width="12" height="12" viewBox="0 0 12 12">
+                      <path fill="currentColor" d="M6 8L1 3h10z"/>
+                    </svg>
+                  </div>
+                  <div class="custom-select-options">
+                    <div class="custom-select-option" data-value="gym">
+                      <span class="option-icon">🏢</span>
+                      <span class="option-text">Full Gym Access</span>
+                    </div>
+                    <div class="custom-select-option" data-value="home">
+                      <span class="option-icon">🏠</span>
+                      <span class="option-text">Home (Minimal Equipment)</span>
+                    </div>
+                    <div class="custom-select-option" data-value="home-equipped">
+                      <span class="option-icon">🏗️</span>
+                      <span class="option-text">Home Gym (Equipped)</span>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div class="form-group" style="grid-column: 1 / -1;">
                 <label class="form-label">Days Per Week</label>
-                <select class="form-input form-select" id="daysSelect">
-                  <option value="">Select days...</option>
-                  <option value="3">3 Days — Great for beginners</option>
-                  <option value="4">4 Days — Balanced split</option>
-                  <option value="5">5 Days — Intermediate/Advanced</option>
-                  <option value="6">6 Days — High volume</option>
-                </select>
+                <div class="custom-select" id="daysSelectWrapper">
+                  <input type="hidden" id="daysSelect" value="">
+                  <div class="custom-select-trigger">
+                    <span class="custom-select-value">Select days...</span>
+                    <svg class="custom-select-arrow" width="12" height="12" viewBox="0 0 12 12">
+                      <path fill="currentColor" d="M6 8L1 3h10z"/>
+                    </svg>
+                  </div>
+                  <div class="custom-select-options">
+                    <div class="custom-select-option" data-value="3">
+                      <span class="option-icon">3️⃣</span>
+                      <span class="option-text">3 Days — Great for beginners</span>
+                    </div>
+                    <div class="custom-select-option" data-value="4">
+                      <span class="option-icon">4️⃣</span>
+                      <span class="option-text">4 Days — Balanced split</span>
+                    </div>
+                    <div class="custom-select-option" data-value="5">
+                      <span class="option-icon">5️⃣</span>
+                      <span class="option-text">5 Days — Intermediate/Advanced</span>
+                    </div>
+                    <div class="custom-select-option" data-value="6">
+                      <span class="option-icon">6️⃣</span>
+                      <span class="option-text">6 Days — High volume</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
