@@ -48,19 +48,18 @@
             </div>
             <h3 style="font-size: 1.1rem; margin-bottom: var(--space-xs);" id="dashName">John Doe</h3>
             <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: var(--space-sm);" id="dashEmail"></p>
-            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: var(--space-md);">Pro Member</p>
-            <span class="tag tag-success" style="margin-bottom: var(--space-md); display: inline-block;">Active Plan</span>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: var(--space-md);" id="dashPlanLabel">Free Member</p>
+            <span class="tag tag-primary" id="dashPlanTag" style="margin-bottom: var(--space-md); display: inline-block;">Free Plan</span>
             <button class="btn btn-sm btn-outline btn-block" onclick="openProfileEditor()" style="margin-top: var(--space-sm);">✏️ Edit Profile</button>
           </div>
 
           <!-- Menu -->
           <div class="sidebar-menu">
-            <a href="#overview" class="active">📊 Overview</a>
-            <a href="#workouts">🏋️ My Workouts</a>
-            <a href="#nutrition">🥗 Nutrition</a>
-            <a href="#progress">📈 Progress</a>
-            <a href="#saved">💾 Saved Programs</a>
-            <a href="#" onclick="openProfileEditor(); return false;">⚙️ Settings</a>
+            <a href="dashboard.html" class="active">📊 Overview</a>
+            <a href="workouts.html">🏋️ My Workouts</a>
+            <a href="nutrition-dash.html">🥗 Nutrition</a>
+            <a href="progress.html">📈 Progress</a>
+            <a href="saved-programs.html">💾 Saved Programs</a>
             <a href="#" onclick="handleLogout(); return false;">🚪 Log Out</a>
           </div>
         </aside>
@@ -403,12 +402,23 @@
               </div>
             </div>
           </div>
+        </div>
+        
+        <!-- Unit Toggle -->
+        <div style="display: flex; justify-content: flex-end; margin-bottom: var(--space-sm);">
+          <div class="unit-toggle" style="display: flex;">
+            <button type="button" class="btn btn-unit active" id="profileUnitImperial" onclick="setProfileUnit('imperial')" style="padding: 8px 16px; font-size: 0.75rem;">lbs / in</button>
+            <button type="button" class="btn btn-unit" id="profileUnitMetric" onclick="setProfileUnit('metric')" style="padding: 8px 16px; font-size: 0.75rem;">kg / cm</button>
+          </div>
+        </div>
+        
+        <div class="grid-2" style="gap: var(--space-sm);">
           <div class="form-group" style="margin-bottom: var(--space-sm);">
-            <label class="form-label" style="font-size: 0.75rem; margin-bottom: 4px;">Weight</label>
+            <label class="form-label" style="font-size: 0.75rem; margin-bottom: 4px;">Weight <span id="profileWeightUnit">(lbs)</span></label>
             <input type="number" class="form-input" id="editWeight" placeholder="175" step="0.1" style="padding: 10px 12px;">
           </div>
           <div class="form-group" style="margin-bottom: var(--space-sm);">
-            <label class="form-label" style="font-size: 0.75rem; margin-bottom: 4px;">Height</label>
+            <label class="form-label" style="font-size: 0.75rem; margin-bottom: 4px;">Height <span id="profileHeightUnit">(in)</span></label>
             <input type="number" class="form-input" id="editHeight" placeholder="70" step="0.1" style="padding: 10px 12px;">
           </div>
         </div>

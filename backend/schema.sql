@@ -255,12 +255,17 @@ CREATE TABLE subscriptions (
     id              SERIAL PRIMARY KEY,
     user_id         INTEGER REFERENCES users(id) ON DELETE CASCADE,
     plan            VARCHAR(20) NOT NULL,    -- 'pro', 'elite'
-    status          VARCHAR(20) DEFAULT 'active',  -- 'active', 'cancelled', 'expired'
+    status          VARCHAR(20) DEFAULT 'active',  -- 'active', 'trial', 'cancelled', 'expired'
+    is_trial        BOOLEAN DEFAULT FALSE,
+    trial_ends_at   TIMESTAMP,
     price_monthly   DECIMAL(10,2) NOT NULL,
     started_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     expires_at      TIMESTAMP,
     cancelled_at    TIMESTAMP
 );
+
+CREATE INDEX idx_subscriptions_user ON subscriptions(user_id);
+CREATE INDEX idx_subscriptions_status ON subscriptions(status);
 
 -- ========================================
 -- BLOG / ARTICLES

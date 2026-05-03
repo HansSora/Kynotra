@@ -41,11 +41,11 @@
         <form id="loginForm" onsubmit="handleLogin(event)">
           <div class="form-group">
             <label class="form-label">Email Address</label>
-            <input type="email" class="form-input" placeholder="you@example.com" required>
+            <input type="email" name="email" class="form-input" placeholder="you@example.com" required>
           </div>
           <div class="form-group">
             <label class="form-label">Password</label>
-            <input type="password" class="form-input" placeholder="Enter your password" required minlength="8">
+            <input type="password" name="password" class="form-input" placeholder="Enter your password" required minlength="8">
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
             <label class="form-checkbox">

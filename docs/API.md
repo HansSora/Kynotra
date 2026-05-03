@@ -242,7 +242,30 @@ Query parameters: `category`, `search`, `sort`, `order`, `page`, `limit`
 |--------|----------|------|-------------|
 | GET | `/api/subscriptions/plans` | No | Get available plans |
 | POST | `/api/subscriptions/subscribe` | Yes | Subscribe to plan |
+| POST | `/api/subscriptions/trial` | Yes | Start 7-day free trial |
 | PUT | `/api/subscriptions/cancel` | Yes | Cancel subscription |
+| GET | `/api/subscriptions/current` | Yes | Get current subscription |
+
+#### POST `/api/subscriptions/trial`
+```json
+{
+  "plan": "pro"  // or "elite"
+}
+```
+**Response:** `201`
+```json
+{
+  "status": "success",
+  "message": "Started 7-day free trial of Pro plan",
+  "subscription": {
+    "plan": "pro",
+    "is_trial": true,
+    "trial_ends_at": "2026-04-06T12:00:00.000Z",
+    "price": 19.99
+  }
+}
+```
+**Note:** Users can only start one trial. Attempting to start another trial returns `400`.
 
 ---
 

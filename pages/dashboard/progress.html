@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Kynotra Dashboard - Track Your Progress">
+  <title>Progress — Kynotra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../images/favicon.svg" alt="Kynotra" class="logo-icon">KYNOTRA</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="../../index.html">Home</a></li>
+        <li><a href="../../programs.html">Programs</a></li>
+        <li><a href="../../diet.html">Nutrition</a></li>
+        <li><a href="../../exercises.html">Exercises</a></li>
+        <li><a href="../../shop.html">Shop</a></li>
+        <li><a href="../../about.html">About</a></li>
+        <li><a href="../../contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="../../shop.html" class="nav-cart">🛒<span class="cart-count" id="cartCount">0</span></a>
+        <a href="dashboard.html" class="btn btn-sm btn-outline">Dashboard</a>
+        <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Dashboard -->
+  <div class="dashboard">
+    <div class="container container-wide">
+      <div class="dashboard-grid">
+
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+          <div class="profile-card" style="background: var(--gradient-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--space-xl); text-align: center; margin-bottom: var(--space-lg);">
+            <div class="profile-avatar-wrap" onclick="window.location.href='dashboard.html?edit=avatar'" title="Change avatar">
+              <div class="profile-avatar" id="dashAvatar">JD</div>
+              <div class="profile-avatar-edit">📷</div>
+            </div>
+            <h3 style="font-size: 1.1rem; margin-bottom: var(--space-xs);" id="dashName">John Doe</h3>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: var(--space-sm);" id="dashEmail"></p>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: var(--space-md);" id="dashPlanLabel">Free Member</p>
+            <span class="tag tag-primary" id="dashPlanTag" style="margin-bottom: var(--space-md); display: inline-block;">Free Plan</span>
+            <a href="dashboard.html?edit=profile" class="btn btn-sm btn-outline btn-block" style="margin-top: var(--space-sm);">✏️ Edit Profile</a>
+          </div>
+
+          <div class="sidebar-menu">
+            <a href="dashboard.html">📊 Overview</a>
+            <a href="workouts.html">🏋️ My Workouts</a>
+            <a href="nutrition-dash.html">🥗 Nutrition</a>
+            <a href="progress.html" class="active">📈 Progress</a>
+            <a href="saved-programs.html">💾 Saved Programs</a>
+            <a href="#" onclick="handleLogout(); return false;">🚪 Log Out</a>
+          </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main>
+          <!-- Page Header -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xl); flex-wrap: wrap; gap: var(--space-md);">
+            <div>
+              <h1 style="font-family: var(--font-heading); font-size: 2rem; text-transform: uppercase; margin-bottom: var(--space-xs);">Progress</h1>
+              <p style="color: var(--text-secondary);">Track your body stats and strength gains</p>
+            </div>
+            <div class="unit-toggle" style="display: flex;">
+              <button type="button" class="btn btn-unit active" id="progressUnitImperial" onclick="setProgressUnit('imperial')">lbs / in</button>
+              <button type="button" class="btn btn-unit" id="progressUnitMetric" onclick="setProgressUnit('metric')">kg / cm</button>
+            </div>
+          </div>
+
+          <!-- Body Stats Summary -->
+          <div class="grid-4" style="margin-bottom: var(--space-xl);">
+            <div class="stat-card" style="text-align: center;">
+              <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: var(--space-sm);">Current Weight</div>
+              <div style="font-family: var(--font-heading); font-size: 2.5rem; color: var(--accent);" class="wt" data-lbs="182">182 lbs</div>
+              <div style="font-size: 0.85rem; color: var(--success); margin-top: var(--space-xs);">↑ +3 lbs this month</div>
+            </div>
+            <div class="stat-card" style="text-align: center;">
+              <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: var(--space-sm);">Body Fat</div>
+              <div style="font-family: var(--font-heading); font-size: 2.5rem; color: var(--info);">16%</div>
+              <div style="font-size: 0.85rem; color: var(--success); margin-top: var(--space-xs);">↓ -1.5% this month</div>
+            </div>
+            <div class="stat-card" style="text-align: center;">
+              <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: var(--space-sm);">BMI</div>
+              <div style="font-family: var(--font-heading); font-size: 2.5rem;">24.3</div>
+              <div style="font-size: 0.85rem; color: var(--success); margin-top: var(--space-xs);">Normal Range</div>
+            </div>
+            <div class="stat-card" style="text-align: center;">
+              <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: var(--space-sm);">Lean Mass</div>
+              <div style="font-family: var(--font-heading); font-size: 2.5rem; color: var(--success);" class="wt" data-lbs="153">153 lbs</div>
+              <div style="font-size: 0.85rem; color: var(--success); margin-top: var(--space-xs);">↑ +5 lbs this month</div>
+            </div>
+          </div>
+
+          <!-- Weight Progress Chart -->
+          <div class="stat-card" style="margin-bottom: var(--space-xl);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
+              <h3 style="font-size: 1.1rem; font-weight: 600;">Weight Progress</h3>
+              <div style="display: flex; gap: var(--space-sm);">
+                <button class="btn btn-sm btn-outline chart-range active" data-range="3m">3M</button>
+                <button class="btn btn-sm btn-outline chart-range" data-range="6m">6M</button>
+                <button class="btn btn-sm btn-outline chart-range" data-range="1y">1Y</button>
+                <button class="btn btn-sm btn-outline chart-range" data-range="all">All</button>
+              </div>
+            </div>
+            <div style="position: relative; height: 300px;">
+              <canvas id="weightChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Strength Progress Chart -->
+          <div class="stat-card" style="margin-bottom: var(--space-xl);">
+            <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: var(--space-lg);">Strength Progress (Last 12 Weeks)</h3>
+            <div style="position: relative; height: 350px;">
+              <canvas id="strengthChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Lift PRs -->
+          <div class="stat-card" style="margin-bottom: var(--space-xl);">
+            <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: var(--space-lg);">Personal Records</h3>
+            <div class="grid-2" style="gap: var(--space-lg);">
+              <div class="pr-card">
+                <div class="pr-icon">🏋️</div>
+                <div class="pr-info">
+                  <h4>Bench Press</h4>
+                  <div class="pr-value"><span class="wt" data-lbs="225">225 lbs</span></div>
+                  <div class="pr-change">+40 lbs from start</div>
+                </div>
+                <div class="pr-chart">
+                  <canvas id="benchChart" width="120" height="60"></canvas>
+                </div>
+              </div>
+              <div class="pr-card">
+                <div class="pr-icon">🦵</div>
+                <div class="pr-info">
+                  <h4>Squat</h4>
+                  <div class="pr-value"><span class="wt" data-lbs="285">285 lbs</span></div>
+                  <div class="pr-change">+60 lbs from start</div>
+                </div>
+                <div class="pr-chart">
+                  <canvas id="squatChart" width="120" height="60"></canvas>
+                </div>
+              </div>
+              <div class="pr-card">
+                <div class="pr-icon">💪</div>
+                <div class="pr-info">
+                  <h4>Deadlift</h4>
+                  <div class="pr-value"><span class="wt" data-lbs="335">335 lbs</span></div>
+                  <div class="pr-change">+60 lbs from start</div>
+                </div>
+                <div class="pr-chart">
+                  <canvas id="deadliftChart" width="120" height="60"></canvas>
+                </div>
+              </div>
+              <div class="pr-card">
+                <div class="pr-icon">🙆</div>
+                <div class="pr-info">
+                  <h4>Overhead Press</h4>
+                  <div class="pr-value"><span class="wt" data-lbs="140">140 lbs</span></div>
+                  <div class="pr-change">+25 lbs from start</div>
+                </div>
+                <div class="pr-chart">
+                  <canvas id="ohpChart" width="120" height="60"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Body Measurements -->
+          <div class="stat-card" style="margin-bottom: var(--space-xl);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
+              <h3 style="font-size: 1.1rem; font-weight: 600;">Body Measurements</h3>
+              <button class="btn btn-sm btn-primary">+ Log Measurements</button>
+            </div>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Measurement</th>
+                    <th>Start</th>
+                    <th>Current</th>
+                    <th>Change</th>
+                    <th>Goal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Chest</td>
+                    <td><span class="ht" data-in="40">40 in</span></td>
+                    <td><span class="ht" data-in="42">42 in</span></td>
+                    <td style="color: var(--success);">+2 in ↑</td>
+                    <td><span class="ht" data-in="44">44 in</span></td>
+                  </tr>
+                  <tr>
+                    <td>Arms (Biceps)</td>
+                    <td><span class="ht" data-in="14">14 in</span></td>
+                    <td><span class="ht" data-in="15.5">15.5 in</span></td>
+                    <td style="color: var(--success);">+1.5 in ↑</td>
+                    <td><span class="ht" data-in="16">16 in</span></td>
+                  </tr>
+                  <tr>
+                    <td>Waist</td>
+                    <td><span class="ht" data-in="34">34 in</span></td>
+                    <td><span class="ht" data-in="32">32 in</span></td>
+                    <td style="color: var(--success);">-2 in ↓</td>
+                    <td><span class="ht" data-in="31">31 in</span></td>
+                  </tr>
+                  <tr>
+                    <td>Thighs</td>
+                    <td><span class="ht" data-in="23">23 in</span></td>
+                    <td><span class="ht" data-in="25">25 in</span></td>
+                    <td style="color: var(--success);">+2 in ↑</td>
+                    <td><span class="ht" data-in="26">26 in</span></td>
+                  </tr>
+                  <tr>
+                    <td>Shoulders</td>
+                    <td><span class="ht" data-in="46">46 in</span></td>
+                    <td><span class="ht" data-in="48">48 in</span></td>
+                    <td style="color: var(--success);">+2 in ↑</td>
+                    <td><span class="ht" data-in="50">50 in</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Workout Volume Chart -->
+          <div class="stat-card">
+            <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: var(--space-lg);">Weekly Workout Volume</h3>
+            <div style="position: relative; height: 250px;">
+              <canvas id="volumeChart"></canvas>
+            </div>
+          </div>
+
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer style="padding: var(--space-xl) 0; border-top: 1px solid var(--border-color); text-align: center;">
+    <p style="color: var(--text-muted); font-size: 0.85rem;">&copy; 2026 Kynotra. All rights reserved.</p>
+  </footer>
+
+  <script src="../../js/app.js"></script>
+  <script>
+    // Chart.js Configuration
+    Chart.defaults.color = '#8a8a9a';
+    Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+    Chart.defaults.font.family = "'Inter', sans-serif";
+
+    // Weight Progress Chart
+    const weightCtx = document.getElementById('weightChart').getContext('2d');
+    new Chart(weightCtx, {
+      type: 'line',
+      data: {
+        labels: ['Oct 1', 'Oct 15', 'Nov 1', 'Nov 15', 'Dec 1', 'Dec 15', 'Jan 1', 'Jan 3'],
+        datasets: [{
+          label: 'Weight (lbs)',
+          data: [175, 176, 177, 178, 179, 180, 181, 182],
+          borderColor: '#00E60A',
+          backgroundColor: 'rgba(0, 230, 10, 0.1)',
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: '#00E60A',
+          pointBorderColor: '#00E60A',
+          pointRadius: 4,
+          pointHoverRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+          },
+          x: {
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+    // Strength Progress Chart
+    const strengthCtx = document.getElementById('strengthChart').getContext('2d');
+    new Chart(strengthCtx, {
+      type: 'line',
+      data: {
+        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7', 'Week 8', 'Week 9', 'Week 10', 'Week 11', 'Week 12'],
+        datasets: [
+          {
+            label: 'Bench Press',
+            data: [185, 190, 195, 200, 205, 205, 210, 215, 215, 220, 220, 225],
+            borderColor: '#00E60A',
+            backgroundColor: 'transparent',
+            tension: 0.3,
+            pointRadius: 3
+          },
+          {
+            label: 'Squat',
+            data: [225, 235, 240, 250, 255, 260, 265, 270, 275, 280, 280, 285],
+            borderColor: '#3B82F6',
+            backgroundColor: 'transparent',
+            tension: 0.3,
+            pointRadius: 3
+          },
+          {
+            label: 'Deadlift',
+            data: [275, 285, 290, 295, 305, 310, 315, 320, 325, 330, 330, 335],
+            borderColor: '#F59E0B',
+            backgroundColor: 'transparent',
+            tension: 0.3,
+            pointRadius: 3
+          },
+          {
+            label: 'OHP',
+            data: [115, 120, 120, 125, 125, 130, 130, 135, 135, 135, 140, 140],
+            borderColor: '#8B5CF6',
+            backgroundColor: 'transparent',
+            tension: 0.3,
+            pointRadius: 3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: { usePointStyle: true, padding: 20 }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+          },
+          x: {
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+    // Mini sparkline charts for PRs
+    function createSparkline(canvasId, data, color) {
+      const ctx = document.getElementById(canvasId).getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.map((_, i) => i),
+          datasets: [{
+            data: data,
+            borderColor: color,
+            backgroundColor: 'transparent',
+            tension: 0.4,
+            pointRadius: 0,
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { display: false },
+            y: { display: false }
+          }
+        }
+      });
+    }
+
+    createSparkline('benchChart', [185, 195, 200, 210, 215, 220, 225], '#00E60A');
+    createSparkline('squatChart', [225, 240, 255, 265, 275, 280, 285], '#3B82F6');
+    createSparkline('deadliftChart', [275, 290, 305, 315, 325, 330, 335], '#F59E0B');
+    createSparkline('ohpChart', [115, 120, 125, 130, 135, 135, 140], '#8B5CF6');
+
+    // Weekly Volume Chart
+    const volumeCtx = document.getElementById('volumeChart').getContext('2d');
+    new Chart(volumeCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+        datasets: [{
+          label: 'Total Volume (lbs)',
+          data: [45000, 52000, 48000, 55000, 58000, 62000],
+          backgroundColor: 'rgba(0, 230, 10, 0.6)',
+          borderColor: '#00E60A',
+          borderWidth: 1,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            ticks: {
+              callback: function(value) {
+                return value.toLocaleString() + ' lbs';
+              }
+            }
+          },
+          x: {
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+    // Chart range buttons
+    document.querySelectorAll('.chart-range').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.chart-range').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        // In a real app, this would reload chart data for the selected range
+      });
+    });
+
+    // Unit toggle for progress page
+    function setProgressUnit(unit) {
+      const imperial = document.getElementById('progressUnitImperial');
+      const metric = document.getElementById('progressUnitMetric');
+      
+      if (unit === 'imperial') {
+        imperial.classList.add('active');
+        metric.classList.remove('active');
+      } else {
+        metric.classList.add('active');
+        imperial.classList.remove('active');
+      }
+      
+      // Convert weight displays
+      document.querySelectorAll('.wt').forEach(el => {
+        const lbs = parseFloat(el.dataset.lbs);
+        if (unit === 'metric') {
+          const kg = (lbs * 0.453592).toFixed(1);
+          el.textContent = kg + ' kg';
+        } else {
+          el.textContent = lbs + ' lbs';
+        }
+      });
+      
+      // Convert height/measurement displays
+      document.querySelectorAll('.ht').forEach(el => {
+        const inches = parseFloat(el.dataset.in);
+        if (unit === 'metric') {
+          const cm = (inches * 2.54).toFixed(1);
+          el.textContent = cm + ' cm';
+        } else {
+          el.textContent = inches + ' in';
+        }
+      });
+    }
+  </script>
+  <style>
+    .chart-range {
+      padding: 6px 12px !important;
+      font-size: 0.75rem !important;
+    }
+    .chart-range.active {
+      background: var(--accent) !important;
+      color: var(--bg) !important;
+      border-color: var(--accent) !important;
+    }
+    
+    .pr-card {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      padding: var(--space-lg);
+      background: var(--primary);
+      border-radius: var(--radius-md);
+    }
+    .pr-icon {
+      font-size: 2rem;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 230, 10, 0.1);
+      border-radius: var(--radius-md);
+    }
+    .pr-info {
+      flex: 1;
+    }
+    .pr-info h4 {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+    .pr-value {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      color: var(--accent);
+    }
+    .pr-change {
+      font-size: 0.75rem;
+      color: var(--success);
+      margin-top: 2px;
+    }
+    .pr-chart {
+      flex-shrink: 0;
+    }
+    
+    @media (max-width: 768px) {
+      .grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .pr-card {
+        flex-wrap: wrap;
+      }
+      .pr-chart {
+        width: 100%;
+        margin-top: var(--space-sm);
+      }
+    }
+  </style>
+</body>
+</html>

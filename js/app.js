@@ -44,7 +44,20 @@ document.addEventListener('DOMContentLoaded', () => {
   initCustomDropdowns();
   disableNumberInputScroll();
   updateCartCount();
+  handleDashboardParams();
 });
+
+// Handle dashboard URL parameters (edit=profile, edit=avatar)
+function handleDashboardParams() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const edit = urlParams.get('edit');
+  
+  if (edit === 'profile' && typeof openProfileEditor === 'function') {
+    setTimeout(() => openProfileEditor(), 100);
+  } else if (edit === 'avatar' && typeof openAvatarPicker === 'function') {
+    setTimeout(() => openAvatarPicker(), 100);
+  }
+}
 
 // Disable mouse wheel scroll on number inputs
 function disableNumberInputScroll() {
@@ -263,17 +276,21 @@ function buildWizardSummary() {
   const age = document.getElementById('progAge')?.value;
   const weight = document.getElementById('progWeight')?.value;
   const height = document.getElementById('progHeight')?.value;
-  const goal = document.getElementById('goalSelect');
-  const level = document.getElementById('levelSelect');
-  const location = document.getElementById('locationSelect');
-  const days = document.getElementById('daysSelect');
+  
+  // Get text from custom dropdowns
+  const goalWrapper = document.getElementById('goalSelectWrapper');
+  const levelWrapper = document.getElementById('levelSelectWrapper');
+  const locationWrapper = document.getElementById('locationSelectWrapper');
+  const daysWrapper = document.getElementById('daysSelectWrapper');
 
   const weightUnit = progUnit === 'metric' ? 'kg' : 'lbs';
   const heightUnit = progUnit === 'metric' ? 'cm' : 'in';
-  const goalText = goal?.options[goal.selectedIndex]?.text || '';
-  const levelText = level?.options[level.selectedIndex]?.text || '';
-  const locText = location?.options[location.selectedIndex]?.text || '';
-  const daysText = days?.options[days.selectedIndex]?.text || '';
+  
+  // Get display text from custom select triggers
+  const goalText = goalWrapper?.querySelector('.custom-select-value')?.textContent || 'Not selected';
+  const levelText = levelWrapper?.querySelector('.custom-select-value')?.textContent || 'Not selected';
+  const locText = locationWrapper?.querySelector('.custom-select-value')?.textContent || 'Not selected';
+  const daysText = daysWrapper?.querySelector('.custom-select-value')?.textContent || 'Not selected';
 
   const el = document.getElementById('wizardSummary');
   if (!el) return;
@@ -446,7 +463,7 @@ function generateProgram() {
   html += `
       </div>
       <div style="margin-top: var(--space-2xl); text-align: center;">
-        <a href="${_base}pages/auth/signup.html" class="btn btn-primary">Save This Program — Sign Up Free →</a>
+        ${getProgramSaveButton()}
       </div>
     </div>
   `;
@@ -456,6 +473,71 @@ function generateProgram() {
     container.innerHTML = html;
     container.style.display = 'block';
     container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// Get appropriate save button based on login state
+function getProgramSaveButton() {
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || 'null');
+  
+  if (user) {
+    // User is logged in - show save to dashboard button
+    return `<button class="btn btn-primary" onclick="saveProgramToDashboard()">Save to My Programs →</button>`;
+  } else {
+    // Not logged in - show signup CTA
+    return `<a href="${_base}pages/auth/signup.html" class="btn btn-primary">Save This Program — Sign Up Free →</a>`;
+  }
+}
+
+// Save generated program to user's dashboard
+function saveProgramToDashboard() {
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || 'null');
+  if (!user) {
+    showToast('Please log in to save programs', 'info');
+    setTimeout(() => {
+      window.location.href = _base + 'pages/auth/login.html?redirect=programs';
+    }, 1000);
+    return;
+  }
+  
+  // Get program data from the generated content
+  const programContainer = document.getElementById('generatedProgram');
+  const programTitle = programContainer?.querySelector('h2')?.textContent || 'Custom Program';
+  
+  // Initialize saved programs array if not exists
+  user.savedPrograms = user.savedPrograms || [];
+  
+  // Create program object
+  const program = {
+    id: Date.now(),
+    title: programTitle,
+    savedAt: new Date().toISOString(),
+    html: programContainer?.innerHTML || ''
+  };
+  
+  // Check if already saved
+  const alreadySaved = user.savedPrograms.some(p => p.title === programTitle);
+  if (alreadySaved) {
+    showToast('Program already saved!', 'info');
+    return;
+  }
+  
+  // Add to saved programs
+  user.savedPrograms.push(program);
+  localStorage.setItem('Kynotra_user', JSON.stringify(user));
+  
+  // Update users database
+  updateUserInDatabase(user);
+  
+  showToast('Program saved to your dashboard!', 'success');
+  
+  // Update the button to show saved state
+  const btnContainer = programContainer?.querySelector('div[style*="text-align: center"]');
+  if (btnContainer) {
+    btnContainer.innerHTML = `
+      <button class="btn btn-success" disabled style="pointer-events: none;">✓ Saved to Dashboard</button>
+      <a href="${_base}pages/dashboard/dashboard.html" class="btn btn-outline" style="margin-left: var(--space-md);">Go to Dashboard →</a>
+    `;
   }
 }
 
@@ -1227,7 +1309,10 @@ function startCheckout() {
   if (cart.length === 0) return;
   const user = JSON.parse(localStorage.getItem('Kynotra_user') || 'null');
   if (!user) {
-    showToast('Please log in to checkout', 'error');
+    showToast('Please log in to checkout', 'info');
+    setTimeout(() => {
+      window.location.href = _base + 'pages/auth/login.html?redirect=checkout';
+    }, 1000);
     return;
   }
   checkoutStep = 1;
@@ -1743,24 +1828,100 @@ function handleLogin(e) {
   e.preventDefault();
   const form = e.target;
   const email = form.querySelector('input[type="email"]')?.value || '';
-  const user = { name: email.split('@')[0], email: email };
+  const password = form.querySelector('input[type="password"]')?.value || '';
+  
+  // Get existing users from database or create first user
+  const users = JSON.parse(localStorage.getItem('Kynotra_users') || '[]');
+  let user = users.find(u => u.email === email);
+  
+  if (!user) {
+    showToast('No account found with this email', 'error');
+    return;
+  }
+  
+  // In production, this would verify password hash on server
+  if (user.password !== password) {
+    showToast('Incorrect password', 'error');
+    return;
+  }
+  
+  // Set current logged-in user
   localStorage.setItem('Kynotra_user', JSON.stringify(user));
   showToast('Logging in...', 'success');
+  
+  // Handle redirect parameter
+  const urlParams = new URLSearchParams(window.location.search);
+  const redirect = urlParams.get('redirect');
+  
   setTimeout(() => {
-    window.location.href = _base + 'pages/dashboard/dashboard.html';
+    if (redirect === 'checkout') {
+      window.location.href = _base + 'shop.html';
+    } else if (redirect === 'programs') {
+      window.location.href = _base + 'programs.html';
+    } else if (redirect === 'subscribe') {
+      const plan = urlParams.get('plan') || 'pro';
+      window.location.href = _base + 'index.html#pricing';
+    } else {
+      window.location.href = _base + 'pages/dashboard/dashboard.html';
+    }
   }, 1000);
 }
 
 function handleSignup(e) {
   e.preventDefault();
   const form = e.target;
-  const firstName = form.querySelector('input[type="text"]')?.value || '';
+  const firstName = form.querySelector('input[name="firstName"]')?.value || form.querySelector('input[type="text"]')?.value || '';
+  const lastName = form.querySelector('input[name="lastName"]')?.value || '';
   const email = form.querySelector('input[type="email"]')?.value || '';
-  const user = { name: firstName, email: email };
+  const password = form.querySelector('input[type="password"]')?.value || '';
+  
+  // Get existing users
+  const users = JSON.parse(localStorage.getItem('Kynotra_users') || '[]');
+  
+  // Check if email already exists
+  if (users.find(u => u.email === email)) {
+    showToast('An account with this email already exists', 'error');
+    return;
+  }
+  
+  // Create new user with subscription data
+  const user = { 
+    id: Date.now(),
+    name: firstName, 
+    lastName: lastName,
+    email: email,
+    password: password, // In production, hash this on server
+    subscription: 'free',
+    subscriptionStatus: null,
+    trialEndsAt: null,
+    createdAt: new Date().toISOString(),
+    progress: {
+      workoutsCompleted: 0,
+      currentStreak: 0,
+      totalWeightLifted: 0,
+      caloriesBurned: 0
+    }
+  };
+  
+  // Add to users database
+  users.push(user);
+  localStorage.setItem('Kynotra_users', JSON.stringify(users));
+  
+  // Set as current user
   localStorage.setItem('Kynotra_user', JSON.stringify(user));
   showToast('Account created! Redirecting...', 'success');
+  
+  // Handle plan parameter - auto-start trial if came from pricing
+  const urlParams = new URLSearchParams(window.location.search);
+  const plan = urlParams.get('plan');
+  
   setTimeout(() => {
-    window.location.href = _base + 'pages/dashboard/dashboard.html';
+    if (plan && plan !== 'free') {
+      // Redirect to pricing with trial flag
+      window.location.href = _base + 'index.html?plan=' + plan + '&trial=true#pricing';
+    } else {
+      window.location.href = _base + 'pages/dashboard/dashboard.html';
+    }
   }, 1000);
 }
 
@@ -1855,6 +2016,45 @@ function initDashboardProfile(user, fullName, initials) {
   if (welcomeH1) {
     welcomeH1.textContent = `Welcome back, ${user.name || 'there'}!`;
   }
+  
+  // Update subscription display
+  const dashPlanLabel = document.getElementById('dashPlanLabel');
+  const dashPlanTag = document.getElementById('dashPlanTag');
+  
+  if (dashPlanLabel && dashPlanTag) {
+    const subscription = user.subscription || 'free';
+    const status = user.subscriptionStatus;
+    const planNames = { free: 'Free', pro: 'Pro', elite: 'Elite' };
+    const planName = planNames[subscription] || 'Free';
+    
+    dashPlanLabel.textContent = `${planName} Member`;
+    
+    if (status === 'trial') {
+      dashPlanTag.textContent = 'Trial Active';
+      dashPlanTag.className = 'tag tag-info';
+      dashPlanTag.style.display = 'inline-block';
+      
+      // Show days remaining
+      if (user.trialEndsAt) {
+        const trialEnd = new Date(user.trialEndsAt);
+        const daysLeft = Math.ceil((trialEnd - new Date()) / (1000 * 60 * 60 * 24));
+        if (daysLeft > 0) {
+          dashPlanTag.textContent = `Trial: ${daysLeft} days left`;
+        } else {
+          dashPlanTag.textContent = 'Trial Expired';
+          dashPlanTag.className = 'tag tag-error';
+        }
+      }
+    } else if (subscription !== 'free') {
+      dashPlanTag.textContent = 'Active Plan';
+      dashPlanTag.className = 'tag tag-success';
+      dashPlanTag.style.display = 'inline-block';
+    } else {
+      dashPlanTag.textContent = 'Free Plan';
+      dashPlanTag.className = 'tag tag-primary';
+      dashPlanTag.style.display = 'inline-block';
+    }
+  }
 }
 
 // ==========================================
@@ -1866,10 +2066,38 @@ function openProfileEditor() {
   document.getElementById('editLastName').value = user.lastName || '';
   document.getElementById('editEmail').value = user.email || '';
   document.getElementById('editAge').value = user.age || '';
-  document.getElementById('editGender').value = user.gender || '';
   document.getElementById('editWeight').value = user.weight || '';
   document.getElementById('editHeight').value = user.height || '';
+  
+  // Set gender dropdown
+  document.getElementById('editGender').value = user.gender || '';
+  const genderWrapper = document.getElementById('editGenderWrapper');
+  if (genderWrapper && user.gender) {
+    const genderOption = genderWrapper.querySelector(`.custom-select-option[data-value="${user.gender}"]`);
+    const genderDisplay = genderWrapper.querySelector('.custom-select-value');
+    if (genderOption && genderDisplay) {
+      genderDisplay.textContent = genderOption.querySelector('.option-text').textContent;
+    }
+  } else if (genderWrapper) {
+    genderWrapper.querySelector('.custom-select-value').textContent = 'Select...';
+  }
+  
+  // Set goal dropdown
   document.getElementById('editGoal').value = user.goal || '';
+  const goalWrapper = document.getElementById('editGoalWrapper');
+  if (goalWrapper && user.goal) {
+    const goalOption = goalWrapper.querySelector(`.custom-select-option[data-value="${user.goal}"]`);
+    const goalDisplay = goalWrapper.querySelector('.custom-select-value');
+    if (goalOption && goalDisplay) {
+      goalDisplay.textContent = goalOption.querySelector('.option-text').textContent;
+    }
+  } else if (goalWrapper) {
+    goalWrapper.querySelector('.custom-select-value').textContent = 'Select goal...';
+  }
+  
+  // Restore unit preference
+  setProfileUnit(user.unit || 'imperial');
+  
   document.getElementById('profileModal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -1877,6 +2105,37 @@ function openProfileEditor() {
 function closeProfileEditor() {
   document.getElementById('profileModal').classList.remove('open');
   document.body.style.overflow = '';
+}
+
+// Profile unit toggle
+let profileUnit = 'imperial'; // default
+
+function setProfileUnit(unit) {
+  profileUnit = unit;
+  const imperial = document.getElementById('profileUnitImperial');
+  const metric = document.getElementById('profileUnitMetric');
+  const weightUnit = document.getElementById('profileWeightUnit');
+  const heightUnit = document.getElementById('profileHeightUnit');
+  const weightInput = document.getElementById('editWeight');
+  const heightInput = document.getElementById('editHeight');
+  
+  if (!imperial || !metric) return; // Elements not on this page
+  
+  if (unit === 'imperial') {
+    imperial.classList.add('active');
+    metric.classList.remove('active');
+    if (weightUnit) weightUnit.textContent = '(lbs)';
+    if (heightUnit) heightUnit.textContent = '(in)';
+    if (weightInput) weightInput.placeholder = '175';
+    if (heightInput) heightInput.placeholder = '70';
+  } else {
+    metric.classList.add('active');
+    imperial.classList.remove('active');
+    if (weightUnit) weightUnit.textContent = '(kg)';
+    if (heightUnit) heightUnit.textContent = '(cm)';
+    if (weightInput) weightInput.placeholder = '80';
+    if (heightInput) heightInput.placeholder = '178';
+  }
 }
 
 function saveProfile(e) {
@@ -1890,7 +2149,12 @@ function saveProfile(e) {
   user.weight = document.getElementById('editWeight').value;
   user.height = document.getElementById('editHeight').value;
   user.goal = document.getElementById('editGoal').value;
+  user.unit = profileUnit; // Save unit preference
   localStorage.setItem('Kynotra_user', JSON.stringify(user));
+  
+  // Also update in users database
+  updateUserInDatabase(user);
+  
   showToast('Profile updated!', 'success');
   closeProfileEditor();
 
@@ -2050,7 +2314,8 @@ function showToast(message, type = 'success') {
   toast.className = `toast ${type}`;
   // Use textContent to prevent XSS
   const iconSpan = document.createElement('span');
-  iconSpan.textContent = type === 'success' ? '✓' : '✕';
+  const icons = { success: '✓', error: '✕', info: 'ℹ' };
+  iconSpan.textContent = icons[type] || icons.success;
   const msgSpan = document.createElement('span');
   msgSpan.textContent = message;
   toast.appendChild(iconSpan);
@@ -2084,3 +2349,343 @@ document.addEventListener('click', (e) => {
     }
   }
 });
+
+// ==========================================
+// SUBSCRIPTION MANAGEMENT
+// ==========================================
+function startTrial(plan) {
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || 'null');
+  
+  // If not logged in, redirect to signup
+  if (!user) {
+    showToast('Please create an account first', 'info');
+    setTimeout(() => {
+      window.location.href = _base + 'pages/auth/signup.html?plan=' + plan + '&trial=true';
+    }, 1000);
+    return;
+  }
+  
+  // Check if already has subscription or used trial
+  if (user.subscription && user.subscription !== 'free') {
+    showToast('You already have an active subscription!', 'info');
+    return;
+  }
+  
+  if (user.trialUsed) {
+    showToast('You have already used your free trial', 'error');
+    return;
+  }
+  
+  // Start the trial
+  const trialEndsAt = new Date();
+  trialEndsAt.setDate(trialEndsAt.getDate() + 7);
+  
+  user.subscription = plan;
+  user.subscriptionStatus = 'trial';
+  user.trialEndsAt = trialEndsAt.toISOString();
+  user.trialUsed = true;
+  
+  // Update user in localStorage
+  localStorage.setItem('Kynotra_user', JSON.stringify(user));
+  
+  // Update users database
+  updateUserInDatabase(user);
+  
+  showToast(`Started 7-day free trial of ${plan.charAt(0).toUpperCase() + plan.slice(1)} plan!`, 'success');
+  
+  // Update pricing display
+  updatePricingDisplay();
+  
+  setTimeout(() => {
+    window.location.href = _base + 'pages/dashboard/dashboard.html';
+  }, 1500);
+}
+
+function subscribe(plan) {
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || 'null');
+  
+  if (!user) {
+    showToast('Please log in first', 'info');
+    setTimeout(() => {
+      window.location.href = _base + 'pages/auth/login.html?redirect=subscribe&plan=' + plan;
+    }, 1000);
+    return;
+  }
+  
+  // In production, this would open a payment modal/Stripe checkout
+  // For now, simulate subscription
+  const expiresAt = new Date();
+  expiresAt.setMonth(expiresAt.getMonth() + 1);
+  
+  user.subscription = plan;
+  user.subscriptionStatus = 'active';
+  user.subscriptionExpiresAt = expiresAt.toISOString();
+  
+  localStorage.setItem('Kynotra_user', JSON.stringify(user));
+  updateUserInDatabase(user);
+  
+  showToast(`Subscribed to ${plan.charAt(0).toUpperCase() + plan.slice(1)} plan!`, 'success');
+  updatePricingDisplay();
+  
+  setTimeout(() => {
+    window.location.href = _base + 'pages/dashboard/dashboard.html';
+  }, 1500);
+}
+
+function updateUserInDatabase(user) {
+  const users = JSON.parse(localStorage.getItem('Kynotra_users') || '[]');
+  const index = users.findIndex(u => u.email === user.email);
+  if (index !== -1) {
+    users[index] = user;
+    localStorage.setItem('Kynotra_users', JSON.stringify(users));
+  }
+}
+
+function updatePricingDisplay() {
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || 'null');
+  const pricingCards = document.querySelectorAll('.pricing-card');
+  
+  if (!pricingCards.length) return;
+  
+  pricingCards.forEach(card => {
+    const planName = card.dataset.plan || card.querySelector('h3')?.textContent.toLowerCase();
+    const btn = card.querySelector('.btn');
+    
+    if (!btn || !planName) return;
+    
+    // Reset button state first
+    btn.disabled = false;
+    btn.style.pointerEvents = '';
+    btn.style.opacity = '';
+    
+    // Get user's current subscription
+    const userSub = user?.subscription || 'free';
+    const isTrialUser = user?.subscriptionStatus === 'trial';
+    
+    // If user has this plan (paid or trial)
+    if (user && userSub === planName && planName !== 'free') {
+      let statusText = 'Current Plan';
+      
+      if (isTrialUser && user.trialEndsAt) {
+        const trialEnd = new Date(user.trialEndsAt);
+        const daysLeft = Math.ceil((trialEnd - new Date()) / (1000 * 60 * 60 * 24));
+        statusText = daysLeft > 0 ? `Trial: ${daysLeft} days left` : 'Trial Expired';
+      }
+      
+      btn.textContent = statusText;
+      btn.classList.remove('btn-primary', 'btn-secondary', 'btn-outline');
+      btn.classList.add('btn-success');
+      btn.disabled = true;
+      btn.style.pointerEvents = 'none';
+      btn.style.opacity = '0.8';
+    }
+    // User is logged in with free plan
+    else if (user && userSub === 'free') {
+      if (planName === 'free') {
+        btn.textContent = 'Current Plan';
+        btn.classList.remove('btn-primary', 'btn-outline');
+        btn.classList.add('btn-success');
+        btn.disabled = true;
+        btn.style.pointerEvents = 'none';
+        btn.style.opacity = '0.8';
+      } else if (planName === 'pro') {
+        btn.textContent = user.trialUsed ? 'Subscribe to Pro' : 'Start 7-Day Free Trial';
+      } else if (planName === 'elite') {
+        btn.textContent = 'Go Elite';
+      }
+    }
+    // User has Pro (trial or active) - can upgrade to Elite
+    else if (user && userSub === 'pro' && planName === 'elite') {
+      btn.textContent = 'Upgrade to Elite';
+      btn.classList.remove('btn-outline');
+      btn.classList.add('btn-primary');
+    }
+    // User has Pro - mark free as downgrade option
+    else if (user && userSub === 'pro' && planName === 'free') {
+      btn.textContent = 'Downgrade';
+      btn.classList.remove('btn-success');
+      btn.classList.add('btn-secondary');
+    }
+    // User has Elite - already on best plan
+    else if (user && userSub === 'elite') {
+      if (planName === 'elite') {
+        btn.textContent = 'Current Plan';
+        btn.classList.remove('btn-primary', 'btn-outline');
+        btn.classList.add('btn-success');
+        btn.disabled = true;
+        btn.style.pointerEvents = 'none';
+        btn.style.opacity = '0.8';
+      } else {
+        btn.textContent = 'Downgrade';
+        btn.classList.remove('btn-success', 'btn-primary');
+        btn.classList.add('btn-secondary');
+      }
+    }
+  });
+}
+
+// Handle generic "Get Started" CTA - redirects logged-in users to dashboard
+function handleGetStarted() {
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || 'null');
+  if (user) {
+    window.location.href = _base + 'pages/dashboard/dashboard.html';
+  } else {
+    window.location.href = _base + 'pages/auth/signup.html';
+  }
+}
+
+// Handle pricing plan action
+function handlePlanAction(plan) {
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || 'null');
+  
+  // Not logged in - redirect to signup
+  if (!user) {
+    window.location.href = _base + 'pages/auth/signup.html?plan=' + plan;
+    return;
+  }
+  
+  const userSub = user.subscription || 'free';
+  
+  // Already on this plan
+  if (userSub === plan) {
+    showToast('You are already on this plan', 'info');
+    return;
+  }
+  
+  // Downgrade request
+  if ((userSub === 'elite' && (plan === 'pro' || plan === 'free')) ||
+      (userSub === 'pro' && plan === 'free')) {
+    showToast('Contact support to downgrade your plan', 'info');
+    return;
+  }
+  
+  // Free plan - redirect to dashboard
+  if (plan === 'free') {
+    window.location.href = _base + 'pages/dashboard/dashboard.html';
+    return;
+  }
+  
+  // User is logged in and wants to upgrade/start trial
+  if (userSub === 'free' && !user.trialUsed) {
+    // Start trial
+    startTrial(plan);
+  } else if (userSub === 'free' && user.trialUsed) {
+    // Already used trial - subscribe directly
+    subscribe(plan);
+  } else if (userSub === 'pro' && plan === 'elite') {
+    // Upgrade from Pro to Elite
+    subscribe('elite');
+  }
+}
+
+// Initialize pricing display on page load
+document.addEventListener('DOMContentLoaded', () => {
+  updatePricingDisplay();
+  updateTrialButtons();
+  
+  // Handle URL params for signup with plan
+  const urlParams = new URLSearchParams(window.location.search);
+  const plan = urlParams.get('plan');
+  const isTrial = urlParams.get('trial');
+  
+  if (plan && isTrial === 'true') {
+    // Auto-start trial after signup
+    const user = JSON.parse(localStorage.getItem('Kynotra_user') || 'null');
+    if (user && (!user.subscription || user.subscription === 'free')) {
+      startTrial(plan);
+    }
+  }
+});
+
+// Update hero and CTA trial buttons based on user state
+function updateTrialButtons() {
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || 'null');
+  const heroBtn = document.getElementById('heroTrialBtn');
+  const ctaBtn = document.getElementById('ctaTrialBtn');
+  
+  const buttons = [heroBtn, ctaBtn].filter(Boolean);
+  
+  buttons.forEach(btn => {
+    if (!user) {
+      // Not logged in - show trial CTA
+      btn.textContent = 'Start Free Trial →';
+      btn.onclick = () => handlePlanAction('pro');
+    } else {
+      const sub = user.subscription || 'free';
+      
+      if (sub !== 'free') {
+        // Has paid subscription or trial
+        if (user.subscriptionStatus === 'trial') {
+          btn.textContent = 'Go to Dashboard →';
+        } else {
+          btn.textContent = 'Go to Dashboard →';
+        }
+        btn.onclick = () => { window.location.href = _base + 'pages/dashboard/dashboard.html'; };
+      } else if (user.trialUsed) {
+        // Free user who already used trial
+        btn.textContent = 'Subscribe Now →';
+        btn.onclick = () => handlePlanAction('pro');
+      } else {
+        // Free user who hasn't used trial
+        btn.textContent = 'Start Free Trial →';
+        btn.onclick = () => handlePlanAction('pro');
+      }
+    }
+  });
+}
+
+// ==========================================
+// UPDATE USER PROGRESS
+// ==========================================
+function updateUserProgress(progressData) {
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || 'null');
+  if (!user) return;
+  
+  user.progress = user.progress || {};
+  Object.assign(user.progress, progressData);
+  
+  localStorage.setItem('Kynotra_user', JSON.stringify(user));
+  updateUserInDatabase(user);
+}
+
+function logWorkoutComplete(workoutData) {
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || 'null');
+  if (!user) return;
+  
+  user.progress = user.progress || {
+    workoutsCompleted: 0,
+    currentStreak: 0,
+    totalWeightLifted: 0,
+    caloriesBurned: 0,
+    workoutHistory: []
+  };
+  
+  user.progress.workoutsCompleted++;
+  user.progress.totalWeightLifted += workoutData.weightLifted || 0;
+  user.progress.caloriesBurned += workoutData.caloriesBurned || 0;
+  
+  // Add to history
+  user.progress.workoutHistory = user.progress.workoutHistory || [];
+  user.progress.workoutHistory.push({
+    date: new Date().toISOString(),
+    ...workoutData
+  });
+  
+  // Update streak
+  const lastWorkout = user.progress.lastWorkoutDate;
+  const today = new Date().toDateString();
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  
+  if (!lastWorkout || new Date(lastWorkout).toDateString() === yesterday) {
+    user.progress.currentStreak++;
+  } else if (new Date(lastWorkout).toDateString() !== today) {
+    user.progress.currentStreak = 1;
+  }
+  
+  user.progress.lastWorkoutDate = new Date().toISOString();
+  
+  localStorage.setItem('Kynotra_user', JSON.stringify(user));
+  updateUserInDatabase(user);
+  
+  showToast('Workout logged! 💪', 'success');
+}

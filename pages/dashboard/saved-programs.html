@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Kynotra Dashboard - Saved Programs">
+  <title>Saved Programs — Kynotra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/styles.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../images/favicon.svg" alt="Kynotra" class="logo-icon">KYNOTRA</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="../../index.html">Home</a></li>
+        <li><a href="../../programs.html">Programs</a></li>
+        <li><a href="../../diet.html">Nutrition</a></li>
+        <li><a href="../../exercises.html">Exercises</a></li>
+        <li><a href="../../shop.html">Shop</a></li>
+        <li><a href="../../about.html">About</a></li>
+        <li><a href="../../contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="../../shop.html" class="nav-cart">🛒<span class="cart-count" id="cartCount">0</span></a>
+        <a href="dashboard.html" class="btn btn-sm btn-outline">Dashboard</a>
+        <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Dashboard -->
+  <div class="dashboard">
+    <div class="container container-wide">
+      <div class="dashboard-grid">
+
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+          <div class="profile-card" style="background: var(--gradient-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--space-xl); text-align: center; margin-bottom: var(--space-lg);">
+            <div class="profile-avatar-wrap" onclick="window.location.href='dashboard.html?edit=avatar'" title="Change avatar">
+              <div class="profile-avatar" id="dashAvatar">JD</div>
+              <div class="profile-avatar-edit">📷</div>
+            </div>
+            <h3 style="font-size: 1.1rem; margin-bottom: var(--space-xs);" id="dashName">John Doe</h3>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: var(--space-sm);" id="dashEmail"></p>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: var(--space-md);" id="dashPlanLabel">Free Member</p>
+            <span class="tag tag-primary" id="dashPlanTag" style="margin-bottom: var(--space-md); display: inline-block;">Free Plan</span>
+            <a href="dashboard.html?edit=profile" class="btn btn-sm btn-outline btn-block" style="margin-top: var(--space-sm);">✏️ Edit Profile</a>
+          </div>
+
+          <div class="sidebar-menu">
+            <a href="dashboard.html">📊 Overview</a>
+            <a href="workouts.html">🏋️ My Workouts</a>
+            <a href="nutrition-dash.html">🥗 Nutrition</a>
+            <a href="progress.html">📈 Progress</a>
+            <a href="saved-programs.html" class="active">💾 Saved Programs</a>
+            <a href="#" onclick="handleLogout(); return false;">🚪 Log Out</a>
+          </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main>
+          <!-- Page Header -->
+          <div style="margin-bottom: var(--space-xl);">
+            <h1 style="font-family: var(--font-heading); font-size: 2rem; text-transform: uppercase; margin-bottom: var(--space-xs);">Saved Programs</h1>
+            <p style="color: var(--text-secondary);">Manage your workout programs</p>
+          </div>
+
+          <!-- Active Program -->
+          <div class="stat-card" style="margin-bottom: var(--space-xl); border: 2px solid var(--accent);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-lg); flex-wrap: wrap; gap: var(--space-md);">
+              <div>
+                <span class="tag tag-success" style="margin-bottom: var(--space-sm); display: inline-block;">Currently Active</span>
+                <h2 style="font-family: var(--font-heading); font-size: 1.5rem; text-transform: uppercase; margin-bottom: var(--space-xs);">Muscle Builder Pro</h2>
+                <p style="color: var(--text-muted);">12 Weeks • Gym • Intermediate</p>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-family: var(--font-heading); font-size: 2rem; color: var(--accent);">31%</div>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Week 6 of 12</p>
+              </div>
+            </div>
+            
+            <div class="progress-bar" style="height: 10px; margin-bottom: var(--space-lg);">
+              <div class="progress-bar-fill" style="width: 31%;"></div>
+            </div>
+            
+            <div class="grid-4" style="gap: var(--space-md); margin-bottom: var(--space-lg);">
+              <div style="text-align: center; padding: var(--space-md); background: var(--primary); border-radius: var(--radius-md);">
+                <div style="font-family: var(--font-heading); font-size: 1.5rem;">26</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">Days Completed</div>
+              </div>
+              <div style="text-align: center; padding: var(--space-md); background: var(--primary); border-radius: var(--radius-md);">
+                <div style="font-family: var(--font-heading); font-size: 1.5rem;">58</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">Days Remaining</div>
+              </div>
+              <div style="text-align: center; padding: var(--space-md); background: var(--primary); border-radius: var(--radius-md);">
+                <div style="font-family: var(--font-heading); font-size: 1.5rem;">5</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">Days / Week</div>
+              </div>
+              <div style="text-align: center; padding: var(--space-md); background: var(--primary); border-radius: var(--radius-md);">
+                <div style="font-family: var(--font-heading); font-size: 1.5rem;">PPL</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">Split Type</div>
+              </div>
+            </div>
+            
+            <div style="display: flex; gap: var(--space-md); flex-wrap: wrap;">
+              <a href="workouts.html" class="btn btn-primary">Continue Program →</a>
+              <button class="btn btn-outline">View Full Program</button>
+              <button class="btn btn-outline" style="color: var(--warning); border-color: var(--warning);">Pause Program</button>
+            </div>
+          </div>
+
+          <!-- Saved Programs Grid -->
+          <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: var(--space-lg);">All Programs</h3>
+          
+          <div class="programs-grid" id="savedProgramsList">
+            <!-- Completed Program -->
+            <div class="program-card completed">
+              <div class="program-status">
+                <span class="tag tag-info">Completed</span>
+              </div>
+              <div class="program-image">
+                <img src="https://images.unsplash.com/photo-1549060279-7e168fcee0c2?w=400&q=80" alt="Shred & Lean">
+              </div>
+              <div class="program-content">
+                <h4>Shred & Lean</h4>
+                <p class="program-meta">8 Weeks • Home/Gym • All Levels</p>
+                <p class="program-desc">Fat loss focused program with high-intensity circuits</p>
+                <div class="program-footer">
+                  <span class="program-date">Completed Dec 2025</span>
+                  <div class="program-actions">
+                    <button class="btn btn-sm btn-outline">Restart</button>
+                    <button class="btn btn-sm btn-outline" title="Delete">🗑️</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Completed Program -->
+            <div class="program-card completed">
+              <div class="program-status">
+                <span class="tag tag-info">Completed</span>
+              </div>
+              <div class="program-image">
+                <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&q=80" alt="Beginner Blueprint">
+              </div>
+              <div class="program-content">
+                <h4>Beginner Blueprint</h4>
+                <p class="program-meta">8 Weeks • Gym • Beginner</p>
+                <p class="program-desc">Foundation building program for newcomers</p>
+                <div class="program-footer">
+                  <span class="program-date">Completed Oct 2025</span>
+                  <div class="program-actions">
+                    <button class="btn btn-sm btn-outline">Restart</button>
+                    <button class="btn btn-sm btn-outline" title="Delete">🗑️</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Saved but not started -->
+            <div class="program-card saved">
+              <div class="program-status">
+                <span class="tag tag-secondary">Saved</span>
+              </div>
+              <div class="program-image">
+                <img src="https://images.unsplash.com/photo-1605296867304-46d5465a13f1?w=400&q=80" alt="Powerlifting Fundamentals">
+              </div>
+              <div class="program-content">
+                <h4>Powerlifting Fundamentals</h4>
+                <p class="program-meta">16 Weeks • Gym • Intermediate</p>
+                <p class="program-desc">Strength-focused program for big lifts</p>
+                <div class="program-footer">
+                  <span class="program-date">Saved Jan 2, 2026</span>
+                  <div class="program-actions">
+                    <button class="btn btn-sm btn-primary">Start</button>
+                    <button class="btn btn-sm btn-outline" title="Delete">🗑️</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Saved but not started -->
+            <div class="program-card saved">
+              <div class="program-status">
+                <span class="tag tag-secondary">Saved</span>
+              </div>
+              <div class="program-image">
+                <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&q=80" alt="Athletic Performance">
+              </div>
+              <div class="program-content">
+                <h4>Athletic Performance</h4>
+                <p class="program-meta">10 Weeks • Gym • Advanced</p>
+                <p class="program-desc">Sport-specific training for athletes</p>
+                <div class="program-footer">
+                  <span class="program-date">Saved Dec 28, 2025</span>
+                  <div class="program-actions">
+                    <button class="btn btn-sm btn-primary">Start</button>
+                    <button class="btn btn-sm btn-outline" title="Delete">🗑️</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Add new program card -->
+            <div class="program-card add-new">
+              <a href="../../programs.html" class="add-new-link">
+                <div class="add-icon">+</div>
+                <h4>Create New Program</h4>
+                <p>Use our AI wizard to generate a custom program</p>
+              </a>
+            </div>
+          </div>
+
+          <!-- Program History -->
+          <div class="stat-card" style="margin-top: var(--space-xl);">
+            <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: var(--space-lg);">Program History</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Program</th>
+                    <th>Duration</th>
+                    <th>Started</th>
+                    <th>Completed</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Muscle Builder Pro</td>
+                    <td>12 weeks</td>
+                    <td>Nov 25, 2025</td>
+                    <td>—</td>
+                    <td><span class="tag tag-success">Active</span></td>
+                  </tr>
+                  <tr>
+                    <td>Shred & Lean</td>
+                    <td>8 weeks</td>
+                    <td>Oct 1, 2025</td>
+                    <td>Nov 24, 2025</td>
+                    <td><span class="tag tag-info">Completed</span></td>
+                  </tr>
+                  <tr>
+                    <td>Beginner Blueprint</td>
+                    <td>8 weeks</td>
+                    <td>Aug 1, 2025</td>
+                    <td>Sep 30, 2025</td>
+                    <td><span class="tag tag-info">Completed</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer style="padding: var(--space-xl) 0; border-top: 1px solid var(--border-color); text-align: center;">
+    <p style="color: var(--text-muted); font-size: 0.85rem;">&copy; 2026 Kynotra. All rights reserved.</p>
+  </footer>
+
+  <script src="../../js/app.js"></script>
+  <style>
+    .programs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--space-lg);
+    }
+    
+    .program-card {
+      position: relative;
+      background: var(--gradient-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: transform var(--transition-base), box-shadow var(--transition-base);
+    }
+    .program-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .program-status {
+      position: absolute;
+      top: var(--space-sm);
+      right: var(--space-sm);
+      z-index: 2;
+    }
+    
+    .program-image {
+      position: relative;
+      height: 150px;
+      overflow: hidden;
+    }
+    .program-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform var(--transition-base);
+    }
+    .program-card:hover .program-image img {
+      transform: scale(1.05);
+    }
+    .program-card.completed .program-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.3);
+    }
+    
+    .program-content {
+      padding: var(--space-lg);
+    }
+    .program-content h4 {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      margin-bottom: var(--space-xs);
+    }
+    .program-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: var(--space-sm);
+    }
+    .program-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-md);
+    }
+    .program-footer {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      padding-top: var(--space-md);
+      border-top: 1px solid var(--border-color);
+    }
+    .program-date {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .program-actions {
+      display: flex;
+      gap: var(--space-xs);
+    }
+    
+    .program-card.add-new {
+      border: 2px dashed var(--border-color);
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+    }
+    .program-card.add-new:hover {
+      border-color: var(--accent);
+      transform: none;
+      box-shadow: none;
+    }
+    .add-new-link {
+      text-align: center;
+      padding: var(--space-xl);
+      color: var(--text-secondary);
+      text-decoration: none;
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .add-new-link:hover {
+      color: var(--text-primary);
+    }
+    .add-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 2px dashed var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto var(--space-md);
+      transition: all var(--transition-base);
+    }
+    .add-new-link:hover .add-icon {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .add-new-link h4 {
+      font-size: 1rem;
+      margin-bottom: var(--space-xs);
+    }
+    .add-new-link p {
+      font-size: 0.85rem;
+    }
+    
+    @media (max-width: 768px) {
+      .programs-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</body>
+</html>

@@ -264,6 +264,17 @@ input, select, textarea {
   transform: translateY(-2px);
 }
 
+.btn-success {
+  background: var(--success);
+  color: white;
+  border: 2px solid var(--success);
+}
+
+.btn-success:hover {
+  background: #00cc08;
+  border-color: #00cc08;
+}
+
 .btn-sm {
   padding: 10px 20px;
   font-size: 0.85rem;
@@ -1718,6 +1729,11 @@ input, select, textarea {
   color: var(--info);
 }
 
+.tag-error {
+  background: rgba(255, 82, 82, 0.15);
+  color: #ff5252;
+}
+
 /* --- Footer --- */
 .footer {
   background: var(--primary);
@@ -1942,7 +1958,27 @@ input, select, textarea {
 .dashboard-sidebar {
   position: sticky;
   top: calc(var(--nav-height) + var(--space-xl));
-  height: fit-content;
+  max-height: calc(100vh - var(--nav-height) - var(--space-xl) * 2);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+}
+
+.dashboard-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dashboard-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dashboard-sidebar::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+
+.dashboard-sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }
 
 .sidebar-menu {
@@ -2359,6 +2395,10 @@ tr:hover td {
 
 .toast.error {
   border-left: 4px solid var(--accent);
+}
+
+.toast.info {
+  border-left: 4px solid var(--info);
 }
 
 /* ==========================================

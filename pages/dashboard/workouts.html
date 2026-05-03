@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Kynotra Dashboard - My Workouts">
+  <title>My Workouts — Kynotra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/styles.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../images/favicon.svg" alt="Kynotra" class="logo-icon">KYNOTRA</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="../../index.html">Home</a></li>
+        <li><a href="../../programs.html">Programs</a></li>
+        <li><a href="../../diet.html">Nutrition</a></li>
+        <li><a href="../../exercises.html">Exercises</a></li>
+        <li><a href="../../shop.html">Shop</a></li>
+        <li><a href="../../about.html">About</a></li>
+        <li><a href="../../contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="../../shop.html" class="nav-cart">🛒<span class="cart-count" id="cartCount">0</span></a>
+        <a href="dashboard.html" class="btn btn-sm btn-outline">Dashboard</a>
+        <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Dashboard -->
+  <div class="dashboard">
+    <div class="container container-wide">
+      <div class="dashboard-grid">
+
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+          <div class="profile-card" style="background: var(--gradient-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--space-xl); text-align: center; margin-bottom: var(--space-lg);">
+            <div class="profile-avatar-wrap" onclick="window.location.href='dashboard.html?edit=avatar'" title="Change avatar">
+              <div class="profile-avatar" id="dashAvatar">JD</div>
+              <div class="profile-avatar-edit">📷</div>
+            </div>
+            <h3 style="font-size: 1.1rem; margin-bottom: var(--space-xs);" id="dashName">John Doe</h3>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: var(--space-sm);" id="dashEmail"></p>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: var(--space-md);" id="dashPlanLabel">Free Member</p>
+            <span class="tag tag-primary" id="dashPlanTag" style="margin-bottom: var(--space-md); display: inline-block;">Free Plan</span>
+            <a href="dashboard.html?edit=profile" class="btn btn-sm btn-outline btn-block" style="margin-top: var(--space-sm);">✏️ Edit Profile</a>
+          </div>
+
+          <div class="sidebar-menu">
+            <a href="dashboard.html">📊 Overview</a>
+            <a href="workouts.html" class="active">🏋️ My Workouts</a>
+            <a href="nutrition-dash.html">🥗 Nutrition</a>
+            <a href="progress.html">📈 Progress</a>
+            <a href="saved-programs.html">💾 Saved Programs</a>
+            <a href="#" onclick="handleLogout(); return false;">🚪 Log Out</a>
+          </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main>
+          <!-- Page Header -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xl);">
+            <div>
+              <h1 style="font-family: var(--font-heading); font-size: 2rem; text-transform: uppercase; margin-bottom: var(--space-xs);">My Workouts</h1>
+              <p style="color: var(--text-secondary);">Track and manage your workout schedule</p>
+            </div>
+            <button class="btn btn-primary" onclick="startWorkoutTimer()">⏱ Start Timer</button>
+          </div>
+
+          <!-- Current Program Banner -->
+          <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); border-radius: var(--radius-xl); padding: var(--space-xl); margin-bottom: var(--space-xl);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-lg);">
+              <div>
+                <span class="tag tag-success" style="margin-bottom: var(--space-sm); display: inline-block;">Active Program</span>
+                <h2 style="font-family: var(--font-heading); font-size: 1.5rem; text-transform: uppercase; margin-bottom: var(--space-xs);">Muscle Builder Pro</h2>
+                <p style="opacity: 0.8;">Week 6 of 12 • Day 26 of 84</p>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-family: var(--font-heading); font-size: 2.5rem; color: var(--accent);">31%</div>
+                <p style="font-size: 0.85rem; opacity: 0.8;">Complete</p>
+              </div>
+            </div>
+            <div class="progress-bar" style="margin-top: var(--space-lg); height: 8px;">
+              <div class="progress-bar-fill" style="width: 31%;"></div>
+            </div>
+          </div>
+
+          <!-- This Week's Schedule -->
+          <div class="stat-card" style="margin-bottom: var(--space-xl);">
+            <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: var(--space-lg);">This Week's Schedule</h3>
+            <div class="grid-7" style="gap: var(--space-sm);">
+              <div class="workout-day completed">
+                <span class="day-name">Mon</span>
+                <span class="day-type">Push</span>
+                <span class="day-status">✓</span>
+              </div>
+              <div class="workout-day completed">
+                <span class="day-name">Tue</span>
+                <span class="day-type">Pull</span>
+                <span class="day-status">✓</span>
+              </div>
+              <div class="workout-day rest">
+                <span class="day-name">Wed</span>
+                <span class="day-type">Rest</span>
+                <span class="day-status">🧘</span>
+              </div>
+              <div class="workout-day completed">
+                <span class="day-name">Thu</span>
+                <span class="day-type">Legs</span>
+                <span class="day-status">✓</span>
+              </div>
+              <div class="workout-day today">
+                <span class="day-name">Fri</span>
+                <span class="day-type">Upper</span>
+                <span class="day-status">📍</span>
+              </div>
+              <div class="workout-day upcoming">
+                <span class="day-name">Sat</span>
+                <span class="day-type">Lower</span>
+                <span class="day-status">—</span>
+              </div>
+              <div class="workout-day rest">
+                <span class="day-name">Sun</span>
+                <span class="day-type">Rest</span>
+                <span class="day-status">🧘</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Today's Workout Detail -->
+          <div class="stat-card" style="margin-bottom: var(--space-xl);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
+              <div>
+                <span class="tag tag-primary" style="margin-bottom: var(--space-sm); display: inline-block;">Today</span>
+                <h3 style="font-family: var(--font-heading); font-size: 1.5rem; text-transform: uppercase; color: var(--accent);">Upper Body</h3>
+              </div>
+              <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem;">
+                <div>Est. Duration: 60-75 min</div>
+                <div>5 exercises • 18 sets</div>
+              </div>
+            </div>
+            
+            <div class="workout-exercises">
+              <div class="exercise-row">
+                <div class="exercise-info">
+                  <span class="exercise-num">1</span>
+                  <div>
+                    <h4>Dumbbell Bench Press</h4>
+                    <p>Chest • Primary</p>
+                  </div>
+                </div>
+                <div class="exercise-sets">4 × 8-10</div>
+                <div class="exercise-weight"><span class="wt" data-lbs="70">70 lbs</span> each</div>
+                <button class="btn btn-sm btn-outline">Log</button>
+              </div>
+              <div class="exercise-row">
+                <div class="exercise-info">
+                  <span class="exercise-num">2</span>
+                  <div>
+                    <h4>T-Bar Rows</h4>
+                    <p>Back • Primary</p>
+                  </div>
+                </div>
+                <div class="exercise-sets">4 × 8-10</div>
+                <div class="exercise-weight"><span class="wt" data-lbs="135">135 lbs</span></div>
+                <button class="btn btn-sm btn-outline">Log</button>
+              </div>
+              <div class="exercise-row">
+                <div class="exercise-info">
+                  <span class="exercise-num">3</span>
+                  <div>
+                    <h4>Arnold Press</h4>
+                    <p>Shoulders • Secondary</p>
+                  </div>
+                </div>
+                <div class="exercise-sets">3 × 10-12</div>
+                <div class="exercise-weight"><span class="wt" data-lbs="40">40 lbs</span> each</div>
+                <button class="btn btn-sm btn-outline">Log</button>
+              </div>
+              <div class="exercise-row">
+                <div class="exercise-info">
+                  <span class="exercise-num">4</span>
+                  <div>
+                    <h4>Cable Crossovers</h4>
+                    <p>Chest • Isolation</p>
+                  </div>
+                </div>
+                <div class="exercise-sets">3 × 12-15</div>
+                <div class="exercise-weight"><span class="wt" data-lbs="30">30 lbs</span> each</div>
+                <button class="btn btn-sm btn-outline">Log</button>
+              </div>
+              <div class="exercise-row">
+                <div class="exercise-info">
+                  <span class="exercise-num">5</span>
+                  <div>
+                    <h4>Superset: Curls + Pushdowns</h4>
+                    <p>Arms • Finisher</p>
+                  </div>
+                </div>
+                <div class="exercise-sets">3 × 12</div>
+                <div class="exercise-weight"><span class="wt" data-lbs="25">25 lbs</span> / <span class="wt" data-lbs="50">50 lbs</span></div>
+                <button class="btn btn-sm btn-outline">Log</button>
+              </div>
+            </div>
+            
+            <div style="margin-top: var(--space-xl); display: flex; gap: var(--space-md);">
+              <button class="btn btn-primary" onclick="startWorkoutTimer()">⏱ Start Workout</button>
+              <button class="btn btn-outline">📋 View Full Program</button>
+            </div>
+          </div>
+
+          <!-- Workout History -->
+          <div class="stat-card">
+            <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: var(--space-lg);">Recent Workouts</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Workout</th>
+                    <th>Duration</th>
+                    <th>Exercises</th>
+                    <th>Volume</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Thu, Jan 2</td>
+                    <td>Leg Day</td>
+                    <td>72 min</td>
+                    <td>6</td>
+                    <td><span class="wt" data-lbs="18500">18,500 lbs</span></td>
+                  </tr>
+                  <tr>
+                    <td>Tue, Dec 31</td>
+                    <td>Pull Day</td>
+                    <td>65 min</td>
+                    <td>5</td>
+                    <td><span class="wt" data-lbs="12400">12,400 lbs</span></td>
+                  </tr>
+                  <tr>
+                    <td>Mon, Dec 30</td>
+                    <td>Push Day</td>
+                    <td>58 min</td>
+                    <td>5</td>
+                    <td><span class="wt" data-lbs="10800">10,800 lbs</span></td>
+                  </tr>
+                  <tr>
+                    <td>Sat, Dec 28</td>
+                    <td>Lower Body</td>
+                    <td>68 min</td>
+                    <td>6</td>
+                    <td><span class="wt" data-lbs="16200">16,200 lbs</span></td>
+                  </tr>
+                  <tr>
+                    <td>Fri, Dec 27</td>
+                    <td>Upper Body</td>
+                    <td>62 min</td>
+                    <td>5</td>
+                    <td><span class="wt" data-lbs="11600">11,600 lbs</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- Workout Timer Modal -->
+  <div id="timerModal" style="display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.9); align-items: center; justify-content: center;">
+    <div style="text-align: center;">
+      <h2 style="font-family: var(--font-heading); font-size: 1.5rem; text-transform: uppercase; margin-bottom: var(--space-xl);">Workout Timer</h2>
+      <div id="timerDisplay" style="font-family: var(--font-heading); font-size: 6rem; color: var(--accent); margin-bottom: var(--space-xl);">00:00</div>
+      <div style="display: flex; gap: var(--space-md); justify-content: center;">
+        <button class="btn btn-primary" onclick="toggleTimer()">⏯ Start/Pause</button>
+        <button class="btn btn-secondary" onclick="resetTimer()">🔄 Reset</button>
+        <button class="btn btn-outline" onclick="closeTimer()">✕ Close</button>
+      </div>
+      <div style="margin-top: var(--space-2xl);">
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: var(--space-md);">Quick Rest Timers</p>
+        <div style="display: flex; gap: var(--space-sm); justify-content: center;">
+          <button class="btn btn-sm btn-secondary" onclick="startCountdown(60)">60s</button>
+          <button class="btn btn-sm btn-secondary" onclick="startCountdown(90)">90s</button>
+          <button class="btn btn-sm btn-secondary" onclick="startCountdown(120)">2 min</button>
+          <button class="btn btn-sm btn-secondary" onclick="startCountdown(180)">3 min</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer style="padding: var(--space-xl) 0; border-top: 1px solid var(--border-color); text-align: center;">
+    <p style="color: var(--text-muted); font-size: 0.85rem;">&copy; 2026 Kynotra. All rights reserved.</p>
+  </footer>
+
+  <script src="../../js/app.js"></script>
+  <style>
+    .grid-7 {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+    .workout-day {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: var(--space-md);
+      border-radius: var(--radius-md);
+      background: var(--primary);
+      text-align: center;
+      gap: var(--space-xs);
+    }
+    .workout-day .day-name {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .workout-day .day-type {
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .workout-day .day-status {
+      font-size: 1.2rem;
+    }
+    .workout-day.completed {
+      border: 1px solid var(--success);
+    }
+    .workout-day.completed .day-status {
+      color: var(--success);
+    }
+    .workout-day.today {
+      border: 2px solid var(--accent);
+      background: rgba(0, 230, 10, 0.1);
+    }
+    .workout-day.today .day-type {
+      color: var(--accent);
+    }
+    .workout-day.rest {
+      opacity: 0.6;
+    }
+    .workout-day.upcoming {
+      opacity: 0.5;
+    }
+    
+    .workout-exercises {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .exercise-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: var(--space-md);
+      align-items: center;
+      padding: var(--space-md);
+      background: var(--primary);
+      border-radius: var(--radius-md);
+    }
+    .exercise-info {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+    .exercise-num {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      color: var(--bg);
+      border-radius: 50%;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    .exercise-info h4 {
+      font-size: 0.95rem;
+      margin-bottom: 2px;
+    }
+    .exercise-info p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .exercise-sets, .exercise-weight {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    
+    @media (max-width: 768px) {
+      .grid-7 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .exercise-row {
+        grid-template-columns: 1fr;
+        gap: var(--space-sm);
+      }
+      .exercise-row > * {
+        justify-self: start;
+      }
+    }
+  </style>
+</body>
+</html>
