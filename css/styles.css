@@ -1313,7 +1313,7 @@ input, select, textarea {
 }
 
 .pricing-features li::before {
-  content: 'âœ“';
+  content: '\2713';
   color: var(--success);
   font-weight: 700;
   font-size: 0.9rem;
@@ -1326,7 +1326,7 @@ input, select, textarea {
 }
 
 .pricing-features li.disabled::before {
-  content: 'âœ•';
+  content: '\2715';
   color: var(--text-muted);
 }
 
@@ -1645,16 +1645,17 @@ input, select, textarea {
 /* Unit Toggle */
 .unit-toggle {
   background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-full);
-  padding: 4px;
+  border: 2px solid var(--border-color);
+  border-radius: 50px;
+  padding: 5px;
   display: inline-flex;
   gap: 0;
 }
 
 .btn-unit {
-  padding: 10px 24px;
-  border-radius: var(--radius-full);
+  padding: 12px 28px;
+  border: none;
+  border-radius: 50px;
   font-size: 0.85rem;
   font-weight: 600;
   letter-spacing: 0.5px;
@@ -1667,12 +1668,13 @@ input, select, textarea {
 
 .btn-unit:hover {
   color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .btn-unit.active {
   background: var(--accent);
   color: #0f0f1a;
-  box-shadow: 0 2px 12px rgba(0, 230, 10, 0.3);
+  box-shadow: 0 2px 12px rgba(0, 230, 10, 0.35);
 }
 
 .form-checkbox {
@@ -1753,19 +1755,18 @@ input, select, textarea {
 .footer-social a {
   width: 40px;
   height: 40px;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-secondary);
   transition: all var(--transition-fast);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .footer-social a:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: rgba(0, 230, 10, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
 }
 
 .footer-column h4 {
@@ -1827,15 +1828,7 @@ input, select, textarea {
 }
 
 .product-image {
-  width: 100%;
-  height: 250px;
-  background: var(--primary-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 4rem;
-  overflow: hidden;
-  position: relative;
+  display: none;
 }
 
 .product-image img {

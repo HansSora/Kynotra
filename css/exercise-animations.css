@@ -1,0 +1,226 @@
+/* ==========================================
+   EXERCISE ANIMATION STYLES
+   Animated stick figure demonstrations
+   ========================================== */
+
+.exercise-animation {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto var(--space-xl);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.exercise-animation svg {
+  width: 100%;
+  height: auto;
+  max-height: 250px;
+}
+
+/* Exercise Instructions Styling */
+.exercise-instructions {
+  margin-top: var(--space-lg);
+}
+
+.exercise-instructions h4 {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-md);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.exercise-instructions h4:first-child {
+  margin-top: 0;
+}
+
+.exercise-instructions ol {
+  margin-left: var(--space-xl);
+  margin-bottom: var(--space-md);
+  list-style-type: decimal;
+  padding-left: var(--space-md);
+}
+
+.exercise-instructions ul {
+  margin-left: var(--space-xl);
+  margin-bottom: var(--space-md);
+  list-style-type: disc;
+  padding-left: var(--space-md);
+}
+
+.exercise-instructions li {
+  margin-bottom: var(--space-sm);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding-left: var(--space-sm);
+}
+
+.exercise-instructions li::marker {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Stick figure base colors */
+.stick-figure {
+  stroke: var(--accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.stick-head {
+  fill: var(--accent);
+  stroke: var(--accent);
+}
+
+.equipment {
+  stroke: var(--text-primary);
+  stroke-width: 4;
+  fill: none;
+}
+
+.equipment-fill {
+  fill: var(--text-muted);
+  stroke: var(--text-primary);
+  stroke-width: 2;
+}
+
+.ground {
+  stroke: var(--border-color);
+  stroke-width: 2;
+}
+
+.bench {
+  fill: var(--bg-card);
+  stroke: var(--text-muted);
+  stroke-width: 2;
+}
+
+/* ==========================================
+   ANIMATION KEYFRAMES
+   ========================================== */
+
+/* Bench Press Animation */
+@keyframes benchPress {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(25px); }
+}
+
+@keyframes benchPressArms {
+  0%, 100% { d: path("M 100,120 L 60,100 M 100,120 L 140,100"); }
+  50% { d: path("M 100,120 L 70,140 M 100,120 L 130,140"); }
+}
+
+/* Squat Animation */
+@keyframes squat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(40px); }
+}
+
+@keyframes squatLegs {
+  0%, 100% { 
+    d: path("M 100,150 L 100,200 L 90,250 M 100,150 L 100,200 L 110,250"); 
+  }
+  50% { 
+    d: path("M 100,150 L 80,180 L 70,230 M 100,150 L 120,180 L 130,230"); 
+  }
+}
+
+/* Deadlift Animation */
+@keyframes deadlift {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(45deg); }
+}
+
+/* Curl Animation */
+@keyframes curl {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-120deg); }
+}
+
+/* Pull-up Animation */
+@keyframes pullUp {
+  0%, 100% { transform: translateY(40px); }
+  50% { transform: translateY(0); }
+}
+
+/* Lateral Raise Animation */
+@keyframes lateralRaise {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-80deg); }
+}
+
+/* Press Animation (Overhead) */
+@keyframes overheadPress {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-30px); }
+}
+
+/* Row Animation */
+@keyframes row {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-20px); }
+}
+
+/* Leg Extension Animation */
+@keyframes legExtension {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-70deg); }
+}
+
+/* Crunch Animation */
+@keyframes crunch {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(30deg); }
+}
+
+/* Plank Hold (subtle breathing) */
+@keyframes plankBreath {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+/* Lunge Animation */
+@keyframes lunge {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(30px) translateX(10px); }
+}
+
+/* Dip Animation */
+@keyframes dip {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(30px); }
+}
+
+/* Fly Animation */
+@keyframes fly {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(60deg); }
+}
+
+/* Animation timing */
+.animate-bench { animation: benchPress 2s ease-in-out infinite; }
+.animate-squat { animation: squat 2.5s ease-in-out infinite; }
+.animate-deadlift { animation: deadlift 2.5s ease-in-out infinite; transform-origin: bottom center; }
+.animate-curl { animation: curl 1.5s ease-in-out infinite; transform-origin: top center; }
+.animate-pullup { animation: pullUp 2s ease-in-out infinite; }
+.animate-lateral { animation: lateralRaise 2s ease-in-out infinite; transform-origin: top center; }
+.animate-press { animation: overheadPress 2s ease-in-out infinite; }
+.animate-row { animation: row 1.8s ease-in-out infinite; }
+.animate-leg-ext { animation: legExtension 2s ease-in-out infinite; transform-origin: top center; }
+.animate-crunch { animation: crunch 2s ease-in-out infinite; transform-origin: bottom center; }
+.animate-plank { animation: plankBreath 3s ease-in-out infinite; }
+.animate-lunge { animation: lunge 2.5s ease-in-out infinite; }
+.animate-dip { animation: dip 2s ease-in-out infinite; }
+.animate-fly { animation: fly 2s ease-in-out infinite; transform-origin: top center; }
+
+/* Speed control */
+.slow { animation-duration: 3s; }
+.fast { animation-duration: 1.2s; }

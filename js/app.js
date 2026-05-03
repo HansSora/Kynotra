@@ -559,8 +559,8 @@ function calculateCalories() {
   const activity = parseFloat(document.getElementById('calcActivity')?.value);
   const goal = document.getElementById('calcGoal')?.value;
 
-  if (!age || !weight || !height) {
-    showToast('Please fill in all fields', 'error');
+  if (!age || !weight || !height || !goal) {
+    showToast('Please fill in all fields including your goal', 'error');
     return;
   }
 
@@ -599,7 +599,7 @@ function calculateCalories() {
   const fatGrams = Math.round((calories * 0.25) / 9); // 25% of calories from fat
   const carbGrams = Math.round((calories - (proteinGrams * 4) - (fatGrams * 9)) / 4);
 
-  // Display results
+  // Display results in inline section
   document.getElementById('totalCalories').textContent = calories.toLocaleString();
   document.getElementById('macroProtein').textContent = proteinGrams + 'g';
   document.getElementById('macroCarbs').textContent = carbGrams + 'g';
@@ -608,8 +608,254 @@ function calculateCalories() {
   const result = document.getElementById('calorieResult');
   if (result) {
     result.style.display = 'block';
-    result.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
+
+  // Generate personalized content
+  generatePersonalizedPlan(calories, proteinGrams, carbGrams, fatGrams, goal, gender, weightLbs);
+
+  // Calculate macro percentages
+  const proteinCal = proteinGrams * 4;
+  const carbsCal = carbGrams * 4;
+  const fatsCal = fatGrams * 9;
+  const totalMacroCal = proteinCal + carbsCal + fatsCal;
+  const proteinPct = Math.round((proteinCal / totalMacroCal) * 100);
+  const carbsPct = Math.round((carbsCal / totalMacroCal) * 100);
+  const fatsPct = Math.round((fatsCal / totalMacroCal) * 100);
+
+  // Goal labels
+  const goalLabels = {
+    lose: 'Fat Loss (-500 cal)',
+    maintain: 'Maintenance',
+    gain: 'Muscle Gain (+300 cal)',
+    bulk: 'Lean Bulk (+500 cal)'
+  };
+
+  // Update modal with results
+  document.getElementById('modalCalories').textContent = calories.toLocaleString();
+  document.getElementById('modalProtein').textContent = proteinGrams + 'g';
+  document.getElementById('modalCarbs').textContent = carbGrams + 'g';
+  document.getElementById('modalFats').textContent = fatGrams + 'g';
+  document.getElementById('modalProteinPct').textContent = proteinPct + '%';
+  document.getElementById('modalCarbsPct').textContent = carbsPct + '%';
+  document.getElementById('modalFatsPct').textContent = fatsPct + '%';
+  document.getElementById('modalGoal').textContent = goalLabels[goal] || 'Custom';
+
+  // Show the full-screen results modal
+  const modal = document.getElementById('resultsModal');
+  if (modal) {
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+// Close results modal and scroll to personalized content
+function closeResultsModal() {
+  const modal = document.getElementById('resultsModal');
+  if (modal) {
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+  
+  // Scroll to personalized content
+  const personalizedContent = document.getElementById('personalizedContent');
+  if (personalizedContent) {
+    setTimeout(() => {
+      personalizedContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }
+}
+
+// Generate personalized diet plan based on user inputs
+function generatePersonalizedPlan(calories, protein, carbs, fats, goal, gender, weight) {
+  const personalizedContent = document.getElementById('personalizedContent');
+  if (!personalizedContent) return;
+
+  // Goal-specific data
+  const goalData = {
+    lose: {
+      planTitle: 'Lean & Shred',
+      planDesc: `High-protein, lower-carb plan designed for sustainable fat loss while preserving muscle. ${calories.toLocaleString()} calories with strategic meal timing.`,
+      planBadge: 'Fat Loss',
+      proteinPct: '40%',
+      altPlan1: { title: 'Keto-Flexible', desc: 'Lower carb approach with higher fats for satiety.', cal: Math.round(calories * 0.95), protein: '35%', badge: 'Low Carb' },
+      altPlan2: { title: 'Intermittent Fasting', desc: '16:8 fasting window with same daily calories.', cal: calories, protein: '35%', badge: 'IF Compatible' },
+      supplements: [
+        { name: 'Whey Protein', desc: 'Essential for preserving muscle during a caloric deficit. Take post-workout. 25-30g per serving.', tag: 'Essential', tagClass: 'tag-success' },
+        { name: 'Caffeine / Fat Burner', desc: 'Boosts metabolism and energy during calorie restriction. 150-200mg before workouts.', tag: 'Recommended', tagClass: 'tag-info' },
+        { name: 'Omega-3 Fish Oil', desc: 'Supports metabolism and reduces inflammation. 2-3g EPA/DHA daily.', tag: 'Recommended', tagClass: 'tag-info' },
+        { name: 'Multivitamin', desc: 'Fills micronutrient gaps during caloric restriction.', tag: 'Recommended', tagClass: 'tag-info' },
+        { name: 'L-Carnitine', desc: 'May help with fat oxidation during exercise. 2g before training.', tag: 'Optional', tagClass: 'tag-primary' }
+      ]
+    },
+    maintain: {
+      planTitle: 'Balanced Performance',
+      planDesc: `Maintenance-calorie plan optimized for sustained energy and body composition. ${calories.toLocaleString()} calories with flexible meal timing.`,
+      planBadge: 'Maintenance',
+      proteinPct: '30%',
+      altPlan1: { title: 'Athletic Performance', desc: 'Higher carb timing around workouts for energy.', cal: calories, protein: '30%', badge: 'Performance' },
+      altPlan2: { title: 'Flexible Dieting', desc: 'IIFYM approach — hit your macros with food freedom.', cal: calories, protein: '25%', badge: 'Flexible' },
+      supplements: [
+        { name: 'Whey Protein', desc: 'Convenient protein source to hit daily targets. 25-30g per serving.', tag: 'Recommended', tagClass: 'tag-info' },
+        { name: 'Creatine Monohydrate', desc: 'Supports strength and performance. 5g daily.', tag: 'Recommended', tagClass: 'tag-info' },
+        { name: 'Vitamin D3', desc: 'Supports immune function and bone health. 2,000-5,000 IU daily.', tag: 'Recommended', tagClass: 'tag-info' },
+        { name: 'Omega-3 Fish Oil', desc: 'Heart and joint health. 2-3g EPA/DHA daily.', tag: 'Optional', tagClass: 'tag-primary' }
+      ]
+    },
+    gain: {
+      planTitle: 'Lean Mass Builder',
+      planDesc: `Controlled calorie surplus for muscle gain with minimal fat. ${calories.toLocaleString()} calories with optimized protein timing.`,
+      planBadge: 'Muscle Gain',
+      proteinPct: '35%',
+      altPlan1: { title: 'High Frequency Meals', desc: '5-6 smaller meals for sustained protein synthesis.', cal: calories, protein: '35%', badge: '5+ Meals' },
+      altPlan2: { title: 'Carb Cycling', desc: 'Higher carbs on training days, lower on rest days.', cal: calories, protein: '30%', badge: 'Carb Cycle' },
+      supplements: [
+        { name: 'Whey Protein', desc: 'Essential for hitting elevated protein targets. Take post-workout and between meals.', tag: 'Essential', tagClass: 'tag-success' },
+        { name: 'Creatine Monohydrate', desc: 'Most researched supplement for muscle and strength. 5g daily.', tag: 'Essential', tagClass: 'tag-success' },
+        { name: 'Mass Gainer (Optional)', desc: 'If struggling to eat enough calories. 500-800 cal per serving.', tag: 'Situational', tagClass: 'tag-info' },
+        { name: 'Vitamin D3', desc: 'Supports testosterone and bone health. 2,000-5,000 IU daily.', tag: 'Recommended', tagClass: 'tag-info' },
+        { name: 'ZMA (Zinc/Magnesium)', desc: 'Supports recovery and sleep quality. Take before bed.', tag: 'Optional', tagClass: 'tag-primary' }
+      ]
+    },
+    bulk: {
+      planTitle: 'Maximum Mass',
+      planDesc: `Aggressive calorie surplus for rapid muscle gain. ${calories.toLocaleString()} calories with 5-6 meals per day.`,
+      planBadge: 'Aggressive Bulk',
+      proteinPct: '30%',
+      altPlan1: { title: 'Clean Bulk', desc: 'Same calories but from whole food sources only.', cal: calories, protein: '35%', badge: 'Clean' },
+      altPlan2: { title: 'GOMAD Style', desc: 'Add liquid calories to hit surplus easier.', cal: Math.round(calories * 1.05), protein: '25%', badge: 'High Cal' },
+      supplements: [
+        { name: 'Whey Protein', desc: 'Multiple servings daily to hit protein targets. 25-30g per serving.', tag: 'Essential', tagClass: 'tag-success' },
+        { name: 'Creatine Monohydrate', desc: 'Maximizes strength and cell volumization. 5g daily.', tag: 'Essential', tagClass: 'tag-success' },
+        { name: 'Mass Gainer', desc: 'Easy way to add 500-1000 extra calories. Use between meals.', tag: 'Highly Recommended', tagClass: 'tag-success' },
+        { name: 'Dextrose/Fast Carbs', desc: 'Post-workout with protein for insulin spike and recovery.', tag: 'Recommended', tagClass: 'tag-info' },
+        { name: 'Digestive Enzymes', desc: 'Helps digest large amounts of food. Take with meals.', tag: 'Recommended', tagClass: 'tag-info' }
+      ]
+    }
+  };
+
+  const data = goalData[goal] || goalData.maintain;
+
+  // Update plan cards
+  document.getElementById('recommendedPlanBadge').textContent = data.planBadge;
+  document.getElementById('recommendedPlanTitle').textContent = data.planTitle;
+  document.getElementById('recommendedPlanDesc').textContent = data.planDesc;
+  document.getElementById('planCalorieRange').textContent = `🔥 ${calories.toLocaleString()} cal`;
+  document.getElementById('planProteinPct').textContent = `🥩 ${data.proteinPct} Protein`;
+
+  document.getElementById('altPlan1Badge').textContent = data.altPlan1.badge;
+  document.getElementById('altPlan1Title').textContent = data.altPlan1.title;
+  document.getElementById('altPlan1Desc').textContent = data.altPlan1.desc;
+  document.getElementById('altPlan1Cal').textContent = `🔥 ${data.altPlan1.cal.toLocaleString()} cal`;
+  document.getElementById('altPlan1Protein').textContent = `🥩 ${data.altPlan1.protein} Protein`;
+
+  document.getElementById('altPlan2Badge').textContent = data.altPlan2.badge;
+  document.getElementById('altPlan2Title').textContent = data.altPlan2.title;
+  document.getElementById('altPlan2Desc').textContent = data.altPlan2.desc;
+  document.getElementById('altPlan2Cal').textContent = `🔥 ${data.altPlan2.cal.toLocaleString()} cal`;
+  document.getElementById('altPlan2Protein').textContent = `🥩 ${data.altPlan2.protein} Protein`;
+
+  // Update menu subtitle
+  document.getElementById('menuSubtitle').textContent = `Personalized for you — Approx. ${calories.toLocaleString()} calories`;
+
+  // Generate meal plan
+  generateMealPlan(calories, protein, carbs, fats, goal);
+
+  // Update daily totals
+  document.getElementById('totalDailyCal').textContent = calories.toLocaleString();
+  document.getElementById('totalDailyProtein').textContent = protein + 'g';
+  document.getElementById('totalDailyCarbs').textContent = carbs + 'g';
+  document.getElementById('totalDailyFats').textContent = fats + 'g';
+
+  // Generate supplements
+  const supplementsContainer = document.getElementById('supplementsContainer');
+  if (supplementsContainer) {
+    supplementsContainer.innerHTML = data.supplements.map(supp => `
+      <div class="feature-card" style="padding: var(--space-lg);">
+        <h3 style="font-size: 1rem;">${supp.name}</h3>
+        <p style="font-size: 0.85rem;">${supp.desc}</p>
+        <span class="tag ${supp.tagClass}" style="margin-top: var(--space-sm);">${supp.tag}</span>
+      </div>
+    `).join('');
+  }
+
+  // Show personalized content and scroll to it
+  personalizedContent.style.display = 'block';
+  setTimeout(() => {
+    personalizedContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+// Generate meal plan based on macros
+function generateMealPlan(totalCal, totalProtein, totalCarbs, totalFats, goal) {
+  const mealPlanContainer = document.getElementById('mealPlanContainer');
+  if (!mealPlanContainer) return;
+
+  // Determine number of meals based on goal
+  const numMeals = (goal === 'bulk' || goal === 'gain') ? 5 : 4;
+  
+  // Calculate per-meal macros (roughly)
+  const calPerMeal = Math.round(totalCal / numMeals);
+  const proteinPerMeal = Math.round(totalProtein / numMeals);
+  const carbsPerMeal = Math.round(totalCarbs / numMeals);
+  const fatsPerMeal = Math.round(totalFats / numMeals);
+
+  // Meal templates based on goal
+  const mealTemplates = {
+    lose: [
+      { time: '7:00 AM', name: 'Breakfast', items: ['3 egg whites + 1 whole egg scrambled', '1 slice whole wheat toast', '1 cup spinach sautéed', '1/2 grapefruit'], pMult: 1.1, cMult: 0.8, fMult: 0.7 },
+      { time: '12:00 PM', name: 'Lunch', items: ['6oz grilled chicken breast', '2 cups mixed salad greens', '1/2 cup quinoa', '1 tbsp olive oil dressing'], pMult: 1.3, cMult: 1.0, fMult: 1.1 },
+      { time: '4:00 PM', name: 'Snack', items: ['Protein shake (1 scoop)', '1 medium apple', '10 almonds'], pMult: 0.8, cMult: 0.8, fMult: 0.9 },
+      { time: '7:00 PM', name: 'Dinner', items: ['6oz salmon or white fish', '1 cup roasted broccoli', '1/2 sweet potato', 'Lemon herb seasoning'], pMult: 1.2, cMult: 1.0, fMult: 1.2 }
+    ],
+    maintain: [
+      { time: '7:30 AM', name: 'Breakfast', items: ['3 whole eggs scrambled', '2 slices whole wheat toast', '1/2 avocado', '1 banana'], pMult: 1.0, cMult: 1.1, fMult: 1.1 },
+      { time: '12:30 PM', name: 'Lunch', items: ['6oz chicken breast', '1 cup brown rice', 'Mixed vegetables', '1 tbsp olive oil'], pMult: 1.2, cMult: 1.2, fMult: 1.0 },
+      { time: '4:00 PM', name: 'Snack', items: ['Greek yogurt (1 cup)', '1/4 cup granola', 'Handful of berries'], pMult: 0.7, cMult: 0.8, fMult: 0.6 },
+      { time: '7:30 PM', name: 'Dinner', items: ['6oz lean beef or fish', 'Large mixed salad', '1 medium potato', '1 tbsp butter'], pMult: 1.1, cMult: 0.9, fMult: 1.3 }
+    ],
+    gain: [
+      { time: '7:00 AM', name: 'Breakfast', items: ['4 whole eggs scrambled', '3 slices whole wheat toast', '1 avocado (half)', '1 banana', '1 glass orange juice'], pMult: 1.0, cMult: 1.2, fMult: 1.1 },
+      { time: '10:30 AM', name: 'Mid-Morning', items: ['Protein shake (1 scoop)', '1.5 cups oats with berries', '2 tbsp peanut butter'], pMult: 0.9, cMult: 1.1, fMult: 1.0 },
+      { time: '1:00 PM', name: 'Lunch', items: ['8oz chicken breast', '2 cups white rice', 'Mixed vegetables', '1 tbsp olive oil'], pMult: 1.2, cMult: 1.0, fMult: 0.9 },
+      { time: '4:30 PM', name: 'Post-Workout', items: ['Protein shake (1 scoop)', '2 rice cakes with honey', '1 banana'], pMult: 0.8, cMult: 1.0, fMult: 0.5 },
+      { time: '7:30 PM', name: 'Dinner', items: ['8oz salmon fillet', '1 large sweet potato', 'Asparagus (grilled)', 'Side salad with dressing'], pMult: 1.1, cMult: 0.7, fMult: 1.5 }
+    ],
+    bulk: [
+      { time: '7:00 AM', name: 'Breakfast', items: ['5 whole eggs scrambled', '4 slices toast with butter', '1 avocado', '2 bananas', 'Large glass of milk'], pMult: 1.0, cMult: 1.3, fMult: 1.2 },
+      { time: '10:00 AM', name: 'Mid-Morning', items: ['Mass gainer or protein shake', '2 cups oats', '3 tbsp peanut butter', 'Honey drizzle'], pMult: 0.9, cMult: 1.2, fMult: 1.1 },
+      { time: '1:00 PM', name: 'Lunch', items: ['10oz chicken or beef', '2.5 cups white rice', 'Vegetables in olive oil', 'Glass of milk'], pMult: 1.2, cMult: 1.0, fMult: 0.8 },
+      { time: '4:30 PM', name: 'Post-Workout', items: ['Protein shake (2 scoops)', 'Large banana', 'Rice cakes with jam', 'Dextrose/Gatorade'], pMult: 0.9, cMult: 1.0, fMult: 0.4 },
+      { time: '8:00 PM', name: 'Dinner', items: ['10oz salmon or steak', '2 cups pasta or rice', 'Vegetables', 'Olive oil drizzle', 'Bread on the side'], pMult: 1.0, cMult: 0.5, fMult: 1.5 }
+    ]
+  };
+
+  const meals = mealTemplates[goal] || mealTemplates.maintain;
+
+  mealPlanContainer.innerHTML = meals.map((meal, index) => {
+    const mealCal = Math.round(calPerMeal * (meal.pMult + meal.cMult + meal.fMult) / 3);
+    const mealP = Math.round(proteinPerMeal * meal.pMult);
+    const mealC = Math.round(carbsPerMeal * meal.cMult);
+    const mealF = Math.round(fatsPerMeal * meal.fMult);
+    
+    const isLastMeal = index === meals.length - 1 && meals.length % 2 !== 0;
+    const extraStyle = isLastMeal ? 'grid-column: 1 / -1; max-width: 450px; margin: 0 auto;' : '';
+
+    return `
+      <div class="meal-card animate-in" style="${extraStyle}">
+        <div class="meal-time">${meal.time}</div>
+        <h4>Meal ${index + 1} — ${meal.name}</h4>
+        <ul style="color: var(--text-secondary); font-size: 0.9rem; padding-left: 0;">
+          ${meal.items.map(item => `<li style="padding: 4px 0;">• ${item}</li>`).join('')}
+        </ul>
+        <div class="macro-row">
+          <div class="macro-item"><div class="macro-value">${mealP}g</div><div class="macro-label">Protein</div></div>
+          <div class="macro-item"><div class="macro-value">${mealC}g</div><div class="macro-label">Carbs</div></div>
+          <div class="macro-item"><div class="macro-value">${mealF}g</div><div class="macro-label">Fats</div></div>
+          <div class="macro-item"><div class="macro-value">${mealCal}</div><div class="macro-label">Calories</div></div>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 // ==========================================
@@ -625,11 +871,20 @@ function filterPrograms(category, btn) {
 }
 
 function filterExercises(muscle, btn) {
-  const cards = document.querySelectorAll('#exerciseGrid .exercise-card');
+  const cards = document.querySelectorAll('.exercise-card');
+  const sections = document.querySelectorAll('.muscle-section');
+  
   cards.forEach(card => {
     const m = card.getAttribute('data-muscle') || '';
     card.style.display = (muscle === 'all' || m === muscle) ? '' : 'none';
   });
+  
+  // Show/hide muscle sections based on filter
+  sections.forEach(section => {
+    const sectionId = section.id.replace('-section', '');
+    section.style.display = (muscle === 'all' || sectionId === muscle) ? '' : 'none';
+  });
+  
   updateFilterButtons(btn);
 }
 
@@ -650,11 +905,19 @@ function updateFilterButtons(activeBtn) {
 }
 
 function searchExercises(query) {
-  const cards = document.querySelectorAll('#exerciseGrid .exercise-card');
+  const cards = document.querySelectorAll('.exercise-card');
+  const sections = document.querySelectorAll('.muscle-section');
   const q = query.toLowerCase();
+  
   cards.forEach(card => {
     const text = card.textContent.toLowerCase();
     card.style.display = text.includes(q) ? '' : 'none';
+  });
+  
+  // Hide sections with no visible cards
+  sections.forEach(section => {
+    const visibleCards = section.querySelectorAll('.exercise-card:not([style*="display: none"])');
+    section.style.display = visibleCards.length > 0 ? '' : 'none';
   });
 }
 
@@ -667,11 +930,26 @@ function openExercise(card) {
   const description = card.querySelector('p:not(.muscle-group)')?.textContent || '';
   const details = card.querySelector('.exercise-details');
 
-  let detailsHtml = '';
+  // Get SVG animation for this exercise
+  const animation = typeof getExerciseAnimation === 'function' 
+    ? getExerciseAnimation(name) 
+    : '';
+
+  let instructionsHtml = '';
   if (details) {
-    detailsHtml = details.innerHTML;
+    // Extract just the instructions, not the video demo
+    const instructionsEl = details.querySelector('.exercise-instructions');
+    if (instructionsEl) {
+      instructionsHtml = instructionsEl.outerHTML;
+    } else {
+      // Fallback: remove any iframe/video elements and use remaining content
+      const clone = details.cloneNode(true);
+      const demosToRemove = clone.querySelectorAll('.exercise-demo, iframe');
+      demosToRemove.forEach(el => el.remove());
+      instructionsHtml = clone.innerHTML;
+    }
   } else {
-    detailsHtml = `
+    instructionsHtml = `
       <div class="exercise-instructions">
         <h4>Step-by-Step Instructions:</h4>
         <ol>
@@ -697,11 +975,11 @@ function openExercise(card) {
   const content = document.getElementById('modalContent');
   if (modal && content) {
     content.innerHTML = `
-      <div style="font-size: 3rem; margin-bottom: var(--space-md);">🏋️</div>
       <h2 style="font-family: var(--font-heading); font-size: 1.6rem; text-transform: uppercase; margin-bottom: var(--space-sm);">${name}</h2>
       <p style="color: var(--accent); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: var(--space-lg);">${muscle}</p>
+      <div class="exercise-animation">${animation}</div>
       <p style="color: var(--text-secondary); margin-bottom: var(--space-xl);">${description}</p>
-      ${detailsHtml}
+      ${instructionsHtml}
     `;
     modal.style.display = 'block';
     document.body.style.overflow = 'hidden';

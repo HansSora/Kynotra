@@ -3,12 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Kynotra Exercise Library - 500+ exercises with instructions, tips, target muscles, and common mistakes. Complete gym terminology glossary.">
+  <meta name="description" content="Kynotra Exercise Library - Complete database of exercises with video demonstrations, instructions, and tips for every muscle group.">
   <title>Exercise Library — Kynotra</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/exercise-animations.css">
+  <style>
+    .exercise-card { cursor: pointer; transition: all 0.3s ease; }
+    .exercise-card:hover { transform: translateY(-4px); border-color: var(--accent); }
+    .muscle-section { margin-bottom: var(--space-3xl); }
+    .muscle-section h2 { 
+      font-family: var(--font-heading); 
+      font-size: 2.2rem; 
+      font-weight: 700;
+      text-transform: uppercase; 
+      text-align: center;
+      justify-content: center;
+      margin-bottom: var(--space-2xl);
+      padding: var(--space-lg) 0;
+      background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-card) 100%);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      letter-spacing: 2px;
+    }
+    .muscle-section h2 span { 
+      color: var(--accent); 
+      font-weight: 700;
+    }
+    .exercise-card .muscle-group { color: var(--accent); font-size: 0.85rem; margin-bottom: var(--space-sm); }
+  </style>
 </head>
 <body>
 
@@ -35,10 +60,10 @@
   </nav>
 
   <!-- Page Header -->
-  <div class="page-header">
+  <div class="page-header" style="padding: var(--space-xl) 0 var(--space-lg); margin-top: 80px;">
     <div class="container">
-      <h1>Exercise <span class="accent-text">Library</span></h1>
-      <p>Complete database of exercises with detailed instructions, tips, and muscle targeting</p>
+      <h1 style="font-size: 2rem; margin-bottom: var(--space-xs);">Exercise <span class="accent-text">Library</span></h1>
+      <p style="margin-bottom: var(--space-sm);">Complete database of exercises with demonstrations, instructions, and tips</p>
       <div class="breadcrumb">
         <a href="index.html">Home</a>
         <span class="separator">›</span>
@@ -48,7 +73,7 @@
   </div>
 
   <!-- Filter & Search -->
-  <section class="section" style="padding-bottom: 0;">
+  <section style="padding: var(--space-lg) 0;">
     <div class="container">
       <div class="filter-bar">
         <button class="filter-btn active" onclick="filterExercises('all', this)">All</button>
@@ -66,232 +91,1749 @@
     </div>
   </section>
 
-  <!-- Exercise Grid -->
-  <section class="section">
+  <!-- Exercise Sections -->
+  <section class="section" style="padding-top: 0;">
     <div class="container">
-      <div class="grid-3" id="exerciseGrid">
 
-        <!-- Barbell Bench Press -->
-        <div class="exercise-card" data-muscle="chest" onclick="openExercise(this)">
-          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">🏋️</div>
-          <h3>Barbell Bench Press</h3>
-          <p class="muscle-group">Chest • Triceps • Front Delts</p>
-          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">The king of chest exercises. Compound movement targeting pectorals with heavy load potential.</p>
-          <div class="exercise-tags">
-            <span class="tag tag-primary">Compound</span>
-            <span class="tag tag-info">Barbell</span>
-          </div>
-          <div class="exercise-details" style="display: none;">
-            <div class="exercise-instructions">
-              <h4>Step-by-Step Instructions:</h4>
-              <ol>
-                <li>Lie flat on a bench, feet firmly on the floor</li>
-                <li>Grip the bar slightly wider than shoulder width</li>
-                <li>Unrack the bar and hold it above your chest with arms extended</li>
-                <li>Lower the bar slowly to mid-chest, elbows at ~75° angle</li>
-                <li>Press the bar back up to the starting position</li>
-                <li>Lock out arms at the top without hyperextending elbows</li>
-              </ol>
-              <h4>Tips:</h4>
-              <ul>
-                <li>Retract your shoulder blades and arch your upper back slightly</li>
-                <li>Drive your feet into the floor for leg drive</li>
-                <li>Keep your wrists straight — don't bend them back</li>
-                <li>Breathe in on the way down, exhale on the press</li>
-              </ul>
-              <h4>Common Mistakes:</h4>
-              <ul>
-                <li>Bouncing the bar off the chest</li>
-                <li>Flaring elbows to 90° (injury risk)</li>
-                <li>Lifting hips off the bench</li>
-                <li>Not using a spotter for heavy sets</li>
-              </ul>
+      <!-- ========== CHEST ========== -->
+      <div class="muscle-section" id="chest-section">
+        <h2><span>Chest</span> Exercises</h2>
+        <div class="grid-3" id="exerciseGrid">
+
+          <!-- Barbell Bench Press -->
+          <div class="exercise-card" data-muscle="chest" onclick="openExercise(this)">
+            <h3>Barbell Bench Press</h3>
+            <p class="muscle-group">Chest • Triceps • Front Delts</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">The king of chest exercises. Primary mass builder for the pectorals.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Barbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/rT7DgCr-3pg" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Lie flat on bench, feet firmly on floor</li>
+                  <li>Grip bar slightly wider than shoulder width</li>
+                  <li>Unrack and hold above chest with arms extended</li>
+                  <li>Lower bar to mid-chest, elbows at 45-75°</li>
+                  <li>Press bar back up to starting position</li>
+                </ol>
+                <h4>Tips:</h4>
+                <ul>
+                  <li>Retract shoulder blades</li>
+                  <li>Keep wrists straight</li>
+                  <li>Drive feet into floor for leg drive</li>
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Barbell Squat -->
-        <div class="exercise-card" data-muscle="legs" onclick="openExercise(this)">
-          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">🦵</div>
-          <h3>Barbell Back Squat</h3>
-          <p class="muscle-group">Quads • Glutes • Hamstrings • Core</p>
-          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">The most effective lower body exercise. Works nearly every muscle in the body.</p>
-          <div class="exercise-tags">
-            <span class="tag tag-primary">Compound</span>
-            <span class="tag tag-info">Barbell</span>
-          </div>
-          <div class="exercise-details" style="display: none;">
-            <div class="exercise-instructions">
-              <h4>Instructions:</h4>
-              <ol>
-                <li>Position bar on upper traps (high bar) or rear delts (low bar)</li>
-                <li>Stand with feet shoulder-width apart, toes slightly out</li>
-                <li>Brace your core and unrack the bar</li>
-                <li>Descend by pushing hips back and bending knees</li>
-                <li>Go below parallel (hip crease below knee)</li>
-                <li>Drive through heels to stand back up</li>
-              </ol>
-              <h4>Common Mistakes:</h4>
-              <ul>
-                <li>Knees caving inward (valgus)</li>
-                <li>Not hitting proper depth</li>
-                <li>Rounding the lower back</li>
-                <li>Rising on toes instead of driving through heels</li>
-              </ul>
+          <!-- Incline Bench Press -->
+          <div class="exercise-card" data-muscle="chest" onclick="openExercise(this)">
+            <h3>Incline Bench Press</h3>
+            <p class="muscle-group">Upper Chest • Front Delts • Triceps</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Targets the clavicular head of the pec. Essential for upper chest development.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Barbell/Dumbbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/SrqOu55lrYU" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Set bench to 30-45 degree incline</li>
+                  <li>Grip bar slightly wider than shoulders</li>
+                  <li>Lower bar to upper chest/collarbone area</li>
+                  <li>Press up and slightly back</li>
+                </ol>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Deadlift -->
-        <div class="exercise-card" data-muscle="back" onclick="openExercise(this)">
-          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">💪</div>
-          <h3>Conventional Deadlift</h3>
-          <p class="muscle-group">Back • Glutes • Hamstrings • Traps</p>
-          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">The ultimate full-body strength builder. Targets the entire posterior chain.</p>
-          <div class="exercise-tags">
-            <span class="tag tag-primary">Compound</span>
-            <span class="tag tag-info">Barbell</span>
-          </div>
-          <div class="exercise-details" style="display: none;">
-            <div class="exercise-instructions">
-              <h4>Instructions:</h4>
-              <ol>
-                <li>Stand with feet hip-width apart, bar over mid-foot</li>
-                <li>Hinge at hips, grip bar just outside knees</li>
-                <li>Flatten back, chest up, shoulders over or slightly in front of bar</li>
-                <li>Drive through the floor, extending hips and knees simultaneously</li>
-                <li>Lock out at top with hips fully extended</li>
-                <li>Lower bar by hinging hips first, then bending knees</li>
-              </ol>
-              <h4>Common Mistakes:</h4>
-              <ul>
-                <li>Rounding the lower back</li>
-                <li>Starting with hips too low (it's not a squat)</li>
-                <li>Bar drifting away from the body</li>
-                <li>Hyperextending at the top</li>
-              </ul>
+          <!-- Decline Bench Press -->
+          <div class="exercise-card" data-muscle="chest" onclick="openExercise(this)">
+            <h3>Decline Bench Press</h3>
+            <p class="muscle-group">Lower Chest • Triceps</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Emphasizes the lower pectorals. Allows for heavier loads than flat bench.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Barbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/LfyQBUKR8SE" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Set bench to 15-30 degree decline</li>
+                  <li>Secure feet under pads</li>
+                  <li>Lower bar to lower chest</li>
+                  <li>Press up in a slight arc</li>
+                </ol>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Pull-Ups -->
-        <div class="exercise-card" data-muscle="back" onclick="openExercise(this)">
-          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">🔝</div>
-          <h3>Pull-Ups</h3>
-          <p class="muscle-group">Lats • Biceps • Rhomboids • Core</p>
-          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Essential vertical pulling movement for back width and arm development.</p>
-          <div class="exercise-tags">
-            <span class="tag tag-primary">Compound</span>
-            <span class="tag tag-success">Bodyweight</span>
+          <!-- Dumbbell Bench Press -->
+          <div class="exercise-card" data-muscle="chest" onclick="openExercise(this)">
+            <h3>Dumbbell Bench Press</h3>
+            <p class="muscle-group">Chest • Triceps • Front Delts</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Greater range of motion than barbell. Excellent for muscle balance.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Dumbbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/VmB1G1K7v94" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Lie on bench with dumbbells at chest level</li>
+                  <li>Press dumbbells up, bringing them together at top</li>
+                  <li>Lower with control, allowing deep stretch</li>
+                </ol>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <!-- Overhead Press -->
-        <div class="exercise-card" data-muscle="shoulders" onclick="openExercise(this)">
-          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">🔱</div>
-          <h3>Overhead Press</h3>
-          <p class="muscle-group">Front Delts • Side Delts • Triceps</p>
-          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">The primary shoulder compound. Builds impressive shoulder mass and pressing strength.</p>
-          <div class="exercise-tags">
-            <span class="tag tag-primary">Compound</span>
-            <span class="tag tag-info">Barbell</span>
+          <!-- Dumbbell Flyes -->
+          <div class="exercise-card" data-muscle="chest" onclick="openExercise(this)">
+            <h3>Dumbbell Flyes</h3>
+            <p class="muscle-group">Chest (stretch emphasis)</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Isolation movement with maximum stretch. Great for chest development.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Dumbbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/eozdVDA78K0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Lie on bench with arms extended above chest</li>
+                  <li>Lower dumbbells out to sides in arc motion</li>
+                  <li>Keep slight bend in elbows throughout</li>
+                  <li>Squeeze chest to bring weights back up</li>
+                </ol>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <!-- Lateral Raises -->
-        <div class="exercise-card" data-muscle="shoulders" onclick="openExercise(this)">
-          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">🤸</div>
-          <h3>Dumbbell Lateral Raises</h3>
-          <p class="muscle-group">Side Deltoids</p>
-          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Isolation movement essential for wide shoulders. Use controlled form with moderate weight.</p>
-          <div class="exercise-tags">
-            <span class="tag tag-primary">Isolation</span>
-            <span class="tag tag-info">Dumbbell</span>
+          <!-- Cable Flyes -->
+          <div class="exercise-card" data-muscle="chest" onclick="openExercise(this)">
+            <h3>Cable Flyes</h3>
+            <p class="muscle-group">Chest (constant tension)</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Constant tension throughout ROM. Excellent mind-muscle connection.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Cable</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/Iwe6AmxVf7o" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Set cables to high, mid, or low position</li>
+                  <li>Step forward with slight forward lean</li>
+                  <li>Bring handles together in hugging motion</li>
+                  <li>Squeeze chest at contraction</li>
+                </ol>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <!-- Barbell Curls -->
-        <div class="exercise-card" data-muscle="arms" onclick="openExercise(this)">
-          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">💪</div>
-          <h3>Barbell Bicep Curls</h3>
-          <p class="muscle-group">Biceps • Forearms</p>
-          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Classic arm builder. Allows heavy loading for maximum bicep stimulation.</p>
-          <div class="exercise-tags">
-            <span class="tag tag-primary">Isolation</span>
-            <span class="tag tag-info">Barbell</span>
+          <!-- Push-Ups -->
+          <div class="exercise-card" data-muscle="chest" onclick="openExercise(this)">
+            <h3>Push-Ups</h3>
+            <p class="muscle-group">Chest • Triceps • Front Delts • Core</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Fundamental bodyweight exercise. Endless variations for all levels.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-success">Bodyweight</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/IODxDxX7oi4" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Hands slightly wider than shoulders</li>
+                  <li>Body in straight line from head to heels</li>
+                  <li>Lower chest to floor with elbows at 45°</li>
+                  <li>Push back up to starting position</li>
+                </ol>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <!-- Tricep Pushdowns -->
-        <div class="exercise-card" data-muscle="arms" onclick="openExercise(this)">
-          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">⬇️</div>
-          <h3>Tricep Rope Pushdowns</h3>
-          <p class="muscle-group">Triceps (all 3 heads)</p>
-          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Cable isolation movement that targets all three heads of the tricep effectively.</p>
-          <div class="exercise-tags">
-            <span class="tag tag-primary">Isolation</span>
-            <span class="tag tag-info">Cable</span>
+          <!-- Chest Dips -->
+          <div class="exercise-card" data-muscle="chest" onclick="openExercise(this)">
+            <h3>Chest Dips</h3>
+            <p class="muscle-group">Lower Chest • Triceps • Front Delts</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Compound movement emphasizing lower chest. Lean forward to target pecs.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-success">Bodyweight</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/2z8JmcrW-As" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Grip parallel bars, arms extended</li>
+                  <li>Lean torso forward 30-45 degrees</li>
+                  <li>Lower until stretch in chest</li>
+                  <li>Push back up, maintaining lean</li>
+                </ol>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <!-- Plank -->
-        <div class="exercise-card" data-muscle="core" onclick="openExercise(this)">
-          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">🧘</div>
-          <h3>Plank</h3>
-          <p class="muscle-group">Rectus Abdominis • Obliques • Transverse</p>
-          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Foundational core exercise. Builds isometric core strength and stability.</p>
-          <div class="exercise-tags">
-            <span class="tag tag-primary">Isometric</span>
-            <span class="tag tag-success">Bodyweight</span>
+          <!-- Machine Chest Press -->
+          <div class="exercise-card" data-muscle="chest" onclick="openExercise(this)">
+            <h3>Machine Chest Press</h3>
+            <p class="muscle-group">Chest • Triceps</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Fixed path for safety. Great for beginners or finishing sets.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Machine</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/xUm0BiZCWlQ" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Adjust seat so handles align with mid-chest</li>
+                  <li>Press handles forward until arms extended</li>
+                  <li>Lower with control</li>
+                </ol>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <!-- Romanian Deadlift -->
-        <div class="exercise-card" data-muscle="legs" onclick="openExercise(this)">
-          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">🦵</div>
-          <h3>Romanian Deadlift</h3>
-          <p class="muscle-group">Hamstrings • Glutes • Lower Back</p>
-          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Hip-hinge movement emphasizing the hamstrings and glutes with constant tension.</p>
-          <div class="exercise-tags">
-            <span class="tag tag-primary">Compound</span>
-            <span class="tag tag-info">Barbell/Dumbbell</span>
+          <!-- Pec Deck / Machine Fly -->
+          <div class="exercise-card" data-muscle="chest" onclick="openExercise(this)">
+            <h3>Pec Deck Machine</h3>
+            <p class="muscle-group">Chest (inner & outer)</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Excellent isolation for chest squeeze. Constant tension throughout.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Machine</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/Z57CtFmRMxA" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Adjust seat and arm pads appropriately</li>
+                  <li>Place forearms against pads</li>
+                  <li>Squeeze arms together in front of chest</li>
+                  <li>Control the return to stretch</li>
+                </ol>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <!-- Cable Flyes -->
-        <div class="exercise-card" data-muscle="chest" onclick="openExercise(this)">
-          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">🦋</div>
-          <h3>Cable Flyes</h3>
-          <p class="muscle-group">Chest (inner & outer)</p>
-          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Constant tension chest isolation. Great for chest definition and mind-muscle connection.</p>
-          <div class="exercise-tags">
-            <span class="tag tag-primary">Isolation</span>
-            <span class="tag tag-info">Cable</span>
-          </div>
         </div>
-
-        <!-- Hanging Leg Raises -->
-        <div class="exercise-card" data-muscle="core" onclick="openExercise(this)">
-          <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">🔽</div>
-          <h3>Hanging Leg Raises</h3>
-          <p class="muscle-group">Lower Abs • Hip Flexors • Obliques</p>
-          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Advanced core exercise that heavily targets the lower abdominals.</p>
-          <div class="exercise-tags">
-            <span class="tag tag-primary">Isolation</span>
-            <span class="tag tag-success">Bodyweight</span>
-          </div>
-        </div>
-
       </div>
+
+      <!-- ========== BACK ========== -->
+      <div class="muscle-section" id="back-section">
+        <h2><span>Back</span> Exercises</h2>
+        <div class="grid-3">
+
+          <!-- Conventional Deadlift -->
+          <div class="exercise-card" data-muscle="back" onclick="openExercise(this)">
+            <h3>Conventional Deadlift</h3>
+            <p class="muscle-group">Lower Back • Glutes • Hamstrings • Traps</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">The king of all exercises. Full posterior chain development.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Barbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/op9kVnSso6Q" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Stand with feet hip-width, bar over mid-foot</li>
+                  <li>Hinge and grip bar just outside legs</li>
+                  <li>Flatten back, chest up, shoulders over bar</li>
+                  <li>Drive through floor, extending hips and knees</li>
+                  <li>Lock out at top, reverse movement</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pull-Ups -->
+          <div class="exercise-card" data-muscle="back" onclick="openExercise(this)">
+            <h3>Pull-Ups</h3>
+            <p class="muscle-group">Lats • Biceps • Rhomboids • Rear Delts</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Essential vertical pull. Builds back width and V-taper.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-success">Bodyweight</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/eGo4IYlbE5g" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Grip bar slightly wider than shoulders, palms away</li>
+                  <li>Hang with arms fully extended</li>
+                  <li>Pull up until chin clears bar</li>
+                  <li>Lower with control to full extension</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chin-Ups -->
+          <div class="exercise-card" data-muscle="back" onclick="openExercise(this)">
+            <h3>Chin-Ups</h3>
+            <p class="muscle-group">Lats • Biceps • Rhomboids</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Supinated grip variation. More bicep involvement than pull-ups.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-success">Bodyweight</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/brhRXlOhsAM" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Grip bar shoulder-width, palms facing you</li>
+                  <li>Hang with arms fully extended</li>
+                  <li>Pull up until chin clears bar</li>
+                  <li>Lower with control</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Barbell Rows -->
+          <div class="exercise-card" data-muscle="back" onclick="openExercise(this)">
+            <h3>Barbell Bent-Over Row</h3>
+            <p class="muscle-group">Lats • Rhomboids • Traps • Rear Delts</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Primary back thickness builder. Heavy compound row.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Barbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/FWJR5Ve8bnQ" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Hinge at hips, back flat, torso at 45°</li>
+                  <li>Grip bar just outside legs</li>
+                  <li>Pull bar to lower chest/upper abs</li>
+                  <li>Squeeze shoulder blades together</li>
+                  <li>Lower with control</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dumbbell Row -->
+          <div class="exercise-card" data-muscle="back" onclick="openExercise(this)">
+            <h3>Single-Arm Dumbbell Row</h3>
+            <p class="muscle-group">Lats • Rhomboids • Rear Delts</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Unilateral row for balanced development. Great range of motion.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Dumbbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/pYcpY20QaE8" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Place one hand and knee on bench</li>
+                  <li>Keep back flat and parallel to floor</li>
+                  <li>Row dumbbell to hip, leading with elbow</li>
+                  <li>Squeeze lat at top, lower with control</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lat Pulldown -->
+          <div class="exercise-card" data-muscle="back" onclick="openExercise(this)">
+            <h3>Lat Pulldown</h3>
+            <p class="muscle-group">Lats • Biceps • Rhomboids</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Machine alternative to pull-ups. Easier to control weight and form.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Cable</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/CAwf7n6Luuc" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Grip bar wide, sit with thighs secured</li>
+                  <li>Lean back slightly, chest up</li>
+                  <li>Pull bar to upper chest</li>
+                  <li>Squeeze lats, control the return</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seated Cable Row -->
+          <div class="exercise-card" data-muscle="back" onclick="openExercise(this)">
+            <h3>Seated Cable Row</h3>
+            <p class="muscle-group">Lats • Rhomboids • Traps • Rear Delts</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Controlled horizontal pull with constant tension.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Cable</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/GZbfZ033f74" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Sit with feet on platforms, slight knee bend</li>
+                  <li>Grab handle, sit tall with extended arms</li>
+                  <li>Pull handle to lower chest/upper abs</li>
+                  <li>Squeeze shoulder blades, return with control</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- T-Bar Row -->
+          <div class="exercise-card" data-muscle="back" onclick="openExercise(this)">
+            <h3>T-Bar Row</h3>
+            <p class="muscle-group">Lats • Rhomboids • Traps • Lower Back</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Heavy compound row with stable base. Great for thickness.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Barbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/j3Igk5nyZE4" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Straddle the bar, grip V-handle</li>
+                  <li>Hinge at hips, back flat</li>
+                  <li>Pull bar to chest, squeeze lats</li>
+                  <li>Lower with control</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Face Pulls -->
+          <div class="exercise-card" data-muscle="back" onclick="openExercise(this)">
+            <h3>Face Pulls</h3>
+            <p class="muscle-group">Rear Delts • Rhomboids • Rotator Cuff</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Essential for shoulder health and posture. High rep accessory.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Cable</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/rep-qVOkqgk" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Set cable at face height with rope</li>
+                  <li>Grip rope with thumbs toward you</li>
+                  <li>Pull toward face, separating hands</li>
+                  <li>Externally rotate shoulders at end</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Straight-Arm Pulldown -->
+          <div class="exercise-card" data-muscle="back" onclick="openExercise(this)">
+            <h3>Straight-Arm Pulldown</h3>
+            <p class="muscle-group">Lats • Teres Major</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Lat isolation without bicep involvement. Great for mind-muscle connection.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Cable</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/AjCCGN2tU3Q" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Stand facing cable with straight bar or rope</li>
+                  <li>Arms extended, slight lean forward</li>
+                  <li>Pull bar down to thighs keeping arms straight</li>
+                  <li>Squeeze lats at bottom, control return</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rack Pulls -->
+          <div class="exercise-card" data-muscle="back" onclick="openExercise(this)">
+            <h3>Rack Pulls</h3>
+            <p class="muscle-group">Upper Back • Traps • Lower Back</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Partial deadlift for upper back emphasis. Allows heavier loads.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Barbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/JnLzC2AfaIs" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Set bar at knee height in rack</li>
+                  <li>Grip bar, flatten back</li>
+                  <li>Stand up with the weight</li>
+                  <li>Lower back to pins with control</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hyperextensions -->
+          <div class="exercise-card" data-muscle="back" onclick="openExercise(this)">
+            <h3>Back Extensions (Hyperextensions)</h3>
+            <p class="muscle-group">Lower Back • Glutes • Hamstrings</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Strengthens the spinal erectors. Essential for back health.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-success">Bodyweight</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/ph3pddpKzzw" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Position hips on pad, feet secured</li>
+                  <li>Lower torso toward floor</li>
+                  <li>Raise body until in line with legs</li>
+                  <li>Don't hyperextend past neutral</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ========== SHOULDERS ========== -->
+      <div class="muscle-section" id="shoulders-section">
+        <h2><span>Shoulder</span> Exercises</h2>
+        <div class="grid-3">
+
+          <!-- Overhead Press -->
+          <div class="exercise-card" data-muscle="shoulders" onclick="openExercise(this)">
+            <h3>Barbell Overhead Press</h3>
+            <p class="muscle-group">Front Delts • Side Delts • Triceps</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">The primary shoulder compound. Builds pressing strength and mass.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Barbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/2yjwXTZQDDI" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Grip bar just outside shoulders</li>
+                  <li>Unrack, bar at collarbone level</li>
+                  <li>Press overhead, moving head back then forward</li>
+                  <li>Lock out with bar over midfoot</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dumbbell Shoulder Press -->
+          <div class="exercise-card" data-muscle="shoulders" onclick="openExercise(this)">
+            <h3>Dumbbell Shoulder Press</h3>
+            <p class="muscle-group">Front Delts • Side Delts • Triceps</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Greater ROM than barbell. Allows more natural movement pattern.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Dumbbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/qEwKCR5JCog" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Sit or stand with dumbbells at shoulder height</li>
+                  <li>Press dumbbells overhead</li>
+                  <li>Bring together at top, lower with control</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Arnold Press -->
+          <div class="exercise-card" data-muscle="shoulders" onclick="openExercise(this)">
+            <h3>Arnold Press</h3>
+            <p class="muscle-group">All Three Delt Heads</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Rotational press hitting all delt heads. Named after Schwarzenegger.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Dumbbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/3ml7BH7mNwQ" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Start with dumbbells in front, palms facing you</li>
+                  <li>Rotate wrists while pressing up</li>
+                  <li>At top, palms face away</li>
+                  <li>Reverse motion on the way down</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lateral Raises -->
+          <div class="exercise-card" data-muscle="shoulders" onclick="openExercise(this)">
+            <h3>Dumbbell Lateral Raises</h3>
+            <p class="muscle-group">Side Deltoids</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Essential for wide shoulders. Use controlled form, moderate weight.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Dumbbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/3VcKaXpzqRo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Stand with dumbbells at sides</li>
+                  <li>Raise arms out to sides until parallel</li>
+                  <li>Lead with elbows, slight forward lean</li>
+                  <li>Lower with control</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Front Raises -->
+          <div class="exercise-card" data-muscle="shoulders" onclick="openExercise(this)">
+            <h3>Front Raises</h3>
+            <p class="muscle-group">Front Deltoids</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Isolation for front delts. Often not needed if pressing enough.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Dumbbell/Plate</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/-t7fuZ0KhDA" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Hold weights in front of thighs</li>
+                  <li>Raise arms forward to shoulder height</li>
+                  <li>Keep slight bend in elbows</li>
+                  <li>Lower with control</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rear Delt Flyes -->
+          <div class="exercise-card" data-muscle="shoulders" onclick="openExercise(this)">
+            <h3>Rear Delt Flyes</h3>
+            <p class="muscle-group">Rear Deltoids • Rhomboids</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Critical for balanced shoulders and posture. Often neglected.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Dumbbell/Cable</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/EA7u4Q_8HQ0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Bend at hips, torso nearly parallel to floor</li>
+                  <li>Hold dumbbells below chest</li>
+                  <li>Raise arms out to sides, leading with elbows</li>
+                  <li>Squeeze rear delts, lower with control</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cable Lateral Raises -->
+          <div class="exercise-card" data-muscle="shoulders" onclick="openExercise(this)">
+            <h3>Cable Lateral Raises</h3>
+            <p class="muscle-group">Side Deltoids</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Constant tension throughout ROM. Better resistance curve than dumbbells.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Cable</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/PPrzBWdOSNw" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Stand sideways to low cable</li>
+                  <li>Grab handle with far hand</li>
+                  <li>Raise arm out to side until parallel</li>
+                  <li>Lower with control</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Upright Rows -->
+          <div class="exercise-card" data-muscle="shoulders" onclick="openExercise(this)">
+            <h3>Upright Rows</h3>
+            <p class="muscle-group">Side Delts • Traps • Front Delts</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Compound shoulder/trap movement. Use wide grip for shoulder safety.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Barbell/Dumbbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/amCU-ziHITM" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Grip bar/dumbbells with wide grip</li>
+                  <li>Pull up along body, leading with elbows</li>
+                  <li>Stop when elbows reach shoulder height</li>
+                  <li>Lower with control</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Shrugs -->
+          <div class="exercise-card" data-muscle="shoulders" onclick="openExercise(this)">
+            <h3>Barbell/Dumbbell Shrugs</h3>
+            <p class="muscle-group">Upper Traps</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Direct trap isolation. Go heavy with controlled form.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Barbell/Dumbbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/cJRVVxmytaM" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Hold weight with arms at sides</li>
+                  <li>Shrug shoulders straight up toward ears</li>
+                  <li>Squeeze at top for 1-2 seconds</li>
+                  <li>Lower slowly</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ========== LEGS ========== -->
+      <div class="muscle-section" id="legs-section">
+        <h2><span>Leg</span> Exercises</h2>
+        <div class="grid-3">
+
+          <!-- Barbell Back Squat -->
+          <div class="exercise-card" data-muscle="legs" onclick="openExercise(this)">
+            <h3>Barbell Back Squat</h3>
+            <p class="muscle-group">Quads • Glutes • Hamstrings • Core</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">The king of leg exercises. Builds overall lower body strength and size.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Barbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/bEv6CCg2BC8" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Bar on upper traps (high bar) or rear delts (low bar)</li>
+                  <li>Feet shoulder-width, toes slightly out</li>
+                  <li>Descend by pushing hips back and bending knees</li>
+                  <li>Go below parallel (hip below knee)</li>
+                  <li>Drive through heels to stand</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Front Squat -->
+          <div class="exercise-card" data-muscle="legs" onclick="openExercise(this)">
+            <h3>Front Squat</h3>
+            <p class="muscle-group">Quads • Core • Upper Back</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">More quad-dominant than back squat. Requires good mobility.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Barbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/v-mQm_droHg" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Bar on front delts, clean grip or crossed arms</li>
+                  <li>Keep elbows high throughout</li>
+                  <li>Descend with upright torso</li>
+                  <li>Drive up maintaining elbow position</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Romanian Deadlift -->
+          <div class="exercise-card" data-muscle="legs" onclick="openExercise(this)">
+            <h3>Romanian Deadlift</h3>
+            <p class="muscle-group">Hamstrings • Glutes • Lower Back</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Hip-hinge movement targeting posterior chain with constant tension.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Barbell/Dumbbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/7AaaYhMqTws" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Hold bar/dumbbells in front of thighs</li>
+                  <li>Push hips back, lowering weight along legs</li>
+                  <li>Keep slight knee bend, back flat</li>
+                  <li>Lower until hamstring stretch, rise by driving hips</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Leg Press -->
+          <div class="exercise-card" data-muscle="legs" onclick="openExercise(this)">
+            <h3>Leg Press</h3>
+            <p class="muscle-group">Quads • Glutes • Hamstrings</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Machine compound movement. Allows heavy loading with less spinal stress.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Machine</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/IZxyjW7MPJQ" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Sit with back flat against pad</li>
+                  <li>Feet shoulder-width on platform</li>
+                  <li>Lower until knees at 90 degrees</li>
+                  <li>Press through heels to extend legs</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hack Squat -->
+          <div class="exercise-card" data-muscle="legs" onclick="openExercise(this)">
+            <h3>Hack Squat</h3>
+            <p class="muscle-group">Quads • Glutes</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Machine squat variation. More quad-focused with stable back position.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Machine</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/0tn5K9NlCfo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Position shoulders under pads</li>
+                  <li>Feet shoulder-width on platform</li>
+                  <li>Lower by bending knees</li>
+                  <li>Press through feet to stand</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lunges -->
+          <div class="exercise-card" data-muscle="legs" onclick="openExercise(this)">
+            <h3>Walking Lunges</h3>
+            <p class="muscle-group">Quads • Glutes • Hamstrings</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Unilateral exercise for leg development and balance.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Bodyweight/Dumbbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/L8fvypPrzzs" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Step forward into lunge position</li>
+                  <li>Lower until both knees at 90 degrees</li>
+                  <li>Push off front foot to step through</li>
+                  <li>Alternate legs with each step</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bulgarian Split Squat -->
+          <div class="exercise-card" data-muscle="legs" onclick="openExercise(this)">
+            <h3>Bulgarian Split Squat</h3>
+            <p class="muscle-group">Quads • Glutes • Hamstrings</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Single-leg squat with rear foot elevated. Excellent for strength and balance.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Dumbbell/Bodyweight</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/2C-uNgKwPLE" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Place rear foot on bench behind you</li>
+                  <li>Front foot about 2 feet ahead</li>
+                  <li>Descend until rear knee nearly touches floor</li>
+                  <li>Drive through front heel to stand</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Leg Extension -->
+          <div class="exercise-card" data-muscle="legs" onclick="openExercise(this)">
+            <h3>Leg Extension</h3>
+            <p class="muscle-group">Quadriceps</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Quad isolation machine. Great for building the teardrop.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Machine</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/YyvSfVjQeL0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Sit with back against pad</li>
+                  <li>Pad above ankles, below shins</li>
+                  <li>Extend legs until straight</li>
+                  <li>Squeeze quads, lower with control</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Leg Curl -->
+          <div class="exercise-card" data-muscle="legs" onclick="openExercise(this)">
+            <h3>Lying Leg Curl</h3>
+            <p class="muscle-group">Hamstrings</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Hamstring isolation. Essential for balanced leg development.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Machine</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/1Tq3QdYUuHs" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Lie face down, pad above heels</li>
+                  <li>Hips pressed against pad</li>
+                  <li>Curl heels toward glutes</li>
+                  <li>Squeeze hamstrings, lower with control</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hip Thrust -->
+          <div class="exercise-card" data-muscle="legs" onclick="openExercise(this)">
+            <h3>Barbell Hip Thrust</h3>
+            <p class="muscle-group">Glutes • Hamstrings</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Best exercise for glute development. High muscle activation.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Barbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/xDmFkJxPzeM" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Upper back on bench, feet flat on floor</li>
+                  <li>Barbell across hips with pad</li>
+                  <li>Drive hips up until body parallel to floor</li>
+                  <li>Squeeze glutes at top, lower with control</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Calf Raises -->
+          <div class="exercise-card" data-muscle="legs" onclick="openExercise(this)">
+            <h3>Standing Calf Raises</h3>
+            <p class="muscle-group">Gastrocnemius</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Primary calf builder targeting the larger gastrocnemius.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Machine</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/-M4-G8p8fmc" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Balls of feet on platform</li>
+                  <li>Lower heels below platform level</li>
+                  <li>Rise onto toes as high as possible</li>
+                  <li>Squeeze at top, lower with control</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seated Calf Raises -->
+          <div class="exercise-card" data-muscle="legs" onclick="openExercise(this)">
+            <h3>Seated Calf Raises</h3>
+            <p class="muscle-group">Soleus</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Targets the soleus muscle (deep calf). Important for complete calf development.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Machine</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/JbyjNymZOt0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Sit with pad over knees</li>
+                  <li>Balls of feet on platform</li>
+                  <li>Lower heels, then rise onto toes</li>
+                  <li>Full ROM, controlled tempo</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ========== ARMS ========== -->
+      <div class="muscle-section" id="arms-section">
+        <h2><span>Arm</span> Exercises</h2>
+        <div class="grid-3">
+
+          <!-- Barbell Curl -->
+          <div class="exercise-card" data-muscle="arms" onclick="openExercise(this)">
+            <h3>Barbell Bicep Curl</h3>
+            <p class="muscle-group">Biceps • Forearms</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Classic bicep builder. Allows heavy loading for mass.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Barbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/ykJmrZ5v0Oo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Stand with shoulder-width grip</li>
+                  <li>Keep elbows pinned to sides</li>
+                  <li>Curl bar toward shoulders</li>
+                  <li>Lower with control</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dumbbell Curl -->
+          <div class="exercise-card" data-muscle="arms" onclick="openExercise(this)">
+            <h3>Alternating Dumbbell Curl</h3>
+            <p class="muscle-group">Biceps</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Allows supination for peak bicep contraction.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Dumbbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/sAq_ocpRh_I" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Hold dumbbells at sides, palms in</li>
+                  <li>Curl one arm, rotating palm up</li>
+                  <li>Squeeze at top, lower with control</li>
+                  <li>Alternate arms</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hammer Curls -->
+          <div class="exercise-card" data-muscle="arms" onclick="openExercise(this)">
+            <h3>Hammer Curls</h3>
+            <p class="muscle-group">Biceps • Brachialis • Forearms</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Neutral grip hits brachialis for arm thickness.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Dumbbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/zC3nLlEvin4" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Hold dumbbells with neutral grip</li>
+                  <li>Keep palms facing each other throughout</li>
+                  <li>Curl toward shoulders</li>
+                  <li>Lower with control</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preacher Curl -->
+          <div class="exercise-card" data-muscle="arms" onclick="openExercise(this)">
+            <h3>Preacher Curl</h3>
+            <p class="muscle-group">Biceps (long head emphasis)</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Eliminates cheating. Great for bicep peak development.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Barbell/Dumbbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/fIWP-FRFNU0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Sit at preacher bench, arms over pad</li>
+                  <li>Grip bar, arms nearly extended</li>
+                  <li>Curl bar toward shoulders</li>
+                  <li>Lower with control, don't fully extend</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cable Curl -->
+          <div class="exercise-card" data-muscle="arms" onclick="openExercise(this)">
+            <h3>Cable Bicep Curl</h3>
+            <p class="muscle-group">Biceps</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Constant tension throughout ROM. Great for pump.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Cable</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/NFzTWp2qpiE" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Stand facing low cable with bar/rope</li>
+                  <li>Keep elbows at sides</li>
+                  <li>Curl handle toward shoulders</li>
+                  <li>Lower with control</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Incline Dumbbell Curl -->
+          <div class="exercise-card" data-muscle="arms" onclick="openExercise(this)">
+            <h3>Incline Dumbbell Curl</h3>
+            <p class="muscle-group">Biceps (long head stretch)</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Long head emphasis through stretched position.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Dumbbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/soxrZlIl35U" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Sit on 45-60 degree incline bench</li>
+                  <li>Let arms hang straight down</li>
+                  <li>Curl dumbbells up</li>
+                  <li>Lower fully to stretch biceps</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Close-Grip Bench -->
+          <div class="exercise-card" data-muscle="arms" onclick="openExercise(this)">
+            <h3>Close-Grip Bench Press</h3>
+            <p class="muscle-group">Triceps • Chest • Front Delts</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Compound tricep builder. Allows heavy loading.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-info">Barbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/nEF0bv2FW94" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Grip bar shoulder-width or slightly narrower</li>
+                  <li>Lower bar to lower chest</li>
+                  <li>Keep elbows close to body</li>
+                  <li>Press up, focusing on triceps</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tricep Pushdowns -->
+          <div class="exercise-card" data-muscle="arms" onclick="openExercise(this)">
+            <h3>Tricep Rope Pushdowns</h3>
+            <p class="muscle-group">Triceps (all 3 heads)</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Effective isolation with constant tension.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Cable</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/vB5OHsJ3EME" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Stand facing high cable with rope</li>
+                  <li>Elbows pinned to sides</li>
+                  <li>Push rope down until arms extended</li>
+                  <li>Spread rope at bottom for contraction</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Skull Crushers -->
+          <div class="exercise-card" data-muscle="arms" onclick="openExercise(this)">
+            <h3>Skull Crushers (Lying Tricep Ext.)</h3>
+            <p class="muscle-group">Triceps (long head emphasis)</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Targets long head with stretch. Classic tricep builder.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Barbell/EZ Bar</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/d_KZxkY_0cM" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Lie on bench, arms extended above chest</li>
+                  <li>Lower bar toward forehead by bending elbows</li>
+                  <li>Keep upper arms stationary</li>
+                  <li>Extend arms to starting position</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Overhead Tricep Extension -->
+          <div class="exercise-card" data-muscle="arms" onclick="openExercise(this)">
+            <h3>Overhead Tricep Extension</h3>
+            <p class="muscle-group">Triceps (long head)</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Full stretch on long head. Great for mass.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Dumbbell/Cable</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/_gsUck-7M74" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Hold weight overhead with both hands</li>
+                  <li>Lower behind head by bending elbows</li>
+                  <li>Keep upper arms close to ears</li>
+                  <li>Extend to starting position</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tricep Dips -->
+          <div class="exercise-card" data-muscle="arms" onclick="openExercise(this)">
+            <h3>Tricep Dips</h3>
+            <p class="muscle-group">Triceps • Chest • Front Delts</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Compound bodyweight tricep builder. Keep torso upright.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Compound</span>
+              <span class="tag tag-success">Bodyweight</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/6kALZikXxLc" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Grip bars, arms extended, body upright</li>
+                  <li>Lower by bending elbows behind you</li>
+                  <li>Go until upper arms parallel</li>
+                  <li>Push back up to start</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Wrist Curls -->
+          <div class="exercise-card" data-muscle="arms" onclick="openExercise(this)">
+            <h3>Wrist Curls</h3>
+            <p class="muscle-group">Forearm Flexors</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Forearm isolation for grip strength and size.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Barbell/Dumbbell</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/7849wdrqPmg" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Rest forearms on bench, wrists hanging off</li>
+                  <li>Hold weight with palms up</li>
+                  <li>Curl weight up using only wrists</li>
+                  <li>Lower with control</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ========== CORE ========== -->
+      <div class="muscle-section" id="core-section">
+        <h2><span>Core</span> Exercises</h2>
+        <div class="grid-3">
+
+          <!-- Plank -->
+          <div class="exercise-card" data-muscle="core" onclick="openExercise(this)">
+            <h3>Plank</h3>
+            <p class="muscle-group">Rectus Abs • Obliques • Transverse</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Foundational isometric core exercise. Builds stability.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isometric</span>
+              <span class="tag tag-success">Bodyweight</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/ASdvN_XEl_c" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Forearms on floor, elbows under shoulders</li>
+                  <li>Body in straight line from head to heels</li>
+                  <li>Brace core, squeeze glutes</li>
+                  <li>Hold for prescribed time</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Crunches -->
+          <div class="exercise-card" data-muscle="core" onclick="openExercise(this)">
+            <h3>Crunches</h3>
+            <p class="muscle-group">Upper Rectus Abdominis</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Basic ab exercise. Focus on spinal flexion, not hip flexion.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-success">Bodyweight</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/Xyd_fa5zoEU" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Lie on back, knees bent, feet flat</li>
+                  <li>Hands behind head or crossed on chest</li>
+                  <li>Lift shoulders off floor by contracting abs</li>
+                  <li>Lower with control, don't fully relax</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hanging Leg Raises -->
+          <div class="exercise-card" data-muscle="core" onclick="openExercise(this)">
+            <h3>Hanging Leg Raises</h3>
+            <p class="muscle-group">Lower Abs • Hip Flexors</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Advanced lower ab exercise. Great for definition.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-success">Bodyweight</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/hdng3Nm1x_E" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Hang from bar with arms extended</li>
+                  <li>Raise legs until parallel to floor (or higher)</li>
+                  <li>Keep legs straight or slightly bent</li>
+                  <li>Lower with control, no swinging</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Russian Twists -->
+          <div class="exercise-card" data-muscle="core" onclick="openExercise(this)">
+            <h3>Russian Twists</h3>
+            <p class="muscle-group">Obliques • Rectus Abs</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Rotational core exercise targeting obliques.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-success">Bodyweight/Weight</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/wkD8rjkodUI" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Sit with knees bent, lean back slightly</li>
+                  <li>Hold weight or clasp hands</li>
+                  <li>Rotate torso side to side</li>
+                  <li>Keep core braced throughout</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cable Woodchops -->
+          <div class="exercise-card" data-muscle="core" onclick="openExercise(this)">
+            <h3>Cable Woodchops</h3>
+            <p class="muscle-group">Obliques • Core Rotators</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Functional rotational movement with resistance.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-info">Cable</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/pAplQXk3dkU" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Set cable high, stand sideways</li>
+                  <li>Grip handle with both hands</li>
+                  <li>Pull diagonally across body to hip</li>
+                  <li>Control the return, repeat, switch sides</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dead Bug -->
+          <div class="exercise-card" data-muscle="core" onclick="openExercise(this)">
+            <h3>Dead Bug</h3>
+            <p class="muscle-group">Transverse Abs • Core Stability</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Anti-extension exercise. Great for core control.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Anti-Extension</span>
+              <span class="tag tag-success">Bodyweight</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/4XLEnwUr1d8" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Lie on back, arms up, knees at 90°</li>
+                  <li>Press lower back into floor</li>
+                  <li>Lower opposite arm and leg toward floor</li>
+                  <li>Return to start, alternate sides</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ab Rollout -->
+          <div class="exercise-card" data-muscle="core" onclick="openExercise(this)">
+            <h3>Ab Wheel Rollout</h3>
+            <p class="muscle-group">Rectus Abs • Obliques • Lats</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Advanced anti-extension exercise. Very challenging.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Anti-Extension</span>
+              <span class="tag tag-info">Ab Wheel</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/rqiTPdK1c_I" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Kneel on floor, grip ab wheel</li>
+                  <li>Roll out as far as you can control</li>
+                  <li>Keep core tight, don't arch lower back</li>
+                  <li>Contract abs to roll back</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mountain Climbers -->
+          <div class="exercise-card" data-muscle="core" onclick="openExercise(this)">
+            <h3>Mountain Climbers</h3>
+            <p class="muscle-group">Core • Hip Flexors • Cardio</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Dynamic core exercise with cardio element.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Dynamic</span>
+              <span class="tag tag-success">Bodyweight</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/nmwgirgXLYM" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Start in push-up position</li>
+                  <li>Drive one knee toward chest</li>
+                  <li>Quickly switch legs</li>
+                  <li>Keep hips low, core engaged</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bicycle Crunches -->
+          <div class="exercise-card" data-muscle="core" onclick="openExercise(this)">
+            <h3>Bicycle Crunches</h3>
+            <p class="muscle-group">Obliques • Rectus Abs</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Rotational crunch hitting all ab muscles.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-success">Bodyweight</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/9FGilxCbdz8" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Lie on back, hands behind head</li>
+                  <li>Lift shoulders and legs off floor</li>
+                  <li>Bring elbow to opposite knee</li>
+                  <li>Alternate sides in cycling motion</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pallof Press -->
+          <div class="exercise-card" data-muscle="core" onclick="openExercise(this)">
+            <h3>Pallof Press</h3>
+            <p class="muscle-group">Obliques • Core Anti-Rotation</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Anti-rotation core exercise. Excellent for core stability.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Anti-Rotation</span>
+              <span class="tag tag-info">Cable/Band</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/AH_QZLm_0-s" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Stand sideways to cable at chest height</li>
+                  <li>Hold handle at chest with both hands</li>
+                  <li>Press handle straight out</li>
+                  <li>Resist rotation, return to chest</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reverse Crunch -->
+          <div class="exercise-card" data-muscle="core" onclick="openExercise(this)">
+            <h3>Reverse Crunch</h3>
+            <p class="muscle-group">Lower Abs</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Targets lower abs by lifting hips off floor.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isolation</span>
+              <span class="tag tag-success">Bodyweight</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/hyv14e2QDq0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Lie on back, legs up, knees bent</li>
+                  <li>Curl hips off floor toward chest</li>
+                  <li>Don't use momentum, control movement</li>
+                  <li>Lower hips with control</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Side Plank -->
+          <div class="exercise-card" data-muscle="core" onclick="openExercise(this)">
+            <h3>Side Plank</h3>
+            <p class="muscle-group">Obliques • Core Stability</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Lateral core stability. Targets obliques isometrically.</p>
+            <div class="exercise-tags">
+              <span class="tag tag-primary">Isometric</span>
+              <span class="tag tag-success">Bodyweight</span>
+            </div>
+            <div class="exercise-details" style="display: none;">
+              <div class="exercise-demo">
+                <iframe data-src="https://www.youtube.com/embed/K2VljzCC16g" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="exercise-instructions">
+                <h4>Instructions:</h4>
+                <ol>
+                  <li>Lie on side, forearm on floor under shoulder</li>
+                  <li>Lift hips off floor</li>
+                  <li>Body in straight line from head to feet</li>
+                  <li>Hold for time, switch sides</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </div>
   </section>
 
   <!-- Gym Terminology -->
-  <section class="section" style="background: var(--primary);">
+  <section class="section" style="background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--primary) 100%); border-top: 3px solid var(--accent); padding: var(--space-3xl) 0;">
     <div class="container">
-      <div class="section-header">
-        <h2>Gym <span class="accent-text">Terminology</span></h2>
-        <p>Essential fitness terms every lifter should know</p>
+      <div class="section-header" style="margin-bottom: var(--space-2xl);">
+        <h2 style="font-size: 2.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">Gym <span class="accent-text">Terminology</span></h2>
+        <p style="font-size: 1.1rem; color: var(--text-secondary); margin-top: var(--space-md);">Essential fitness terms every lifter should know</p>
       </div>
 
       <div class="grid-2" style="gap: var(--space-lg);">
@@ -354,7 +1896,7 @@
         <div class="footer-brand">
           <h3>KYNOTRA</h3>
           <p>AI-powered fitness platform delivering personalized workout programs, nutrition plans, and premium equipment.</p>
-          <div class="footer-social"><a href="#" title="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a><a href="#" title="X"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a><a href="#" title="YouTube"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19.1c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg></a><a href="#" title="TikTok"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1 0-5.78 2.92 2.92 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 3 15.57 6.33 6.33 0 0 0 9.37 22a6.33 6.33 0 0 0 6.38-6.2V9.07a8.16 8.16 0 0 0 3.84.96V6.69z"/></svg></a><a href="#" title="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a></div>
+          <div class="footer-social"><a href="#" title="Instagram"><svg width="18" height="18" viewBox="0 0 24 24"><defs><linearGradient id="igGrad6" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#FFDC80"/><stop offset="25%" stop-color="#F77737"/><stop offset="50%" stop-color="#E1306C"/><stop offset="75%" stop-color="#833AB4"/><stop offset="100%" stop-color="#5B51D8"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="5" fill="none" stroke="url(#igGrad6)" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="url(#igGrad6)" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.5" fill="url(#igGrad6)"/></svg></a><a href="#" title="X"><svg width="18" height="18" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a><a href="#" title="YouTube"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19.1c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" fill="#FF0000"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="#FFFFFF"/></svg></a><a href="#" title="TikTok"><svg width="18" height="18" viewBox="0 0 24 24" fill="#00F2EA"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1 0-5.78 2.92 2.92 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 3 15.57 6.33 6.33 0 0 0 9.37 22a6.33 6.33 0 0 0 6.38-6.2V9.07a8.16 8.16 0 0 0 3.84.96V6.69z"/></svg></a><a href="#" title="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a></div>
         </div>
         <div class="footer-column"><h4>Platform</h4><a href="programs.html">Programs</a><a href="diet.html">Nutrition</a><a href="exercises.html">Exercises</a><a href="shop.html">Shop</a></div>
         <div class="footer-column"><h4>Company</h4><a href="about.html">About</a><a href="contact.html">Contact</a><a href="#">Blog</a><a href="#">Careers</a></div>
@@ -368,13 +1910,14 @@
   </footer>
 
   <!-- Exercise Modal -->
-  <div id="exerciseModal" style="display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.8); overflow-y: auto; padding: var(--space-xl);">
-    <div style="max-width: 700px; margin: 80px auto; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: var(--space-2xl); position: relative;">
+  <div id="exerciseModal" style="display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.9); overflow-y: auto; padding: var(--space-xl);">
+    <div style="max-width: 800px; margin: 80px auto; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: var(--space-2xl); position: relative;">
       <button onclick="closeExercise()" style="position: absolute; top: var(--space-lg); right: var(--space-lg); font-size: 1.5rem; color: var(--text-muted); cursor: pointer; background: none; border: none;">✕</button>
       <div id="modalContent"></div>
     </div>
   </div>
 
+  <script src="js/exercise-animations.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
