@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Kynotra Dashboard - My Orders">
+  <title>My Orders — Kynotra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/styles.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo"><img src="../../images/favicon.svg" alt="Kynotra" class="logo-icon">KYNOTRA</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="../../index.html">Home</a></li>
+        <li><a href="../../programs.html">Programs</a></li>
+        <li><a href="../../diet.html">Nutrition</a></li>
+        <li><a href="../../exercises.html">Exercises</a></li>
+        <li><a href="../../shop.html">Shop</a></li>
+        <li><a href="../../about.html">About</a></li>
+        <li><a href="../../contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="../../shop.html" class="nav-cart">🛒<span class="cart-count" id="cartCount">0</span></a>
+        <a href="dashboard.html" class="btn btn-sm btn-outline">Dashboard</a>
+        <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Dashboard -->
+  <div class="dashboard">
+    <div class="container container-wide">
+      <div class="dashboard-grid">
+
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+          <div class="profile-card" style="background: var(--gradient-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--space-xl); text-align: center; margin-bottom: var(--space-lg);">
+            <div class="profile-avatar-wrap" onclick="window.location.href='dashboard.html?edit=avatar'" title="Change avatar">
+              <div class="profile-avatar" id="dashAvatar">JD</div>
+              <div class="profile-avatar-edit">📷</div>
+            </div>
+            <h3 style="font-size: 1.1rem; margin-bottom: var(--space-xs);" id="dashName">John Doe</h3>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: var(--space-sm);" id="dashEmail"></p>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: var(--space-md);" id="dashPlanLabel">Free Member</p>
+            <span class="tag tag-primary" id="dashPlanTag" style="margin-bottom: var(--space-md); display: inline-block;">Free Plan</span>
+            <a href="dashboard.html?edit=profile" class="btn btn-sm btn-outline btn-block" style="margin-top: var(--space-sm);">✏️ Edit Profile</a>
+          </div>
+
+          <div class="sidebar-menu">
+            <a href="dashboard.html">📊 Overview</a>
+            <a href="workouts.html">🏋️ My Workouts</a>
+            <a href="nutrition-dash.html">🥗 Nutrition</a>
+            <a href="progress.html">📈 Progress</a>
+            <a href="saved-programs.html">💾 Saved Programs</a>
+            <a href="orders.html" class="active">📦 My Orders</a>
+            <a href="#" onclick="handleLogout(); return false;">🚪 Log Out</a>
+          </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main>
+          <!-- Page Header -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xl);">
+            <div>
+              <h1 style="font-family: var(--font-heading); font-size: 2rem; text-transform: uppercase; margin-bottom: var(--space-xs);">My Orders</h1>
+              <p style="color: var(--text-secondary);">Track your order history and status</p>
+            </div>
+            <a href="../../shop.html" class="btn btn-primary">Shop Now →</a>
+          </div>
+
+          <!-- Orders List -->
+          <div id="ordersContainer">
+            <!-- Orders will be loaded dynamically -->
+          </div>
+
+          <!-- Empty State -->
+          <div id="emptyOrders" class="stat-card" style="display: none; text-align: center; padding: var(--space-3xl);">
+            <div style="font-size: 3rem; margin-bottom: var(--space-lg);">📦</div>
+            <h3 style="font-size: 1.2rem; margin-bottom: var(--space-sm);">No Orders Yet</h3>
+            <p style="color: var(--text-muted); margin-bottom: var(--space-lg);">You haven't placed any orders yet. Start shopping to see your orders here!</p>
+            <a href="../../shop.html" class="btn btn-primary">Browse Shop →</a>
+          </div>
+
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer style="padding: var(--space-xl) 0; border-top: 1px solid var(--border-color); text-align: center;">
+    <p style="color: var(--text-muted); font-size: 0.85rem;">&copy; 2026 Kynotra. All rights reserved.</p>
+  </footer>
+
+  <script src="../../js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      loadOrders();
+    });
+
+    function loadOrders() {
+      const orders = JSON.parse(localStorage.getItem('Kynotra_orders') || '[]');
+      const container = document.getElementById('ordersContainer');
+      const emptyState = document.getElementById('emptyOrders');
+
+      if (orders.length === 0) {
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+
+      let html = '';
+      orders.forEach(order => {
+        const orderDate = new Date(order.date).toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+
+        const itemsList = order.items.map(item => 
+          `<span style="display: inline-block; background: var(--bg-dark); padding: 4px 10px; border-radius: var(--radius-sm); font-size: 0.8rem; margin: 2px;">${item.name} × ${item.qty}</span>`
+        ).join('');
+
+        const statusColor = getStatusColor(order.status);
+
+        html += `
+          <div class="stat-card" style="margin-bottom: var(--space-lg);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-md); margin-bottom: var(--space-md);">
+              <div>
+                <div style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--accent); margin-bottom: 4px;">${order.id}</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">${orderDate}</div>
+              </div>
+              <div style="text-align: right;">
+                <span class="tag" style="background: ${statusColor}; color: white; margin-bottom: 4px;">${order.status}</span>
+                <div style="font-family: var(--font-heading); font-size: 1.3rem; margin-top: 4px;">$${order.total.toFixed(2)}</div>
+              </div>
+            </div>
+            
+            <div style="border-top: 1px solid var(--border-color); padding-top: var(--space-md); margin-bottom: var(--space-md);">
+              <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: var(--space-sm);">Items</div>
+              <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                ${itemsList}
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-md); border-top: 1px solid var(--border-color); padding-top: var(--space-md);">
+              <div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 2px;">Ship To</div>
+                <div style="font-size: 0.9rem;">${order.shippingInfo?.name || 'N/A'}</div>
+              </div>
+              <div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 2px;">Address</div>
+                <div style="font-size: 0.9rem;">${order.shippingInfo?.city || ''}, ${order.shippingInfo?.country || ''}</div>
+              </div>
+              <div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 2px;">Subtotal</div>
+                <div style="font-size: 0.9rem;">$${order.subtotal.toFixed(2)}</div>
+              </div>
+              <div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 2px;">Shipping</div>
+                <div style="font-size: 0.9rem;">${order.shipping === 0 ? 'Free' : '$' + order.shipping.toFixed(2)}</div>
+              </div>
+            </div>
+
+            ${order.status === 'Processing' ? `
+              <div style="margin-top: var(--space-md); padding-top: var(--space-md); border-top: 1px solid var(--border-color);">
+                <div class="progress-bar" style="height: 6px;">
+                  <div class="progress-bar-fill" style="width: 25%;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: var(--space-sm); font-size: 0.75rem; color: var(--text-muted);">
+                  <span style="color: var(--accent);">Processing</span>
+                  <span>Shipped</span>
+                  <span>Out for Delivery</span>
+                  <span>Delivered</span>
+                </div>
+              </div>
+            ` : ''}
+
+            ${order.status === 'Shipped' ? `
+              <div style="margin-top: var(--space-md); padding-top: var(--space-md); border-top: 1px solid var(--border-color);">
+                <div class="progress-bar" style="height: 6px;">
+                  <div class="progress-bar-fill" style="width: 50%;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: var(--space-sm); font-size: 0.75rem; color: var(--text-muted);">
+                  <span style="color: var(--accent);">Processing</span>
+                  <span style="color: var(--accent);">Shipped</span>
+                  <span>Out for Delivery</span>
+                  <span>Delivered</span>
+                </div>
+              </div>
+            ` : ''}
+
+            ${order.status === 'Out for Delivery' ? `
+              <div style="margin-top: var(--space-md); padding-top: var(--space-md); border-top: 1px solid var(--border-color);">
+                <div class="progress-bar" style="height: 6px;">
+                  <div class="progress-bar-fill" style="width: 75%;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: var(--space-sm); font-size: 0.75rem; color: var(--text-muted);">
+                  <span style="color: var(--accent);">Processing</span>
+                  <span style="color: var(--accent);">Shipped</span>
+                  <span style="color: var(--accent);">Out for Delivery</span>
+                  <span>Delivered</span>
+                </div>
+              </div>
+            ` : ''}
+
+            ${order.status === 'Delivered' ? `
+              <div style="margin-top: var(--space-md); padding-top: var(--space-md); border-top: 1px solid var(--border-color);">
+                <div class="progress-bar" style="height: 6px;">
+                  <div class="progress-bar-fill" style="width: 100%;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: var(--space-sm); font-size: 0.75rem; color: var(--text-muted);">
+                  <span style="color: var(--accent);">Processing</span>
+                  <span style="color: var(--accent);">Shipped</span>
+                  <span style="color: var(--accent);">Out for Delivery</span>
+                  <span style="color: var(--accent);">Delivered</span>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function getStatusColor(status) {
+      switch (status) {
+        case 'Processing': return '#F59E0B';
+        case 'Shipped': return '#3B82F6';
+        case 'Out for Delivery': return '#8B5CF6';
+        case 'Delivered': return '#00E60A';
+        case 'Cancelled': return '#EF4444';
+        default: return '#6B7280';
+      }
+    }
+  </script>
+</body>
+</html>

@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
   disableNumberInputScroll();
   updateCartCount();
   handleDashboardParams();
+  autofillCalculatorFromProfile();
 });
 
 // Handle dashboard URL parameters (edit=profile, edit=avatar)
@@ -633,6 +634,74 @@ function setDashUnit(unit) {
   });
 }
 
+// Auto-fill calculator fields from user profile
+function autofillCalculatorFromProfile() {
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || '{}');
+  
+  // Only proceed if we have saved fitness data
+  if (!user.age && !user.weight && !user.height && !user.gender) return;
+  
+  // Auto-fill age
+  const ageInput = document.getElementById('calcAge');
+  if (ageInput && user.age) {
+    ageInput.value = user.age;
+  }
+  
+  // Auto-fill weight
+  const weightInput = document.getElementById('calcWeight');
+  if (weightInput && user.weight) {
+    weightInput.value = user.weight;
+  }
+  
+  // Auto-fill height
+  const heightInput = document.getElementById('calcHeight');
+  if (heightInput && user.height) {
+    heightInput.value = user.height;
+  }
+  
+  // Auto-fill gender
+  const genderInput = document.getElementById('calcGender');
+  const genderWrapper = document.getElementById('calcGenderWrapper');
+  if (genderInput && genderWrapper && user.gender) {
+    genderInput.value = user.gender;
+    const genderOption = genderWrapper.querySelector(`.custom-select-option[data-value="${user.gender}"]`);
+    const genderDisplay = genderWrapper.querySelector('.custom-select-value');
+    if (genderOption && genderDisplay) {
+      genderDisplay.textContent = genderOption.querySelector('.option-text').textContent;
+      genderWrapper.classList.add('has-value');
+      // Mark selected
+      genderWrapper.querySelectorAll('.custom-select-option').forEach(opt => opt.classList.remove('selected'));
+      genderOption.classList.add('selected');
+    }
+  }
+  
+  // Auto-fill goal based on fitness goal
+  const goalInput = document.getElementById('calcGoal');
+  const goalWrapper = document.getElementById('calcGoalWrapper');
+  if (goalInput && goalWrapper && user.goal) {
+    // Map fitness goal to calculator goal
+    const goalMap = {
+      'weight-loss': 'lose',
+      'muscle-gain': 'gain',
+      'strength': 'gain',
+      'maintenance': 'maintain',
+      'endurance': 'maintain'
+    };
+    const calcGoal = goalMap[user.goal];
+    if (calcGoal) {
+      goalInput.value = calcGoal;
+      const goalOption = goalWrapper.querySelector(`.custom-select-option[data-value="${calcGoal}"]`);
+      const goalDisplay = goalWrapper.querySelector('.custom-select-value');
+      if (goalOption && goalDisplay) {
+        goalDisplay.textContent = goalOption.querySelector('.option-text').textContent;
+        goalWrapper.classList.add('has-value');
+        goalWrapper.querySelectorAll('.custom-select-option').forEach(opt => opt.classList.remove('selected'));
+        goalOption.classList.add('selected');
+      }
+    }
+  }
+}
+
 function calculateCalories() {
   const gender = document.getElementById('calcGender')?.value;
   const age = parseFloat(document.getElementById('calcAge')?.value);
@@ -971,13 +1040,40 @@ function filterExercises(muscle, btn) {
 }
 
 function filterProducts(category, btn) {
-  const cards = document.querySelectorAll('#productsGrid .product-card');
-  cards.forEach(card => {
-    const cat = card.getAttribute('data-category') || '';
-    card.style.display = (category === 'all' || cat.includes(category)) ? '' : 'none';
-  });
+  currentProductCategory = category;
+  applyProductFilters();
   updateFilterButtons(btn);
 }
+
+let currentProductCategory = 'all';
+
+function searchProducts(query) {
+  applyProductFilters(query);
+}
+
+function applyProductFilters(searchQuery) {
+  const cards = document.querySelectorAll('#productsGrid .product-card');
+  const query = searchQuery !== undefined ? searchQuery : (document.getElementById('productSearch')?.value || '');
+  const q = query.toLowerCase().trim();
+  
+  cards.forEach(card => {
+    const cat = card.getAttribute('data-category') || '';
+    const text = card.textContent.toLowerCase();
+    
+    const matchesCategory = currentProductCategory === 'all' || cat.includes(currentProductCategory);
+    const matchesSearch = !q || text.includes(q);
+    
+    card.style.display = (matchesCategory && matchesSearch) ? '' : 'none';
+  });
+}
+
+// Initialize product search
+document.addEventListener('DOMContentLoaded', () => {
+  const searchInput = document.getElementById('productSearch');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => searchProducts(e.target.value));
+  }
+});
 
 function updateFilterButtons(activeBtn) {
   if (activeBtn) {
@@ -1264,9 +1360,10 @@ function renderCartView() {
   } else {
     promoHTML = `
       <div class="promo-row">
-        <input type="text" id="promoInput" placeholder="Promo code" maxlength="20">
+        <input type="text" id="promoInput" placeholder="Promo code" maxlength="20" onkeydown="if(event.key==='Enter')applyPromo()">
         <button class="btn btn-sm btn-outline" onclick="applyPromo()">Apply</button>
-      </div>`;
+      </div>
+      <p id="promoError" style="color: #ff4444; font-size: 0.8rem; margin-top: 4px; display: none;"></p>`;
   }
 
   let summaryHTML = `
@@ -1286,16 +1383,19 @@ function renderCartView() {
 // ---- Promo Codes ----
 function applyPromo() {
   const input = document.getElementById('promoInput');
+  const errorEl = document.getElementById('promoError');
   if (!input) return;
   const code = input.value.trim().toUpperCase();
   const promo = PROMO_CODES[code];
   if (!promo) {
-    showToast('Invalid promo code', 'error');
     input.classList.add('invalid');
+    if (errorEl) {
+      errorEl.textContent = 'Invalid promo code';
+      errorEl.style.display = 'block';
+    }
     return;
   }
   appliedPromo = { ...promo, code };
-  showToast(`Code ${code} applied!`, 'success');
   renderCartView();
 }
 
@@ -1346,8 +1446,15 @@ function renderShippingStep() {
   title.textContent = 'Checkout';
 
   const saved = JSON.parse(localStorage.getItem('Kynotra_shipping') || 'null');
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || '{}');
+  
+  // Check if user has saved address info
+  const hasSavedAddress = user.address && user.country && user.city;
 
   body.innerHTML = renderCheckoutSteps(1) + `
+    ${hasSavedAddress ? `
+    <button type="button" class="btn btn-sm btn-outline" onclick="autofillShipping()" style="width: 100%; margin-bottom: var(--space-md);">📍 Use Personal Information</button>
+    ` : ''}
     <div class="checkout-form-group">
       <label>Full Name *</label>
       <input type="text" id="shipName" placeholder="John Doe" value="${saved?.name || ''}" maxlength="100">
@@ -1361,39 +1468,82 @@ function renderShippingStep() {
       <input type="tel" id="shipPhone" placeholder="(555) 123-4567" value="${saved?.phone || ''}" maxlength="20">
     </div>
     <div class="checkout-form-group">
+      <label>Country *</label>
+      <select id="shipCountry" onchange="updateCityDropdown()">
+        <option value="">Select Country</option>
+        ${COUNTRIES.map(c => `<option value="${c}" ${(saved?.country || 'United States') === c ? 'selected' : ''}>${c}</option>`).join('')}
+      </select>
+    </div>
+    <div class="checkout-form-group">
+      <label>City *</label>
+      <select id="shipCity">
+        <option value="">Select City</option>
+      </select>
+    </div>
+    <div class="checkout-form-group">
       <label>Address *</label>
       <input type="text" id="shipAddress" placeholder="123 Main St, Apt 4" value="${saved?.address || ''}" maxlength="300">
     </div>
-    <div class="checkout-form-row">
-      <div class="checkout-form-group">
-        <label>City *</label>
-        <input type="text" id="shipCity" placeholder="New York" value="${saved?.city || ''}" maxlength="100">
-      </div>
-      <div class="checkout-form-group">
-        <label>State *</label>
-        <select id="shipState">
-          <option value="">Select</option>
-          ${US_STATES.map(s => `<option value="${s}" ${saved?.state === s ? 'selected' : ''}>${s}</option>`).join('')}
-        </select>
-      </div>
-    </div>
-    <div class="checkout-form-row">
-      <div class="checkout-form-group">
-        <label>ZIP Code *</label>
-        <input type="text" id="shipZip" placeholder="10001" value="${saved?.zip || ''}" maxlength="10">
-      </div>
-      <div class="checkout-form-group">
-        <label>Country</label>
-        <input type="text" id="shipCountry" value="United States" disabled>
-      </div>
+    <div class="checkout-form-group">
+      <label>ZIP / Postal Code *</label>
+      <input type="text" id="shipZip" placeholder="10001" value="${saved?.zip || ''}" maxlength="20">
     </div>
   `;
+
+  // Initialize city dropdown
+  setTimeout(() => {
+    updateCityDropdown();
+    const savedCity = saved?.city;
+    if (savedCity) {
+      const citySelect = document.getElementById('shipCity');
+      if (citySelect) citySelect.value = savedCity;
+    }
+  }, 0);
 
   footer.innerHTML = `
     <div class="checkout-nav">
       <button class="btn-back" onclick="backToCart()">← Cart</button>
       <button class="btn btn-primary" style="flex:1;" onclick="goToPayment()">Continue to Payment</button>
     </div>`;
+}
+
+// Autofill shipping from saved profile
+function autofillShipping() {
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || '{}');
+  
+  const fullName = [user.name, user.lastName].filter(Boolean).join(' ');
+  document.getElementById('shipName').value = fullName;
+  document.getElementById('shipEmail').value = user.email || '';
+  document.getElementById('shipPhone').value = user.phone || '';
+  document.getElementById('shipAddress').value = user.address || '';
+  document.getElementById('shipZip').value = user.zip || '';
+  
+  // Set country
+  const countrySelect = document.getElementById('shipCountry');
+  if (countrySelect && user.country) {
+    countrySelect.value = user.country;
+    updateCityDropdown();
+    // Set city after dropdown updates
+    setTimeout(() => {
+      const citySelect = document.getElementById('shipCity');
+      if (citySelect && user.city) {
+        citySelect.value = user.city;
+      }
+    }, 10);
+  }
+  
+  showToast('Address autofilled from profile', 'success');
+}
+
+function clearShippingAutofill() {
+  document.getElementById('shipName').value = '';
+  document.getElementById('shipEmail').value = '';
+  document.getElementById('shipPhone').value = '';
+  document.getElementById('shipAddress').value = '';
+  document.getElementById('shipZip').value = '';
+  document.getElementById('shipCountry').value = '';
+  document.getElementById('shipCity').innerHTML = '<option value="">Select City</option>';
+  localStorage.removeItem('Kynotra_shipping');
 }
 
 function backToCart() {
@@ -1407,8 +1557,8 @@ function validateShipping() {
     email: document.getElementById('shipEmail'),
     address: document.getElementById('shipAddress'),
     city: document.getElementById('shipCity'),
-    state: document.getElementById('shipState'),
     zip: document.getElementById('shipZip'),
+    country: document.getElementById('shipCountry'),
   };
 
   let valid = true;
@@ -1417,9 +1567,9 @@ function validateShipping() {
   if (!fields.name.value.trim()) { fields.name.classList.add('invalid'); valid = false; }
   if (!fields.email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email.value)) { fields.email.classList.add('invalid'); valid = false; }
   if (!fields.address.value.trim()) { fields.address.classList.add('invalid'); valid = false; }
-  if (!fields.city.value.trim()) { fields.city.classList.add('invalid'); valid = false; }
-  if (!fields.state.value) { fields.state.classList.add('invalid'); valid = false; }
-  if (!fields.zip.value.trim() || !/^\d{5}(-\d{4})?$/.test(fields.zip.value.trim())) { fields.zip.classList.add('invalid'); valid = false; }
+  if (!fields.city.value) { fields.city.classList.add('invalid'); valid = false; }
+  if (!fields.zip.value.trim()) { fields.zip.classList.add('invalid'); valid = false; }
+  if (!fields.country.value) { fields.country.classList.add('invalid'); valid = false; }
 
   if (valid) {
     const data = {
@@ -1427,9 +1577,9 @@ function validateShipping() {
       email: fields.email.value.trim(),
       phone: document.getElementById('shipPhone')?.value.trim() || '',
       address: fields.address.value.trim(),
-      city: fields.city.value.trim(),
-      state: fields.state.value,
+      city: fields.city.value,
       zip: fields.zip.value.trim(),
+      country: fields.country.value,
     };
     localStorage.setItem('Kynotra_shipping', JSON.stringify(data));
     return data;
@@ -1454,8 +1604,15 @@ function renderPaymentStep() {
   if (!body) return;
 
   const t = getCartTotals();
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || '{}');
+  
+  // Check if user has saved payment info
+  const hasSavedPayment = user.cardNumber && user.cardName && user.cardExpiry;
 
   body.innerHTML = renderCheckoutSteps(2) + `
+    ${hasSavedPayment ? `
+    <button type="button" class="btn btn-sm btn-outline" onclick="autofillPayment()" style="width: 100%; margin-bottom: var(--space-md);">💳 Use Saved Card</button>
+    ` : ''}
     <div class="card-type-icons">
       <span class="active">VISA</span>
       <span>MasterCard</span>
@@ -1516,6 +1673,39 @@ function detectCardType(number) {
   if (/^5[1-5]/.test(n) || /^2[2-7]/.test(n)) return 'MasterCard';
   if (/^3[47]/.test(n)) return 'AMEX';
   return null;
+}
+
+// Autofill payment from saved profile
+function autofillPayment() {
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || '{}');
+  
+  if (user.cardNumber) document.getElementById('payCard').value = user.cardNumber;
+  if (user.cardName) document.getElementById('payName').value = user.cardName;
+  if (user.cardExpiry) document.getElementById('payExpiry').value = user.cardExpiry;
+  // CVC is never saved, user must enter it
+  
+  // Update card type icons
+  const cardType = detectCardType(user.cardNumber || '');
+  const icons = document.querySelectorAll('.card-type-icons span');
+  icons.forEach(icon => {
+    icon.classList.remove('active');
+    if (icon.textContent === cardType) icon.classList.add('active');
+  });
+  
+  showToast('Card autofilled from profile (enter CVC)', 'success');
+}
+
+function clearPaymentAutofill() {
+  document.getElementById('payCard').value = '';
+  document.getElementById('payName').value = '';
+  document.getElementById('payExpiry').value = '';
+  document.getElementById('payCVC').value = '';
+  
+  // Reset card type icons
+  const icons = document.querySelectorAll('.card-type-icons span');
+  icons.forEach((icon, i) => {
+    icon.classList.toggle('active', i === 0);
+  });
 }
 
 function validatePayment() {
@@ -1590,7 +1780,7 @@ function renderReviewStep() {
       <dt>Ship To</dt>
       <dd>${safeName(shipping.name || '')}</dd>
       <dt>Address</dt>
-      <dd>${safeName(shipping.address || '')}, ${safeName(shipping.city || '')} ${safeName(shipping.state || '')} ${safeName(shipping.zip || '')}</dd>
+      <dd>${safeName(shipping.address || '')}, ${safeName(shipping.city || '')} ${safeName(shipping.zip || '')}, ${safeName(shipping.country || '')}</dd>
       <dt>Email</dt>
       <dd>${safeName(shipping.email || '')}</dd>
       <dt>Payment</dt>
@@ -1672,7 +1862,6 @@ function renderConfirmation(orderNum, orderDate, totals, shipping) {
 
   footer.innerHTML = `
     <div class="checkout-nav">
-      <button class="btn btn-outline" style="flex:1;" onclick="viewOrderHistory()">Order History</button>
       <button class="btn btn-primary" style="flex:1;" onclick="closeCart()">Continue Shopping</button>
     </div>`;
 }
@@ -1720,8 +1909,77 @@ function viewOrderHistory() {
   footer.innerHTML = `<button class="btn btn-primary btn-block" onclick="backToCart()">Back to Cart</button>`;
 }
 
-// ---- US States ----
-const US_STATES = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
+// ---- Countries & Cities (USA + Europe) ----
+const COUNTRIES = [
+  'Albania','Andorra','Austria','Belarus','Belgium','Bosnia and Herzegovina','Bulgaria','Croatia','Cyprus',
+  'Czech Republic','Denmark','Estonia','Finland','France','Germany','Greece','Hungary','Iceland','Ireland',
+  'Italy','Kosovo','Latvia','Liechtenstein','Lithuania','Luxembourg','Malta','Moldova','Monaco','Montenegro',
+  'Netherlands','North Macedonia','Norway','Poland','Portugal','Romania','Russia','San Marino','Serbia',
+  'Slovakia','Slovenia','Spain','Sweden','Switzerland','Ukraine','United Kingdom','United States','Vatican City'
+];
+
+const CITIES = {
+  'Albania': ['Tirana','Durrës','Vlorë','Elbasan','Shkodër','Fier','Korçë','Berat','Lushnjë','Pogradec'],
+  'Andorra': ['Andorra la Vella','Escaldes-Engordany','Encamp','Sant Julià de Lòria','La Massana'],
+  'Austria': ['Vienna','Graz','Linz','Salzburg','Innsbruck','Klagenfurt','Villach','Wels','Sankt Pölten','Dornbirn'],
+  'Belarus': ['Minsk','Gomel','Mogilev','Vitebsk','Grodno','Brest','Bobruisk','Baranovichi','Borisov','Pinsk'],
+  'Belgium': ['Brussels','Antwerp','Ghent','Charleroi','Liège','Bruges','Namur','Leuven','Mons','Mechelen'],
+  'Bosnia and Herzegovina': ['Sarajevo','Banja Luka','Tuzla','Zenica','Mostar','Prijedor','Brčko','Bijeljina','Cazin'],
+  'Bulgaria': ['Sofia','Plovdiv','Varna','Burgas','Ruse','Stara Zagora','Pleven','Sliven','Dobrich','Shumen'],
+  'Croatia': ['Zagreb','Split','Rijeka','Osijek','Zadar','Pula','Slavonski Brod','Karlovac','Varaždin','Šibenik'],
+  'Cyprus': ['Nicosia','Limassol','Larnaca','Famagusta','Paphos','Kyrenia','Protaras','Paralimni','Strovolos'],
+  'Czech Republic': ['Prague','Brno','Ostrava','Pilsen','Liberec','Olomouc','České Budějovice','Hradec Králové','Ústí nad Labem','Pardubice'],
+  'Denmark': ['Copenhagen','Aarhus','Odense','Aalborg','Esbjerg','Randers','Kolding','Horsens','Vejle','Roskilde'],
+  'Estonia': ['Tallinn','Tartu','Narva','Pärnu','Kohtla-Järve','Viljandi','Rakvere','Maardu','Sillamäe','Kuressaare'],
+  'Finland': ['Helsinki','Espoo','Tampere','Vantaa','Oulu','Turku','Jyväskylä','Lahti','Kuopio','Pori'],
+  'France': ['Paris','Marseille','Lyon','Toulouse','Nice','Nantes','Montpellier','Strasbourg','Bordeaux','Lille'],
+  'Germany': ['Berlin','Hamburg','Munich','Cologne','Frankfurt','Stuttgart','Düsseldorf','Leipzig','Dortmund','Essen'],
+  'Greece': ['Athens','Thessaloniki','Patras','Heraklion','Larissa','Volos','Ioannina','Chania','Chalcis','Katerini'],
+  'Hungary': ['Budapest','Debrecen','Szeged','Miskolc','Pécs','Győr','Nyíregyháza','Kecskemét','Székesfehérvár','Szombathely'],
+  'Iceland': ['Reykjavik','Kópavogur','Hafnarfjörður','Akureyri','Reykjanesbær','Garðabær','Mosfellsbær','Selfoss','Akranes'],
+  'Ireland': ['Dublin','Cork','Limerick','Galway','Waterford','Drogheda','Swords','Dundalk','Bray','Navan'],
+  'Italy': ['Rome','Milan','Naples','Turin','Palermo','Genoa','Bologna','Florence','Bari','Catania'],
+  'Kosovo': ['Pristina','Prizren','Ferizaj','Peja','Gjakova','Gjilan','Mitrovica','Podujevo','Vushtrri'],
+  'Latvia': ['Riga','Daugavpils','Liepāja','Jelgava','Jūrmala','Ventspils','Rēzekne','Valmiera','Jēkabpils','Ogre'],
+  'Liechtenstein': ['Vaduz','Schaan','Balzers','Triesen','Eschen','Mauren','Triesenberg','Ruggell','Gamprin'],
+  'Lithuania': ['Vilnius','Kaunas','Klaipėda','Šiauliai','Panevėžys','Alytus','Marijampolė','Mažeikiai','Jonava','Utena'],
+  'Luxembourg': ['Luxembourg City','Esch-sur-Alzette','Differdange','Dudelange','Ettelbruck','Diekirch','Wiltz','Echternach'],
+  'Malta': ['Valletta','Birkirkara','Mosta','Qormi','Żabbar','Sliema','San Ġwann','Naxxar','Żejtun','Rabat'],
+  'Moldova': ['Chișinău','Tiraspol','Bălți','Bender','Rîbnița','Cahul','Ungheni','Soroca','Orhei','Dubăsari'],
+  'Monaco': ['Monaco','Monte Carlo','La Condamine','Fontvieille','Moneghetti','Larvotto','Saint-Roman'],
+  'Montenegro': ['Podgorica','Nikšić','Herceg Novi','Pljevlja','Bijelo Polje','Cetinje','Bar','Budva','Ulcinj','Kotor'],
+  'Netherlands': ['Amsterdam','Rotterdam','The Hague','Utrecht','Eindhoven','Groningen','Tilburg','Almere','Breda','Nijmegen'],
+  'North Macedonia': ['Skopje','Bitola','Kumanovo','Prilep','Tetovo','Ohrid','Veles','Štip','Strumica','Gostivar'],
+  'Norway': ['Oslo','Bergen','Trondheim','Stavanger','Drammen','Fredrikstad','Kristiansand','Sandnes','Tromsø','Sarpsborg'],
+  'Poland': ['Warsaw','Kraków','Łódź','Wrocław','Poznań','Gdańsk','Szczecin','Bydgoszcz','Lublin','Białystok'],
+  'Portugal': ['Lisbon','Porto','Vila Nova de Gaia','Amadora','Braga','Coimbra','Funchal','Setúbal','Almada','Agualva-Cacém'],
+  'Romania': ['Bucharest','Cluj-Napoca','Timișoara','Iași','Constanța','Craiova','Brașov','Galați','Ploiești','Oradea'],
+  'Russia': ['Moscow','Saint Petersburg','Novosibirsk','Yekaterinburg','Kazan','Nizhny Novgorod','Chelyabinsk','Samara','Omsk','Rostov-on-Don'],
+  'San Marino': ['San Marino','Serravalle','Borgo Maggiore','Domagnano','Fiorentino','Acquaviva','Faetano','Montegiardino'],
+  'Serbia': ['Belgrade','Novi Sad','Niš','Kragujevac','Subotica','Zrenjanin','Pančevo','Čačak','Kraljevo','Smederevo'],
+  'Slovakia': ['Bratislava','Košice','Prešov','Žilina','Nitra','Banská Bystrica','Trnava','Martin','Trenčín','Poprad'],
+  'Slovenia': ['Ljubljana','Maribor','Celje','Kranj','Velenje','Koper','Novo Mesto','Ptuj','Trbovlje','Kamnik'],
+  'Spain': ['Madrid','Barcelona','Valencia','Seville','Zaragoza','Málaga','Murcia','Palma','Las Palmas','Bilbao'],
+  'Sweden': ['Stockholm','Gothenburg','Malmö','Uppsala','Västerås','Örebro','Linköping','Helsingborg','Jönköping','Norrköping'],
+  'Switzerland': ['Zürich','Geneva','Basel','Lausanne','Bern','Winterthur','Lucerne','St. Gallen','Lugano','Biel'],
+  'Ukraine': ['Kyiv','Kharkiv','Odesa','Dnipro','Donetsk','Zaporizhzhia','Lviv','Kryvyi Rih','Mykolaiv','Mariupol'],
+  'United Kingdom': ['London','Birmingham','Manchester','Glasgow','Liverpool','Leeds','Sheffield','Edinburgh','Bristol','Leicester'],
+  'United States': ['New York','Los Angeles','Chicago','Houston','Phoenix','Philadelphia','San Antonio','San Diego','Dallas','San Jose','Austin','Jacksonville','Fort Worth','Columbus','Charlotte','Indianapolis','Seattle','Denver','Washington','Boston','Nashville','Baltimore','Oklahoma City','Portland','Las Vegas','Milwaukee','Albuquerque','Tucson','Fresno','Sacramento','Atlanta','Miami','Orlando','Tampa','Cleveland','Pittsburgh','Cincinnati','Minneapolis'],
+  'Vatican City': ['Vatican City']
+};
+
+// Update city dropdown based on selected country
+function updateCityDropdown() {
+  const countrySelect = document.getElementById('shipCountry');
+  const citySelect = document.getElementById('shipCity');
+  if (!countrySelect || !citySelect) return;
+
+  const country = countrySelect.value;
+  const cities = CITIES[country] || [];
+
+  citySelect.innerHTML = '<option value="">Select City</option>' +
+    cities.map(c => `<option value="${c}">${c}</option>`).join('');
+}
 
 // Open cart from nav
 document.addEventListener('DOMContentLoaded', () => {
@@ -2060,8 +2318,80 @@ function initDashboardProfile(user, fullName, initials) {
 // ==========================================
 // PROFILE EDITOR
 // ==========================================
+
+// Profile tab switching
+function switchProfileTab(tab) {
+  // Hide all tabs
+  document.getElementById('profileTabPersonal').style.display = 'none';
+  const fitnessTab = document.getElementById('profileTabFitness');
+  if (fitnessTab) fitnessTab.style.display = 'none';
+  document.getElementById('profileTabAddress').style.display = 'none';
+  document.getElementById('profileTabPayment').style.display = 'none';
+  
+  // Remove active from all buttons
+  document.getElementById('tabPersonal').style.background = 'transparent';
+  document.getElementById('tabPersonal').style.color = 'var(--text-secondary)';
+  const tabFitness = document.getElementById('tabFitness');
+  if (tabFitness) {
+    tabFitness.style.background = 'transparent';
+    tabFitness.style.color = 'var(--text-secondary)';
+  }
+  document.getElementById('tabAddress').style.background = 'transparent';
+  document.getElementById('tabAddress').style.color = 'var(--text-secondary)';
+  document.getElementById('tabPayment').style.background = 'transparent';
+  document.getElementById('tabPayment').style.color = 'var(--text-secondary)';
+  
+  // Show selected tab
+  if (tab === 'personal') {
+    document.getElementById('profileTabPersonal').style.display = 'block';
+    document.getElementById('tabPersonal').style.background = 'var(--accent)';
+    document.getElementById('tabPersonal').style.color = 'white';
+  } else if (tab === 'fitness') {
+    if (fitnessTab) fitnessTab.style.display = 'block';
+    if (tabFitness) {
+      tabFitness.style.background = 'var(--accent)';
+      tabFitness.style.color = 'white';
+    }
+  } else if (tab === 'address') {
+    document.getElementById('profileTabAddress').style.display = 'block';
+    document.getElementById('tabAddress').style.background = 'var(--accent)';
+    document.getElementById('tabAddress').style.color = 'white';
+  } else if (tab === 'payment') {
+    document.getElementById('profileTabPayment').style.display = 'block';
+    document.getElementById('tabPayment').style.background = 'var(--accent)';
+    document.getElementById('tabPayment').style.color = 'white';
+  }
+}
+
+// Profile card formatting
+function formatProfileCard(input) {
+  let val = input.value.replace(/\D/g, '').slice(0, 16);
+  input.value = val.replace(/(.{4})/g, '$1 ').trim();
+}
+
+function formatProfileExpiry(input) {
+  let val = input.value.replace(/\D/g, '').slice(0, 4);
+  if (val.length >= 3) val = val.slice(0, 2) + '/' + val.slice(2);
+  input.value = val;
+}
+
+// Update city dropdown in profile based on country
+function updateProfileCities() {
+  const countrySelect = document.getElementById('editCountry');
+  const citySelect = document.getElementById('editCity');
+  if (!countrySelect || !citySelect) return;
+  
+  const country = countrySelect.value;
+  const cities = CITIES[country] || [];
+  
+  citySelect.innerHTML = '<option value="">Select City</option>' + 
+    cities.map(c => `<option value="${c}">${c}</option>`).join('');
+}
+
 function openProfileEditor() {
   const user = JSON.parse(localStorage.getItem('Kynotra_user') || '{}');
+  
+  // Personal Info
   document.getElementById('editFirstName').value = user.name || '';
   document.getElementById('editLastName').value = user.lastName || '';
   document.getElementById('editEmail').value = user.email || '';
@@ -2097,6 +2427,40 @@ function openProfileEditor() {
   
   // Restore unit preference
   setProfileUnit(user.unit || 'imperial');
+  
+  // Address Info
+  const phoneInput = document.getElementById('editPhone');
+  const countrySelect = document.getElementById('editCountry');
+  const citySelect = document.getElementById('editCity');
+  const addressInput = document.getElementById('editAddress');
+  const zipInput = document.getElementById('editZip');
+  
+  if (phoneInput) phoneInput.value = user.phone || '';
+  if (countrySelect) {
+    countrySelect.innerHTML = '<option value="">Select Country</option>' + 
+      COUNTRIES.map(c => `<option value="${c}" ${c === user.country ? 'selected' : ''}>${c}</option>`).join('');
+  }
+  if (citySelect && user.country) {
+    const cities = CITIES[user.country] || [];
+    citySelect.innerHTML = '<option value="">Select City</option>' + 
+      cities.map(c => `<option value="${c}" ${c === user.city ? 'selected' : ''}>${c}</option>`).join('');
+  }
+  if (addressInput) addressInput.value = user.address || '';
+  if (zipInput) zipInput.value = user.zip || '';
+  
+  // Payment Info
+  const cardNumberInput = document.getElementById('editCardNumber');
+  const cardNameInput = document.getElementById('editCardName');
+  const cardExpiryInput = document.getElementById('editCardExpiry');
+  const cardCVCInput = document.getElementById('editCardCVC');
+  
+  if (cardNumberInput) cardNumberInput.value = user.cardNumber || '';
+  if (cardNameInput) cardNameInput.value = user.cardName || '';
+  if (cardExpiryInput) cardExpiryInput.value = user.cardExpiry || '';
+  if (cardCVCInput) cardCVCInput.value = ''; // Don't prefill CVC for security
+  
+  // Reset to personal tab
+  switchProfileTab('personal');
   
   document.getElementById('profileModal').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -2141,6 +2505,8 @@ function setProfileUnit(unit) {
 function saveProfile(e) {
   e.preventDefault();
   const user = JSON.parse(localStorage.getItem('Kynotra_user') || '{}');
+  
+  // Personal Info
   user.name = document.getElementById('editFirstName').value.trim();
   user.lastName = document.getElementById('editLastName').value.trim();
   user.email = document.getElementById('editEmail').value.trim();
@@ -2150,6 +2516,37 @@ function saveProfile(e) {
   user.height = document.getElementById('editHeight').value;
   user.goal = document.getElementById('editGoal').value;
   user.unit = profileUnit; // Save unit preference
+  
+  // Address Info
+  const phoneInput = document.getElementById('editPhone');
+  const countrySelect = document.getElementById('editCountry');
+  const citySelect = document.getElementById('editCity');
+  const addressInput = document.getElementById('editAddress');
+  const zipInput = document.getElementById('editZip');
+  
+  if (phoneInput) user.phone = phoneInput.value.trim();
+  if (countrySelect) user.country = countrySelect.value;
+  if (citySelect) user.city = citySelect.value;
+  if (addressInput) user.address = addressInput.value.trim();
+  if (zipInput) user.zip = zipInput.value.trim();
+  
+  // Payment Info (only save if provided)
+  const cardNumberInput = document.getElementById('editCardNumber');
+  const cardNameInput = document.getElementById('editCardName');
+  const cardExpiryInput = document.getElementById('editCardExpiry');
+  const cardCVCInput = document.getElementById('editCardCVC');
+  
+  if (cardNumberInput && cardNumberInput.value.trim()) {
+    user.cardNumber = cardNumberInput.value.trim();
+  }
+  if (cardNameInput && cardNameInput.value.trim()) {
+    user.cardName = cardNameInput.value.trim();
+  }
+  if (cardExpiryInput && cardExpiryInput.value.trim()) {
+    user.cardExpiry = cardExpiryInput.value.trim();
+  }
+  // Don't save CVC for security
+  
   localStorage.setItem('Kynotra_user', JSON.stringify(user));
   
   // Also update in users database

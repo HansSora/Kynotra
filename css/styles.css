@@ -166,12 +166,12 @@ input, select, textarea {
 }
 
 .section {
-  padding: var(--space-4xl) 0;
+  padding: var(--space-3xl) 0;
 }
 
 .section-header {
   text-align: center;
-  margin-bottom: var(--space-3xl);
+  margin-bottom: var(--space-2xl);
 }
 
 .section-header h2 {
@@ -444,7 +444,7 @@ input, select, textarea {
   top: 70px;
   right: 20px;
   width: 380px;
-  max-height: 520px;
+  max-height: 450px;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
@@ -453,6 +453,7 @@ input, select, textarea {
   box-shadow: var(--shadow-lg);
   flex-direction: column;
   transition: width var(--transition-base), max-height var(--transition-base);
+  overflow: hidden;
 }
 
 .cart-popup.checkout-mode {
@@ -495,12 +496,14 @@ input, select, textarea {
   overflow-y: auto;
   flex: 1;
   min-height: 0;
+  padding-right: 8px;
 }
 
 .cart-popup-items {
   overflow-y: auto;
-  max-height: 220px;
+  max-height: 160px;
   flex: 1;
+  padding-right: 8px;
 }
 
 .cart-popup-total {
@@ -877,7 +880,10 @@ input, select, textarea {
 .checkout-nav {
   display: flex;
   gap: var(--space-sm);
-  margin-top: var(--space-md);
+  margin-top: 0;
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .checkout-nav .btn {
@@ -1738,14 +1744,14 @@ input, select, textarea {
 .footer {
   background: var(--primary);
   border-top: 1px solid var(--border-color);
-  padding: var(--space-4xl) 0 var(--space-xl);
+  padding: var(--space-3xl) 0 var(--space-xl);
 }
 
 .footer-grid {
   display: grid;
   grid-template-columns: 2fr repeat(3, 1fr);
-  gap: var(--space-3xl);
-  margin-bottom: var(--space-3xl);
+  gap: var(--space-2xl);
+  margin-bottom: var(--space-2xl);
 }
 
 .footer-brand h3 {
@@ -1835,6 +1841,8 @@ input, select, textarea {
   border-radius: var(--radius-lg);
   overflow: hidden;
   transition: all var(--transition-base);
+  display: flex;
+  flex-direction: column;
 }
 
 .product-card:hover {
@@ -1867,6 +1875,9 @@ input, select, textarea {
 
 .product-info {
   padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .product-info h3 {
@@ -1880,6 +1891,13 @@ input, select, textarea {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 1px;
+  margin-bottom: var(--space-md);
+}
+
+.product-desc {
+  flex: 1;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
   margin-bottom: var(--space-md);
 }
 
@@ -1906,6 +1924,10 @@ input, select, textarea {
 .product-rating {
   color: var(--warning);
   font-size: 0.8rem;
+}
+
+.product-info .btn {
+  margin-top: var(--space-md);
 }
 
 /* --- Exercise Card --- */
@@ -1945,7 +1967,8 @@ input, select, textarea {
 
 /* --- Dashboard Styles --- */
 .dashboard {
-  padding-top: calc(var(--nav-height) + var(--space-2xl));
+  padding-top: calc(var(--nav-height) + var(--space-xl));
+  padding-bottom: var(--space-xl);
   min-height: 100vh;
 }
 
@@ -1957,11 +1980,12 @@ input, select, textarea {
 
 .dashboard-sidebar {
   position: sticky;
-  top: calc(var(--nav-height) + var(--space-xl));
-  max-height: calc(100vh - var(--nav-height) - var(--space-xl) * 2);
+  top: calc(var(--nav-height) + var(--space-lg));
+  max-height: calc(100vh - var(--nav-height) - var(--space-lg) * 2);
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--border-color) transparent;
+  align-self: flex-start;
 }
 
 .dashboard-sidebar::-webkit-scrollbar {
@@ -2266,7 +2290,7 @@ tr:hover td {
 
 /* --- Page Header --- */
 .page-header {
-  padding: calc(var(--nav-height) + var(--space-3xl)) 0 var(--space-3xl);
+  padding: calc(var(--nav-height) + var(--space-2xl)) 0 var(--space-2xl);
   text-align: center;
   background: var(--gradient-dark);
   position: relative;
@@ -2330,8 +2354,11 @@ tr:hover td {
   background: var(--gradient-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  margin-bottom: var(--space-2xl);
+  margin-bottom: var(--space-xl);
   flex-wrap: wrap;
+  position: sticky;
+  top: calc(var(--nav-height) + var(--space-md));
+  z-index: 100;
 }
 
 .filter-btn {
@@ -2656,6 +2683,9 @@ tr:hover td {
   .filter-bar {
     flex-direction: column;
     align-items: stretch;
+    position: sticky;
+    top: calc(var(--nav-height) + var(--space-sm));
+    z-index: 100;
   }
 
   .search-input {
