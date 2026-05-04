@@ -10,6 +10,44 @@ const _base = (function() {
 })();
 
 // ==========================================
+// USER STATUS HELPERS
+// ==========================================
+function isUserLoggedIn() {
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || 'null');
+  return user !== null;
+}
+
+function hasActiveSubscription() {
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || '{}');
+  return user.subscription && user.subscription !== 'free';
+}
+
+function hasCompleteProfile() {
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || '{}');
+  return user.age && user.weight && user.height && user.gender;
+}
+
+function getUserProfile() {
+  return JSON.parse(localStorage.getItem('Kynotra_user') || '{}');
+}
+
+// Sync data back to user profile
+function syncToProfile(data, showNotification = false) {
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || '{}');
+  if (!isUserLoggedIn()) return;
+  
+  Object.assign(user, data);
+  localStorage.setItem('Kynotra_user', JSON.stringify(user));
+  
+  // Also update in users database
+  updateUserInDatabase(user);
+  
+  if (showNotification) {
+    showToast('Profile updated', 'success');
+  }
+}
+
+// ==========================================
 // PAGE TRANSITIONS
 // ==========================================
 (function initPageTransitions() {
@@ -42,10 +80,12 @@ document.addEventListener('DOMContentLoaded', () => {
   initAuth();
   initScrollAnimations();
   initCustomDropdowns();
+  initStickyFilterBar();
   disableNumberInputScroll();
   updateCartCount();
   handleDashboardParams();
   autofillCalculatorFromProfile();
+  autofillProgramGeneratorFromProfile();
 });
 
 // Handle dashboard URL parameters (edit=profile, edit=avatar)
@@ -115,6 +155,14 @@ function initScrollAnimations() {
     el.style.animationPlayState = 'paused';
     observer.observe(el);
   });
+}
+
+// ==========================================
+// STICKY FILTER BAR
+// ==========================================
+function initStickyFilterBar() {
+  // Filter bar stays in its natural position - no sticky behavior
+  // This function is kept empty intentionally
 }
 
 // ==========================================
@@ -232,44 +280,158 @@ function updateStepIndicator(step) {
   }
 }
 
-function wizardNext(current) {
-  // Validate current step
-  if (current === 1) {
-    const g = document.getElementById('progGender')?.value;
-    const a = document.getElementById('progAge')?.value;
-    const w = document.getElementById('progWeight')?.value;
-    const h = document.getElementById('progHeight')?.value;
-    if (!g || !a || !w || !h) { showToast('Please fill in all body details', 'error'); return; }
+// Program Modal Functions
+function openProgramModal() {
+  const modal = document.getElementById('programModal');
+  if (modal) {
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    
+    // Pre-fill form with current profile data
+    autofillProgramModalFromProfile();
+    
+    // Initialize custom selects in modal
+    initializeCustomSelects();
   }
-  if (current === 2) {
-    const goal = document.getElementById('goalSelect')?.value;
-    const level = document.getElementById('levelSelect')?.value;
-    if (!goal || !level) { showToast('Please select your goal and experience level', 'error'); return; }
-  }
-  if (current === 3) {
-    const loc = document.getElementById('locationSelect')?.value;
-    const days = document.getElementById('daysSelect')?.value;
-    if (!loc || !days) { showToast('Please select location and training days', 'error'); return; }
-  }
-
-  const next = current + 1;
-  document.getElementById('wizardStep' + current).style.display = 'none';
-  document.getElementById('wizardStep' + next).style.display = 'block';
-  updateStepIndicator(next);
-
-  // If going to summary, build it
-  if (next === 4) buildWizardSummary();
-
-  // Scroll to top of form
-  document.getElementById('programGenerator')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function wizardPrev(current) {
-  const prev = current - 1;
-  document.getElementById('wizardStep' + current).style.display = 'none';
-  document.getElementById('wizardStep' + prev).style.display = 'block';
-  updateStepIndicator(prev);
-  document.getElementById('programGenerator')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+function closeProgramModal() {
+  const modal = document.getElementById('programModal');
+  if (modal) {
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+}
+
+function generateProgramFromModal() {
+  const goal = document.getElementById('goalSelect')?.value;
+  const level = document.getElementById('levelSelect')?.value;
+  const location = document.getElementById('locationSelect')?.value;
+  const days = document.getElementById('daysSelect')?.value;
+  const gender = document.getElementById('progGender')?.value;
+  const age = document.getElementById('progAge')?.value;
+  const weight = document.getElementById('progWeight')?.value;
+  const height = document.getElementById('progHeight')?.value;
+
+  if (!goal || !level || !location || !days) {
+    showToast('Please fill in all fields', 'error');
+    return;
+  }
+  
+  // Sync data back to user profile if logged in
+  if (isUserLoggedIn()) {
+    const profileUpdates = {
+      goal: goal,
+      experienceLevel: level,
+      trainingLocation: location,
+      trainingDays: days
+    };
+    if (gender && age && weight && height) {
+      profileUpdates.gender = gender;
+      profileUpdates.age = age;
+      profileUpdates.weight = weight;
+      profileUpdates.height = height;
+    }
+    syncToProfile(profileUpdates, true);
+  }
+  
+  // Close modal
+  closeProgramModal();
+  
+  // Generate the program
+  generateProgram();
+}
+
+function autofillProgramModalFromProfile() {
+  const user = getUserProfile();
+  if (!user) return;
+  
+  // Body details
+  if (user.age) document.getElementById('progAge').value = user.age;
+  if (user.weight) document.getElementById('progWeight').value = user.weight;
+  if (user.height) document.getElementById('progHeight').value = user.height;
+  
+  if (user.gender) {
+    const genderInput = document.getElementById('progGender');
+    const genderSelect = document.getElementById('progGenderSelect');
+    if (genderInput) genderInput.value = user.gender;
+    if (genderSelect) {
+      const valueDisplay = genderSelect.querySelector('.custom-select-value');
+      const option = genderSelect.querySelector(`.custom-select-option[data-value="${user.gender}"]`);
+      if (valueDisplay && option) {
+        valueDisplay.textContent = option.querySelector('.option-text').textContent;
+        genderSelect.classList.add('has-value');
+        genderSelect.querySelectorAll('.custom-select-option').forEach(opt => opt.classList.remove('selected'));
+        option.classList.add('selected');
+      }
+    }
+  }
+  
+  // Goals & Experience
+  if (user.goal) {
+    const goalInput = document.getElementById('goalSelect');
+    const goalWrapper = document.getElementById('goalSelectWrapper');
+    if (goalInput && goalWrapper) {
+      goalInput.value = user.goal;
+      const goalOption = goalWrapper.querySelector(`.custom-select-option[data-value="${user.goal}"]`);
+      const goalDisplay = goalWrapper.querySelector('.custom-select-value');
+      if (goalOption && goalDisplay) {
+        goalDisplay.textContent = goalOption.querySelector('.option-text').textContent;
+        goalWrapper.classList.add('has-value');
+        goalWrapper.querySelectorAll('.custom-select-option').forEach(opt => opt.classList.remove('selected'));
+        goalOption.classList.add('selected');
+      }
+    }
+  }
+  
+  if (user.experienceLevel) {
+    const levelInput = document.getElementById('levelSelect');
+    const levelWrapper = document.getElementById('levelSelectWrapper');
+    if (levelInput && levelWrapper) {
+      levelInput.value = user.experienceLevel;
+      const levelOption = levelWrapper.querySelector(`.custom-select-option[data-value="${user.experienceLevel}"]`);
+      const levelDisplay = levelWrapper.querySelector('.custom-select-value');
+      if (levelOption && levelDisplay) {
+        levelDisplay.textContent = levelOption.querySelector('.option-text').textContent;
+        levelWrapper.classList.add('has-value');
+        levelWrapper.querySelectorAll('.custom-select-option').forEach(opt => opt.classList.remove('selected'));
+        levelOption.classList.add('selected');
+      }
+    }
+  }
+  
+  // Training preferences
+  if (user.trainingLocation) {
+    const locationInput = document.getElementById('locationSelect');
+    const locationWrapper = document.getElementById('locationSelectWrapper');
+    if (locationInput && locationWrapper) {
+      locationInput.value = user.trainingLocation;
+      const locationOption = locationWrapper.querySelector(`.custom-select-option[data-value="${user.trainingLocation}"]`);
+      const locationDisplay = locationWrapper.querySelector('.custom-select-value');
+      if (locationOption && locationDisplay) {
+        locationDisplay.textContent = locationOption.querySelector('.option-text').textContent;
+        locationWrapper.classList.add('has-value');
+        locationWrapper.querySelectorAll('.custom-select-option').forEach(opt => opt.classList.remove('selected'));
+        locationOption.classList.add('selected');
+      }
+    }
+  }
+  
+  if (user.trainingDays) {
+    const daysInput = document.getElementById('daysSelect');
+    const daysWrapper = document.getElementById('daysSelectWrapper');
+    if (daysInput && daysWrapper) {
+      daysInput.value = user.trainingDays;
+      const daysOption = daysWrapper.querySelector(`.custom-select-option[data-value="${user.trainingDays}"]`);
+      const daysDisplay = daysWrapper.querySelector('.custom-select-value');
+      if (daysOption && daysDisplay) {
+        daysDisplay.textContent = daysOption.querySelector('.option-text').textContent;
+        daysWrapper.classList.add('has-value');
+        daysWrapper.querySelectorAll('.custom-select-option').forEach(opt => opt.classList.remove('selected'));
+        daysOption.classList.add('selected');
+      }
+    }
+  }
 }
 
 function buildWizardSummary() {
@@ -339,10 +501,32 @@ function generateProgram() {
   const level = document.getElementById('levelSelect')?.value;
   const location = document.getElementById('locationSelect')?.value;
   const days = document.getElementById('daysSelect')?.value;
+  const gender = document.getElementById('progGender')?.value;
+  const age = document.getElementById('progAge')?.value;
+  const weight = document.getElementById('progWeight')?.value;
+  const height = document.getElementById('progHeight')?.value;
 
   if (!goal || !level || !location || !days) {
     showToast('Please fill in all fields', 'error');
     return;
+  }
+  
+  // Sync data back to user profile if logged in
+  if (isUserLoggedIn()) {
+    const profileUpdates = {
+      goal: goal,
+      experienceLevel: level,
+      trainingLocation: location,
+      trainingDays: days
+    };
+    // Also update body info if provided
+    if (gender && age && weight && height) {
+      profileUpdates.gender = gender;
+      profileUpdates.age = age;
+      profileUpdates.weight = weight;
+      profileUpdates.height = height;
+    }
+    syncToProfile(profileUpdates, false); // Don't show notification on auto-sync
   }
 
   const programs = {
@@ -463,7 +647,8 @@ function generateProgram() {
 
   html += `
       </div>
-      <div style="margin-top: var(--space-2xl); text-align: center;">
+      <div style="margin-top: var(--space-2xl); text-align: center; display: flex; gap: var(--space-md); justify-content: center; flex-wrap: wrap;">
+        <button class="btn btn-outline" onclick="resetProgramGenerator()">Change Program</button>
         ${getProgramSaveButton()}
       </div>
     </div>
@@ -475,6 +660,11 @@ function generateProgram() {
     container.style.display = 'block';
     container.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+}
+
+// Reset program generator - now just opens the modal
+function resetProgramGenerator() {
+  openProgramModal();
 }
 
 // Get appropriate save button based on login state
@@ -634,52 +824,81 @@ function setDashUnit(unit) {
   });
 }
 
-// Auto-fill calculator fields from user profile
-function autofillCalculatorFromProfile() {
-  const user = JSON.parse(localStorage.getItem('Kynotra_user') || '{}');
-  
-  // Only proceed if we have saved fitness data
-  if (!user.age && !user.weight && !user.height && !user.gender) return;
-  
-  // Auto-fill age
-  const ageInput = document.getElementById('calcAge');
-  if (ageInput && user.age) {
-    ageInput.value = user.age;
+// Nutrition Modal Functions
+function openNutritionModal() {
+  const modal = document.getElementById('nutritionModal');
+  if (modal) {
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    
+    // Pre-fill form with current profile data
+    autofillNutritionModalFromProfile();
+    
+    // Initialize custom selects in modal
+    initializeCustomSelects();
   }
-  
-  // Auto-fill weight
-  const weightInput = document.getElementById('calcWeight');
-  if (weightInput && user.weight) {
-    weightInput.value = user.weight;
+}
+
+function closeNutritionModal() {
+  const modal = document.getElementById('nutritionModal');
+  if (modal) {
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
   }
+}
+
+function calculateCaloriesFromModal() {
+  // Close modal first
+  closeNutritionModal();
   
-  // Auto-fill height
-  const heightInput = document.getElementById('calcHeight');
-  if (heightInput && user.height) {
-    heightInput.value = user.height;
-  }
+  // Calculate calories
+  calculateCalories(false);
+}
+
+function autofillNutritionModalFromProfile() {
+  const user = getUserProfile();
+  if (!user) return;
   
-  // Auto-fill gender
-  const genderInput = document.getElementById('calcGender');
-  const genderWrapper = document.getElementById('calcGenderWrapper');
-  if (genderInput && genderWrapper && user.gender) {
-    genderInput.value = user.gender;
-    const genderOption = genderWrapper.querySelector(`.custom-select-option[data-value="${user.gender}"]`);
-    const genderDisplay = genderWrapper.querySelector('.custom-select-value');
-    if (genderOption && genderDisplay) {
-      genderDisplay.textContent = genderOption.querySelector('.option-text').textContent;
-      genderWrapper.classList.add('has-value');
-      // Mark selected
-      genderWrapper.querySelectorAll('.custom-select-option').forEach(opt => opt.classList.remove('selected'));
-      genderOption.classList.add('selected');
+  // Body details
+  if (user.age) document.getElementById('calcAge').value = user.age;
+  if (user.weight) document.getElementById('calcWeight').value = user.weight;
+  if (user.height) document.getElementById('calcHeight').value = user.height;
+  
+  if (user.gender) {
+    const genderInput = document.getElementById('calcGender');
+    const genderWrapper = document.getElementById('calcGenderWrapper');
+    if (genderInput) genderInput.value = user.gender;
+    if (genderWrapper) {
+      const valueDisplay = genderWrapper.querySelector('.custom-select-value');
+      const option = genderWrapper.querySelector(`.custom-select-option[data-value="${user.gender}"]`);
+      if (valueDisplay && option) {
+        valueDisplay.textContent = option.querySelector('.option-text').textContent;
+        genderWrapper.classList.add('has-value');
+        genderWrapper.querySelectorAll('.custom-select-option').forEach(opt => opt.classList.remove('selected'));
+        option.classList.add('selected');
+      }
     }
   }
   
-  // Auto-fill goal based on fitness goal
-  const goalInput = document.getElementById('calcGoal');
-  const goalWrapper = document.getElementById('calcGoalWrapper');
-  if (goalInput && goalWrapper && user.goal) {
-    // Map fitness goal to calculator goal
+  // Activity level
+  if (user.activityLevel) {
+    const activityInput = document.getElementById('calcActivity');
+    const activityWrapper = document.getElementById('calcActivityWrapper');
+    if (activityInput && activityWrapper) {
+      activityInput.value = user.activityLevel;
+      const activityOption = activityWrapper.querySelector(`.custom-select-option[data-value="${user.activityLevel}"]`);
+      const activityDisplay = activityWrapper.querySelector('.custom-select-value');
+      if (activityOption && activityDisplay) {
+        activityDisplay.textContent = activityOption.querySelector('.option-text').textContent;
+        activityWrapper.classList.add('has-value');
+        activityWrapper.querySelectorAll('.custom-select-option').forEach(opt => opt.classList.remove('selected'));
+        activityOption.classList.add('selected');
+      }
+    }
+  }
+  
+  // Goal mapping
+  if (user.goal) {
     const goalMap = {
       'weight-loss': 'lose',
       'muscle-gain': 'gain',
@@ -689,20 +908,189 @@ function autofillCalculatorFromProfile() {
     };
     const calcGoal = goalMap[user.goal];
     if (calcGoal) {
-      goalInput.value = calcGoal;
-      const goalOption = goalWrapper.querySelector(`.custom-select-option[data-value="${calcGoal}"]`);
-      const goalDisplay = goalWrapper.querySelector('.custom-select-value');
-      if (goalOption && goalDisplay) {
-        goalDisplay.textContent = goalOption.querySelector('.option-text').textContent;
-        goalWrapper.classList.add('has-value');
-        goalWrapper.querySelectorAll('.custom-select-option').forEach(opt => opt.classList.remove('selected'));
-        goalOption.classList.add('selected');
+      const goalInput = document.getElementById('calcGoal');
+      const goalWrapper = document.getElementById('calcGoalWrapper');
+      if (goalInput && goalWrapper) {
+        goalInput.value = calcGoal;
+        const goalOption = goalWrapper.querySelector(`.custom-select-option[data-value="${calcGoal}"]`);
+        const goalDisplay = goalWrapper.querySelector('.custom-select-value');
+        if (goalOption && goalDisplay) {
+          goalDisplay.textContent = goalOption.querySelector('.option-text').textContent;
+          goalWrapper.classList.add('has-value');
+          goalWrapper.querySelectorAll('.custom-select-option').forEach(opt => opt.classList.remove('selected'));
+          goalOption.classList.add('selected');
+        }
       }
     }
   }
 }
 
-function calculateCalories() {
+// Auto-fill calculator fields from user profile
+function autofillCalculatorFromProfile() {
+  const user = getUserProfile();
+  const loggedIn = isUserLoggedIn();
+  const profileComplete = hasCompleteProfile();
+  
+  // If not on diet page, exit
+  const nutritionHeader = document.getElementById('nutritionHeader');
+  const nutritionResults = document.getElementById('nutritionResults');
+  const subscriptionPrompt = document.getElementById('nutritionSubscriptionPrompt');
+  if (!nutritionHeader && !nutritionResults) return;
+  
+  if (loggedIn && profileComplete && user.goal) {
+    // LOGGED IN with complete profile - auto-calculate and show results
+    if (nutritionHeader) nutritionHeader.style.display = 'block';
+    if (subscriptionPrompt) subscriptionPrompt.style.display = 'none';
+    
+    // Pre-fill the form inputs for calculateCalories to work
+    if (document.getElementById('calcAge')) document.getElementById('calcAge').value = user.age;
+    if (document.getElementById('calcWeight')) document.getElementById('calcWeight').value = user.weight;
+    if (document.getElementById('calcHeight')) document.getElementById('calcHeight').value = user.height;
+    if (document.getElementById('calcGender')) document.getElementById('calcGender').value = user.gender;
+    if (document.getElementById('calcActivity')) document.getElementById('calcActivity').value = user.activityLevel || '1.55';
+    
+    // Map goal for calculator
+    const goalMap = {
+      'weight-loss': 'lose',
+      'muscle-gain': 'gain',
+      'strength': 'gain',
+      'maintenance': 'maintain',
+      'endurance': 'maintain'
+    };
+    const calcGoal = goalMap[user.goal];
+    if (calcGoal && document.getElementById('calcGoal')) {
+      document.getElementById('calcGoal').value = calcGoal;
+    }
+    
+    // Auto-calculate
+    setTimeout(() => calculateCalories(true), 300);
+  } else if (loggedIn && profileComplete) {
+    // LOGGED IN with profile but no goal - show prompt to set it up
+    if (nutritionHeader) nutritionHeader.style.display = 'block';
+    if (subscriptionPrompt) subscriptionPrompt.style.display = 'none';
+    
+    if (nutritionResults) {
+      nutritionResults.style.display = 'block';
+      nutritionResults.innerHTML = `
+        <div style="text-align: center; padding: var(--space-2xl); background: var(--gradient-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl);">
+          <h3 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: var(--space-md);">Ready to Get Your Nutrition Plan?</h3>
+          <p style="color: var(--text-secondary); margin-bottom: var(--space-xl);">Click below to calculate your personalized macros and calorie targets.</p>
+          <button class="btn btn-primary" onclick="openNutritionModal()">🧮 Calculate My Macros</button>
+        </div>
+      `;
+    }
+  } else if (!loggedIn) {
+    // NOT LOGGED IN - show subscription/signup prompt
+    if (nutritionHeader) nutritionHeader.style.display = 'none';
+    if (nutritionResults) nutritionResults.style.display = 'none';
+    if (subscriptionPrompt) {
+      subscriptionPrompt.style.display = 'block';
+      subscriptionPrompt.innerHTML = `
+        <div style="text-align: center; padding: var(--space-2xl); background: var(--gradient-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl);">
+          <span class="tag tag-warning" style="margin-bottom: var(--space-md); display: inline-block;">🔒 Members Only</span>
+          <h3 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: var(--space-md);">Unlock Personalized Nutrition</h3>
+          <p style="color: var(--text-secondary); margin-bottom: var(--space-xl);">Sign up free to get customized calorie and macro targets based on your body and goals.</p>
+          <div style="display: flex; gap: var(--space-md); justify-content: center; flex-wrap: wrap;">
+            <a href="${_base}pages/auth/signup.html" class="btn btn-primary">Sign Up Free</a>
+            <a href="${_base}pages/auth/login.html" class="btn btn-secondary">Log In</a>
+          </div>
+        </div>
+      `;
+    }
+  } else {
+    // Logged in but no profile - show prompt to complete profile
+    if (nutritionHeader) nutritionHeader.style.display = 'none';
+    if (nutritionResults) {
+      nutritionResults.style.display = 'block';
+      nutritionResults.innerHTML = `
+        <div style="text-align: center; padding: var(--space-2xl); background: var(--gradient-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl);">
+          <h3 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: var(--space-md);">Complete Your Profile First</h3>
+          <p style="color: var(--text-secondary); margin-bottom: var(--space-xl);">We need your body details to calculate personalized nutrition targets.</p>
+          <a href="${_base}pages/dashboard/dashboard.html#profile" class="btn btn-primary">Complete Profile</a>
+        </div>
+      `;
+    }
+  }
+}
+
+// Auto-fill program generator fields from user profile
+function autofillProgramGeneratorFromProfile() {
+  // If not on programs page, exit
+  const programHeader = document.getElementById('programHeader');
+  const generatedProgram = document.getElementById('generatedProgram');
+  const subscriptionPrompt = document.getElementById('programSubscriptionPrompt');
+  const programsCTA = document.getElementById('programsCTA');
+  if (!programHeader && !generatedProgram) return;
+  
+  const user = getUserProfile();
+  const loggedIn = isUserLoggedIn();
+  const profileComplete = hasCompleteProfile();
+  
+  // Hide CTA section for logged-in users
+  if (programsCTA) {
+    programsCTA.style.display = loggedIn ? 'none' : 'block';
+  }
+  
+  // Check if user has all program-related profile data
+  const hasProgramData = user.goal && user.experienceLevel && user.trainingLocation && user.trainingDays;
+  
+  if (loggedIn && profileComplete && hasProgramData) {
+    // LOGGED IN with complete profile and program data - auto-generate program
+    if (programHeader) programHeader.style.display = 'block';
+    if (subscriptionPrompt) subscriptionPrompt.style.display = 'none';
+    
+    // Pre-fill the form inputs so generateProgram works
+    if (document.getElementById('progAge')) document.getElementById('progAge').value = user.age;
+    if (document.getElementById('progWeight')) document.getElementById('progWeight').value = user.weight;
+    if (document.getElementById('progHeight')) document.getElementById('progHeight').value = user.height;
+    if (document.getElementById('progGender')) document.getElementById('progGender').value = user.gender;
+    if (document.getElementById('goalSelect')) document.getElementById('goalSelect').value = user.goal;
+    if (document.getElementById('levelSelect')) document.getElementById('levelSelect').value = user.experienceLevel;
+    if (document.getElementById('locationSelect')) document.getElementById('locationSelect').value = user.trainingLocation;
+    if (document.getElementById('daysSelect')) document.getElementById('daysSelect').value = user.trainingDays;
+    
+    // Auto-generate the program
+    generateProgram();
+  } else if (loggedIn && profileComplete) {
+    // LOGGED IN with profile but no program data - just show the Change Program button
+    if (programHeader) programHeader.style.display = 'block';
+    if (subscriptionPrompt) subscriptionPrompt.style.display = 'none';
+    if (generatedProgram) generatedProgram.style.display = 'none';
+  } else if (!loggedIn) {
+    // NOT LOGGED IN - show subscription/signup prompt
+    if (programHeader) programHeader.style.display = 'none';
+    if (generatedProgram) generatedProgram.style.display = 'none';
+    if (subscriptionPrompt) {
+      subscriptionPrompt.style.display = 'block';
+      subscriptionPrompt.innerHTML = `
+        <div style="text-align: center; padding: var(--space-2xl); background: var(--gradient-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl);">
+          <span class="tag tag-warning" style="margin-bottom: var(--space-md); display: inline-block;">🔒 Members Only</span>
+          <h3 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: var(--space-md);">Unlock AI Program Generation</h3>
+          <p style="color: var(--text-secondary); margin-bottom: var(--space-xl);">Sign up free to get personalized workout programs tailored to your body and goals.</p>
+          <div style="display: flex; gap: var(--space-md); justify-content: center; flex-wrap: wrap;">
+            <a href="${_base}pages/auth/signup.html" class="btn btn-primary">Sign Up Free</a>
+            <a href="${_base}pages/auth/login.html" class="btn btn-secondary">Log In</a>
+          </div>
+        </div>
+      `;
+    }
+  } else {
+    // Logged in but no profile - show prompt to complete profile
+    if (programHeader) programHeader.style.display = 'none';
+    if (generatedProgram) {
+      generatedProgram.style.display = 'block';
+      generatedProgram.innerHTML = `
+        <div style="text-align: center; padding: var(--space-2xl); background: var(--gradient-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl);">
+          <h3 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: var(--space-md);">Complete Your Profile First</h3>
+          <p style="color: var(--text-secondary); margin-bottom: var(--space-xl);">We need your body details to generate a personalized program.</p>
+          <a href="${_base}pages/dashboard/dashboard.html#profile" class="btn btn-primary">Complete Profile</a>
+        </div>
+      `;
+    }
+  }
+}
+
+function calculateCalories(isAutoCalculate = false) {
   const gender = document.getElementById('calcGender')?.value;
   const age = parseFloat(document.getElementById('calcAge')?.value);
   const weight = parseFloat(document.getElementById('calcWeight')?.value);
@@ -711,8 +1099,24 @@ function calculateCalories() {
   const goal = document.getElementById('calcGoal')?.value;
 
   if (!age || !weight || !height || !goal) {
-    showToast('Please fill in all fields including your goal', 'error');
+    if (!isAutoCalculate) {
+      showToast('Please fill in all fields including your goal', 'error');
+    }
     return;
+  }
+  
+  // Sync data back to user profile if logged in (only for manual calculations)
+  if (isUserLoggedIn() && !isAutoCalculate) {
+    // Map calculator goal to fitness goal
+    const goalMap = { 'lose': 'weight-loss', 'gain': 'muscle-gain', 'maintain': 'maintenance', 'bulk': 'muscle-gain' };
+    syncToProfile({
+      gender: gender,
+      age: age,
+      weight: weight,
+      height: height,
+      goal: goalMap[goal] || goal,
+      activityLevel: activity
+    }, true); // Show notification for manual recalculations
   }
 
   // Convert to metric for Mifflin-St Jeor
@@ -750,20 +1154,6 @@ function calculateCalories() {
   const fatGrams = Math.round((calories * 0.25) / 9); // 25% of calories from fat
   const carbGrams = Math.round((calories - (proteinGrams * 4) - (fatGrams * 9)) / 4);
 
-  // Display results in inline section
-  document.getElementById('totalCalories').textContent = calories.toLocaleString();
-  document.getElementById('macroProtein').textContent = proteinGrams + 'g';
-  document.getElementById('macroCarbs').textContent = carbGrams + 'g';
-  document.getElementById('macroFats').textContent = fatGrams + 'g';
-
-  const result = document.getElementById('calorieResult');
-  if (result) {
-    result.style.display = 'block';
-  }
-
-  // Generate personalized content
-  generatePersonalizedPlan(calories, proteinGrams, carbGrams, fatGrams, goal, gender, weightLbs);
-
   // Calculate macro percentages
   const proteinCal = proteinGrams * 4;
   const carbsCal = carbGrams * 4;
@@ -775,45 +1165,50 @@ function calculateCalories() {
 
   // Goal labels
   const goalLabels = {
-    lose: 'Fat Loss (-500 cal)',
+    lose: 'Weight Loss (-500 cal)',
     maintain: 'Maintenance',
     gain: 'Muscle Gain (+300 cal)',
     bulk: 'Lean Bulk (+500 cal)'
   };
 
-  // Update modal with results
-  document.getElementById('modalCalories').textContent = calories.toLocaleString();
-  document.getElementById('modalProtein').textContent = proteinGrams + 'g';
-  document.getElementById('modalCarbs').textContent = carbGrams + 'g';
-  document.getElementById('modalFats').textContent = fatGrams + 'g';
-  document.getElementById('modalProteinPct').textContent = proteinPct + '%';
-  document.getElementById('modalCarbsPct').textContent = carbsPct + '%';
-  document.getElementById('modalFatsPct').textContent = fatsPct + '%';
-  document.getElementById('modalGoal').textContent = goalLabels[goal] || 'Custom';
+  // Display results in nutritionResults div
+  const nutritionResults = document.getElementById('nutritionResults');
+  if (nutritionResults) {
+    nutritionResults.style.display = 'block';
+    nutritionResults.innerHTML = `
+      <div style="background: var(--gradient-card); border: 1px solid var(--accent); border-radius: var(--radius-xl); padding: var(--space-2xl); text-align: center; max-width: 600px; margin: 0 auto;">
+        <span class="tag tag-success" style="margin-bottom: var(--space-md); display: inline-block;">Your Results</span>
+        
+        <div style="margin-bottom: var(--space-xl);">
+          <div style="font-size: 3rem; font-weight: 700; color: var(--accent); line-height: 1;">${calories.toLocaleString()}</div>
+          <div style="font-size: 1rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-top: var(--space-xs);">Daily Calories</div>
+        </div>
+        
+        <div style="display: flex; gap: var(--space-xl); justify-content: center; flex-wrap: wrap; margin-bottom: var(--space-xl);">
+          <div style="text-align: center;">
+            <div style="font-size: 1.8rem; font-weight: 700; color: var(--accent);">${proteinGrams}g</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary);">Protein (${proteinPct}%)</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 1.8rem; font-weight: 700; color: var(--info);">${carbGrams}g</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary);">Carbs (${carbsPct}%)</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 1.8rem; font-weight: 700; color: var(--warning);">${fatGrams}g</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary);">Fats (${fatsPct}%)</div>
+          </div>
+        </div>
+        
+        <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: var(--space-md); margin-bottom: var(--space-lg);">
+          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Your Goal</div>
+          <div style="font-size: 1.1rem; font-weight: 600; margin-top: var(--space-xs);">${goalLabels[goal] || 'Custom'}</div>
+        </div>
+      </div>
+    `;
+  }
 
-  // Show the full-screen results modal
-  const modal = document.getElementById('resultsModal');
-  if (modal) {
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-  }
-}
-
-// Close results modal and scroll to personalized content
-function closeResultsModal() {
-  const modal = document.getElementById('resultsModal');
-  if (modal) {
-    modal.style.display = 'none';
-    document.body.style.overflow = '';
-  }
-  
-  // Scroll to personalized content
-  const personalizedContent = document.getElementById('personalizedContent');
-  if (personalizedContent) {
-    setTimeout(() => {
-      personalizedContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
-  }
+  // Generate personalized content
+  generatePersonalizedPlan(calories, proteinGrams, carbGrams, fatGrams, goal, gender, weightLbs);
 }
 
 // Generate personalized diet plan based on user inputs
@@ -929,10 +1324,15 @@ function generatePersonalizedPlan(calories, protein, carbs, fats, goal, gender, 
     `).join('');
   }
 
-  // Show personalized content and scroll to it
+  // Show personalized content and scroll to results
   personalizedContent.style.display = 'block';
   setTimeout(() => {
-    personalizedContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const nutritionResults = document.getElementById('nutritionResults');
+    if (nutritionResults) {
+      const yOffset = -100; // Offset to show a bit higher
+      const y = nutritionResults.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
   }, 100);
 }
 
@@ -2080,6 +2480,805 @@ function updateTimerDisplay() {
 }
 
 // ==========================================
+// LOG EXERCISE FUNCTIONALITY
+// ==========================================
+let currentLogExercise = null;
+let currentSetCount = 0;
+
+function openLogModal(exerciseName, sets, reps, suggestedWeight) {
+  currentLogExercise = { name: exerciseName, sets, reps, suggestedWeight };
+  currentSetCount = sets;
+  
+  const modal = document.getElementById('logModal');
+  const title = document.getElementById('logModalTitle');
+  const container = document.getElementById('logSetsContainer');
+  
+  if (!modal || !container) return;
+  
+  title.textContent = `Log: ${exerciseName}`;
+  
+  // Generate set inputs
+  let html = '';
+  for (let i = 1; i <= sets; i++) {
+    html += generateSetRowHTML(i, suggestedWeight, reps);
+  }
+  
+  // Add the "Add Set" button
+  html += `
+    <button type="button" class="btn btn-outline btn-block" id="addSetBtn" onclick="addNewSet()" style="margin-top: var(--space-sm); border-style: dashed;">
+      + Add Set
+    </button>
+  `;
+  
+  container.innerHTML = html;
+  
+  // Show modal
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  
+  // Initialize custom selects if any
+  initializeCustomSelects();
+}
+
+function generateSetRowHTML(setNum, suggestedWeight, reps) {
+  const repTarget = reps.includes ? (reps.includes('-') ? reps : reps) : reps;
+  return `
+    <div class="log-set-row" data-set="${setNum}" style="display: grid; grid-template-columns: auto 1fr 1fr auto auto; gap: var(--space-md); align-items: center; padding: var(--space-md); background: var(--primary); border-radius: var(--radius-md); margin-bottom: var(--space-sm);">
+      <span style="font-weight: 600; color: var(--accent); min-width: 50px;">Set ${setNum}</span>
+      <div class="form-group" style="margin: 0;">
+        <input type="number" class="form-input log-weight-input" data-set="${setNum}" placeholder="${suggestedWeight}" value="${suggestedWeight}" style="text-align: center;">
+        <label style="font-size: 0.7rem; color: var(--text-muted); text-align: center; display: block; margin-top: 2px;">lbs</label>
+      </div>
+      <div class="form-group" style="margin: 0;">
+        <input type="number" class="form-input log-reps-input" data-set="${setNum}" placeholder="${repTarget}" style="text-align: center;">
+        <label style="font-size: 0.7rem; color: var(--text-muted); text-align: center; display: block; margin-top: 2px;">reps</label>
+      </div>
+      <button type="button" class="btn btn-sm btn-success log-set-done" data-set="${setNum}" onclick="markSetDone(${setNum})" style="padding: 8px 12px;">✓</button>
+      <button type="button" class="btn btn-sm btn-secondary" onclick="removeSet(${setNum})" style="padding: 8px 10px; opacity: 0.7;" title="Remove set">✕</button>
+    </div>
+  `;
+}
+
+function addNewSet() {
+  currentSetCount++;
+  const container = document.getElementById('logSetsContainer');
+  const addSetBtn = document.getElementById('addSetBtn');
+  
+  if (!container || !addSetBtn) return;
+  
+  // Create new set row
+  const newSetHTML = generateSetRowHTML(
+    currentSetCount, 
+    currentLogExercise.suggestedWeight, 
+    currentLogExercise.reps
+  );
+  
+  // Insert before the "Add Set" button
+  addSetBtn.insertAdjacentHTML('beforebegin', newSetHTML);
+}
+
+function removeSet(setNum) {
+  const row = document.querySelector(`.log-set-row[data-set="${setNum}"]`);
+  if (row) {
+    row.remove();
+    // Renumber remaining sets
+    renumberSets();
+  }
+}
+
+function renumberSets() {
+  const rows = document.querySelectorAll('.log-set-row');
+  rows.forEach((row, index) => {
+    const newNum = index + 1;
+    row.setAttribute('data-set', newNum);
+    row.querySelector('span').textContent = `Set ${newNum}`;
+    row.querySelector('.log-weight-input').setAttribute('data-set', newNum);
+    row.querySelector('.log-reps-input').setAttribute('data-set', newNum);
+    row.querySelector('.log-set-done').setAttribute('data-set', newNum);
+    row.querySelector('.log-set-done').setAttribute('onclick', `markSetDone(${newNum})`);
+    row.querySelector('.btn-secondary').setAttribute('onclick', `removeSet(${newNum})`);
+  });
+  currentSetCount = rows.length;
+}
+
+function closeLogModal() {
+  const modal = document.getElementById('logModal');
+  if (modal) {
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+  currentLogExercise = null;
+  currentSetCount = 0;
+}
+
+function markSetDone(setNum) {
+  const btn = document.querySelector(`.log-set-done[data-set="${setNum}"]`);
+  const row = btn?.closest('.log-set-row');
+  if (!btn || !row) return;
+  
+  if (btn.classList.contains('marked')) {
+    btn.classList.remove('marked');
+    btn.style.background = '';
+    btn.style.borderColor = '';
+    row.style.borderLeft = '';
+  } else {
+    btn.classList.add('marked');
+    btn.style.background = 'var(--success)';
+    btn.style.borderColor = 'var(--success)';
+    row.style.borderLeft = '3px solid var(--success)';
+  }
+}
+
+function saveExerciseLog() {
+  if (!currentLogExercise) return;
+  
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || '{}');
+  if (!user.email) {
+    showToast('Please log in to save workout logs', 'error');
+    return;
+  }
+  
+  // Collect set data from all set rows dynamically
+  const setData = [];
+  let totalVolume = 0;
+  
+  const setRows = document.querySelectorAll('.log-set-row');
+  setRows.forEach((row, index) => {
+    const weight = parseFloat(row.querySelector('.log-weight-input')?.value) || 0;
+    const reps = parseInt(row.querySelector('.log-reps-input')?.value) || 0;
+    
+    if (weight > 0 && reps > 0) {
+      setData.push({ set: index + 1, weight, reps });
+      totalVolume += weight * reps;
+    }
+  });
+  
+  if (setData.length === 0) {
+    showToast('Please log at least one set', 'error');
+    return;
+  }
+  
+  const notes = document.getElementById('logNotes')?.value || '';
+  
+  // Create log entry
+  const logEntry = {
+    exercise: currentLogExercise.name,
+    date: new Date().toISOString(),
+    sets: setData,
+    totalVolume: totalVolume,
+    notes: notes
+  };
+  
+  // Remove any existing log for this exercise today (in case of re-logging)
+  user.workoutLogs = user.workoutLogs || [];
+  const today = new Date().toDateString();
+  user.workoutLogs = user.workoutLogs.filter(log => 
+    !(log.exercise === currentLogExercise.name && new Date(log.date).toDateString() === today)
+  );
+  
+  // Save to user's workout logs
+  user.workoutLogs.push(logEntry);
+  localStorage.setItem('Kynotra_user', JSON.stringify(user));
+  
+  // Also update users array
+  const users = JSON.parse(localStorage.getItem('Kynotra_users') || '[]');
+  const userIndex = users.findIndex(u => u.email === user.email);
+  if (userIndex !== -1) {
+    users[userIndex] = user;
+    localStorage.setItem('Kynotra_users', JSON.stringify(users));
+  }
+  
+  // Mark the exercise row as logged
+  const exerciseRow = document.querySelector(`.exercise-row[data-exercise="${currentLogExercise.name}"]`);
+  if (exerciseRow) {
+    exerciseRow.classList.add('logged');
+    const logBtn = exerciseRow.querySelector('.log-btn');
+    if (logBtn) logBtn.textContent = 'Logged ✓';
+  }
+  
+  showToast(`Logged ${setData.length} sets of ${currentLogExercise.name}! 💪`, 'success');
+  closeLogModal();
+}
+
+function unlogExercise(exerciseName) {
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || '{}');
+  if (!user.email || !user.workoutLogs) {
+    showToast('No log found to remove', 'info');
+    return;
+  }
+  
+  // Remove today's log for this exercise
+  const today = new Date().toDateString();
+  const originalLength = user.workoutLogs.length;
+  user.workoutLogs = user.workoutLogs.filter(log => 
+    !(log.exercise === exerciseName && new Date(log.date).toDateString() === today)
+  );
+  
+  if (user.workoutLogs.length === originalLength) {
+    showToast('No log found to remove', 'info');
+    return;
+  }
+  
+  // Save updated logs
+  localStorage.setItem('Kynotra_user', JSON.stringify(user));
+  
+  // Also update users array
+  const users = JSON.parse(localStorage.getItem('Kynotra_users') || '[]');
+  const userIndex = users.findIndex(u => u.email === user.email);
+  if (userIndex !== -1) {
+    users[userIndex] = user;
+    localStorage.setItem('Kynotra_users', JSON.stringify(users));
+  }
+  
+  // Remove the logged state from the row
+  const exerciseRow = document.querySelector(`.exercise-row[data-exercise="${exerciseName}"]`);
+  if (exerciseRow) {
+    exerciseRow.classList.remove('logged');
+    const logBtn = exerciseRow.querySelector('.log-btn');
+    if (logBtn) logBtn.textContent = 'Log';
+  }
+  
+  showToast(`Removed log for ${exerciseName}`, 'info');
+}
+
+// ==========================================
+// NUTRITION / MEAL TRACKING
+// ==========================================
+
+// Comprehensive list of healthy gym-related foods
+const gymFoods = [
+  // Protein Sources
+  { id: 1, name: 'Chicken Breast (Grilled)', icon: '🍗', category: 'protein', serving: '6 oz (170g)', calories: 280, protein: 52, carbs: 0, fats: 6 },
+  { id: 2, name: 'Salmon Fillet', icon: '🐟', category: 'protein', serving: '6 oz (170g)', calories: 350, protein: 40, carbs: 0, fats: 20 },
+  { id: 3, name: 'Lean Ground Beef (93%)', icon: '🥩', category: 'protein', serving: '6 oz (170g)', calories: 290, protein: 46, carbs: 0, fats: 12 },
+  { id: 4, name: 'Turkey Breast', icon: '🦃', category: 'protein', serving: '6 oz (170g)', calories: 220, protein: 48, carbs: 0, fats: 2 },
+  { id: 5, name: 'Eggs (Whole)', icon: '🥚', category: 'protein', serving: '2 large', calories: 140, protein: 12, carbs: 1, fats: 10 },
+  { id: 6, name: 'Egg Whites', icon: '🥚', category: 'protein', serving: '4 large', calories: 68, protein: 14, carbs: 1, fats: 0 },
+  { id: 7, name: 'Tilapia', icon: '🐟', category: 'protein', serving: '6 oz (170g)', calories: 220, protein: 44, carbs: 0, fats: 4 },
+  { id: 8, name: 'Shrimp', icon: '🦐', category: 'protein', serving: '6 oz (170g)', calories: 170, protein: 36, carbs: 1, fats: 2 },
+  { id: 9, name: 'Tuna (Canned in Water)', icon: '🐟', category: 'protein', serving: '1 can (142g)', calories: 130, protein: 28, carbs: 0, fats: 1 },
+  { id: 10, name: 'Sirloin Steak', icon: '🥩', category: 'protein', serving: '6 oz (170g)', calories: 320, protein: 46, carbs: 0, fats: 14 },
+  { id: 11, name: 'Pork Tenderloin', icon: '🥓', category: 'protein', serving: '6 oz (170g)', calories: 220, protein: 44, carbs: 0, fats: 4 },
+  { id: 12, name: 'Cod Fillet', icon: '🐟', category: 'protein', serving: '6 oz (170g)', calories: 160, protein: 36, carbs: 0, fats: 1 },
+  { id: 13, name: 'Tofu (Firm)', icon: '🧈', category: 'protein', serving: '1 cup (252g)', calories: 180, protein: 20, carbs: 4, fats: 10 },
+  { id: 14, name: 'Tempeh', icon: '🧈', category: 'protein', serving: '1 cup (166g)', calories: 320, protein: 34, carbs: 16, fats: 18 },
+  
+  // Carb Sources
+  { id: 20, name: 'Brown Rice', icon: '🍚', category: 'carbs', serving: '1 cup cooked', calories: 220, protein: 5, carbs: 45, fats: 2 },
+  { id: 21, name: 'White Rice', icon: '🍚', category: 'carbs', serving: '1 cup cooked', calories: 205, protein: 4, carbs: 45, fats: 0 },
+  { id: 22, name: 'Quinoa', icon: '🌾', category: 'carbs', serving: '1 cup cooked', calories: 222, protein: 8, carbs: 39, fats: 4 },
+  { id: 23, name: 'Sweet Potato', icon: '🍠', category: 'carbs', serving: '1 medium (150g)', calories: 130, protein: 2, carbs: 30, fats: 0 },
+  { id: 24, name: 'Oatmeal', icon: '🥣', category: 'carbs', serving: '1 cup cooked', calories: 160, protein: 6, carbs: 27, fats: 3 },
+  { id: 25, name: 'Whole Wheat Bread', icon: '🍞', category: 'carbs', serving: '2 slices', calories: 160, protein: 8, carbs: 28, fats: 2 },
+  { id: 26, name: 'Pasta (Whole Wheat)', icon: '🍝', category: 'carbs', serving: '1 cup cooked', calories: 174, protein: 7, carbs: 37, fats: 1 },
+  { id: 27, name: 'Jasmine Rice', icon: '🍚', category: 'carbs', serving: '1 cup cooked', calories: 205, protein: 4, carbs: 45, fats: 0 },
+  { id: 28, name: 'Potatoes (Baked)', icon: '🥔', category: 'carbs', serving: '1 medium (173g)', calories: 160, protein: 4, carbs: 37, fats: 0 },
+  { id: 29, name: 'Cream of Rice', icon: '🥣', category: 'carbs', serving: '1 cup cooked', calories: 170, protein: 4, carbs: 38, fats: 0 },
+  { id: 30, name: 'Ezekiel Bread', icon: '🍞', category: 'carbs', serving: '2 slices', calories: 160, protein: 8, carbs: 30, fats: 1 },
+  { id: 31, name: 'Couscous', icon: '🍚', category: 'carbs', serving: '1 cup cooked', calories: 176, protein: 6, carbs: 36, fats: 0 },
+  
+  // Dairy & Protein Supplements
+  { id: 40, name: 'Whey Protein Shake', icon: '🥤', category: 'dairy', serving: '1 scoop (30g)', calories: 120, protein: 24, carbs: 3, fats: 1 },
+  { id: 41, name: 'Greek Yogurt (Plain)', icon: '🥛', category: 'dairy', serving: '1 cup (245g)', calories: 130, protein: 22, carbs: 8, fats: 0 },
+  { id: 42, name: 'Cottage Cheese (1%)', icon: '🧀', category: 'dairy', serving: '1 cup (226g)', calories: 163, protein: 28, carbs: 6, fats: 2 },
+  { id: 43, name: 'Milk (2%)', icon: '🥛', category: 'dairy', serving: '1 cup (240ml)', calories: 122, protein: 8, carbs: 12, fats: 5 },
+  { id: 44, name: 'Casein Protein', icon: '🥤', category: 'dairy', serving: '1 scoop (30g)', calories: 110, protein: 24, carbs: 2, fats: 1 },
+  { id: 45, name: 'Fairlife Milk', icon: '🥛', category: 'dairy', serving: '1 cup (240ml)', calories: 80, protein: 13, carbs: 6, fats: 0 },
+  { id: 46, name: 'String Cheese', icon: '🧀', category: 'dairy', serving: '2 sticks', calories: 160, protein: 14, carbs: 2, fats: 10 },
+  { id: 47, name: 'Skyr (Icelandic Yogurt)', icon: '🥛', category: 'dairy', serving: '1 cup (170g)', calories: 130, protein: 20, carbs: 12, fats: 0 },
+  
+  // Fruits
+  { id: 50, name: 'Banana', icon: '🍌', category: 'fruits', serving: '1 medium', calories: 105, protein: 1, carbs: 27, fats: 0 },
+  { id: 51, name: 'Apple', icon: '🍎', category: 'fruits', serving: '1 medium', calories: 95, protein: 0, carbs: 25, fats: 0 },
+  { id: 52, name: 'Blueberries', icon: '🫐', category: 'fruits', serving: '1 cup (148g)', calories: 85, protein: 1, carbs: 21, fats: 0 },
+  { id: 53, name: 'Strawberries', icon: '🍓', category: 'fruits', serving: '1 cup (152g)', calories: 50, protein: 1, carbs: 12, fats: 0 },
+  { id: 54, name: 'Orange', icon: '🍊', category: 'fruits', serving: '1 medium', calories: 62, protein: 1, carbs: 15, fats: 0 },
+  { id: 55, name: 'Grapes', icon: '🍇', category: 'fruits', serving: '1 cup (151g)', calories: 104, protein: 1, carbs: 27, fats: 0 },
+  { id: 56, name: 'Watermelon', icon: '🍉', category: 'fruits', serving: '2 cups diced', calories: 90, protein: 2, carbs: 22, fats: 0 },
+  { id: 57, name: 'Mango', icon: '🥭', category: 'fruits', serving: '1 cup sliced', calories: 100, protein: 1, carbs: 25, fats: 0 },
+  { id: 58, name: 'Pineapple', icon: '🍍', category: 'fruits', serving: '1 cup chunks', calories: 82, protein: 1, carbs: 22, fats: 0 },
+  { id: 59, name: 'Kiwi', icon: '🥝', category: 'fruits', serving: '2 medium', calories: 84, protein: 2, carbs: 20, fats: 1 },
+  
+  // Vegetables
+  { id: 60, name: 'Broccoli', icon: '🥦', category: 'vegetables', serving: '1 cup (91g)', calories: 31, protein: 3, carbs: 6, fats: 0 },
+  { id: 61, name: 'Spinach', icon: '🥬', category: 'vegetables', serving: '2 cups raw', calories: 14, protein: 2, carbs: 2, fats: 0 },
+  { id: 62, name: 'Asparagus', icon: '🌱', category: 'vegetables', serving: '1 cup (134g)', calories: 27, protein: 3, carbs: 5, fats: 0 },
+  { id: 63, name: 'Green Beans', icon: '🫛', category: 'vegetables', serving: '1 cup (125g)', calories: 44, protein: 2, carbs: 10, fats: 0 },
+  { id: 64, name: 'Bell Peppers', icon: '🫑', category: 'vegetables', serving: '1 medium', calories: 30, protein: 1, carbs: 6, fats: 0 },
+  { id: 65, name: 'Cucumber', icon: '🥒', category: 'vegetables', serving: '1 cup sliced', calories: 16, protein: 1, carbs: 4, fats: 0 },
+  { id: 66, name: 'Carrots', icon: '🥕', category: 'vegetables', serving: '1 cup (128g)', calories: 52, protein: 1, carbs: 12, fats: 0 },
+  { id: 67, name: 'Zucchini', icon: '🥒', category: 'vegetables', serving: '1 cup (124g)', calories: 21, protein: 2, carbs: 4, fats: 0 },
+  { id: 68, name: 'Cauliflower', icon: '🥦', category: 'vegetables', serving: '1 cup (107g)', calories: 27, protein: 2, carbs: 5, fats: 0 },
+  { id: 69, name: 'Kale', icon: '🥬', category: 'vegetables', serving: '2 cups raw', calories: 28, protein: 2, carbs: 6, fats: 0 },
+  { id: 70, name: 'Brussels Sprouts', icon: '🥬', category: 'vegetables', serving: '1 cup (156g)', calories: 56, protein: 4, carbs: 11, fats: 0 },
+  
+  // Healthy Snacks & Fats
+  { id: 80, name: 'Almonds', icon: '🥜', category: 'snacks', serving: '1 oz (28g)', calories: 164, protein: 6, carbs: 6, fats: 14 },
+  { id: 81, name: 'Peanut Butter', icon: '🥜', category: 'snacks', serving: '2 tbsp (32g)', calories: 188, protein: 8, carbs: 6, fats: 16 },
+  { id: 82, name: 'Almond Butter', icon: '🥜', category: 'snacks', serving: '2 tbsp (32g)', calories: 196, protein: 7, carbs: 6, fats: 18 },
+  { id: 83, name: 'Avocado', icon: '🥑', category: 'snacks', serving: '1/2 medium', calories: 160, protein: 2, carbs: 9, fats: 15 },
+  { id: 84, name: 'Mixed Nuts', icon: '🥜', category: 'snacks', serving: '1 oz (28g)', calories: 172, protein: 5, carbs: 6, fats: 15 },
+  { id: 85, name: 'Dark Chocolate (85%)', icon: '🍫', category: 'snacks', serving: '1 oz (28g)', calories: 170, protein: 2, carbs: 13, fats: 12 },
+  { id: 86, name: 'Rice Cakes', icon: '🍘', category: 'snacks', serving: '2 cakes', calories: 70, protein: 2, carbs: 14, fats: 0 },
+  { id: 87, name: 'Protein Bar', icon: '🍫', category: 'snacks', serving: '1 bar', calories: 220, protein: 20, carbs: 22, fats: 8 },
+  { id: 88, name: 'Beef Jerky', icon: '🥩', category: 'snacks', serving: '1 oz (28g)', calories: 80, protein: 13, carbs: 3, fats: 1 },
+  { id: 89, name: 'Hummus', icon: '🫘', category: 'snacks', serving: '1/4 cup (62g)', calories: 110, protein: 4, carbs: 10, fats: 6 },
+  { id: 90, name: 'Walnuts', icon: '🥜', category: 'snacks', serving: '1 oz (28g)', calories: 185, protein: 4, carbs: 4, fats: 18 },
+  { id: 91, name: 'Cashews', icon: '🥜', category: 'snacks', serving: '1 oz (28g)', calories: 157, protein: 5, carbs: 9, fats: 12 },
+  { id: 92, name: 'Trail Mix', icon: '🥜', category: 'snacks', serving: '1/4 cup (36g)', calories: 175, protein: 5, carbs: 16, fats: 11 },
+  { id: 93, name: 'Edamame', icon: '🫛', category: 'snacks', serving: '1 cup shelled', calories: 190, protein: 17, carbs: 14, fats: 8 },
+  
+  // Drinks
+  { id: 100, name: 'Pre-Workout Drink', icon: '⚡', category: 'drinks', serving: '1 scoop', calories: 10, protein: 0, carbs: 3, fats: 0 },
+  { id: 101, name: 'BCAA Supplement', icon: '💪', category: 'drinks', serving: '1 scoop', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 102, name: 'Creatine (5g)', icon: '💊', category: 'drinks', serving: '1 scoop', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 103, name: 'Orange Juice', icon: '🍊', category: 'drinks', serving: '8 oz (240ml)', calories: 112, protein: 2, carbs: 26, fats: 0 },
+  { id: 104, name: 'Coconut Water', icon: '🥥', category: 'drinks', serving: '8 oz (240ml)', calories: 46, protein: 2, carbs: 9, fats: 0 },
+  { id: 105, name: 'Chocolate Milk', icon: '🥛', category: 'drinks', serving: '8 oz (240ml)', calories: 190, protein: 8, carbs: 26, fats: 5 },
+  { id: 106, name: 'Gatorade', icon: '🧃', category: 'drinks', serving: '12 oz (360ml)', calories: 80, protein: 0, carbs: 21, fats: 0 },
+  { id: 107, name: 'Green Smoothie', icon: '🥤', category: 'drinks', serving: '12 oz', calories: 150, protein: 4, carbs: 30, fats: 2 },
+  { id: 108, name: 'Protein Coffee', icon: '☕', category: 'drinks', serving: '12 oz', calories: 100, protein: 20, carbs: 2, fats: 1 },
+  { id: 109, name: 'Almond Milk (Unsweetened)', icon: '🥛', category: 'drinks', serving: '8 oz (240ml)', calories: 30, protein: 1, carbs: 1, fats: 3 },
+  { id: 110, name: 'Mass Gainer Shake', icon: '🥤', category: 'drinks', serving: '1 serving', calories: 650, protein: 50, carbs: 85, fats: 8 },
+  
+  // Supplements
+  { id: 120, name: 'Whey Protein Isolate', icon: '💪', category: 'supplements', serving: '1 scoop (30g)', calories: 110, protein: 25, carbs: 1, fats: 0 },
+  { id: 121, name: 'Whey Protein Concentrate', icon: '💪', category: 'supplements', serving: '1 scoop (30g)', calories: 120, protein: 24, carbs: 3, fats: 1 },
+  { id: 122, name: 'Casein Protein', icon: '🌙', category: 'supplements', serving: '1 scoop (33g)', calories: 120, protein: 24, carbs: 3, fats: 1 },
+  { id: 123, name: 'Plant Protein (Pea/Rice)', icon: '🌱', category: 'supplements', serving: '1 scoop (30g)', calories: 110, protein: 21, carbs: 4, fats: 2 },
+  { id: 124, name: 'Egg White Protein', icon: '🥚', category: 'supplements', serving: '1 scoop (30g)', calories: 110, protein: 24, carbs: 2, fats: 0 },
+  { id: 125, name: 'Collagen Peptides', icon: '✨', category: 'supplements', serving: '1 scoop (11g)', calories: 40, protein: 10, carbs: 0, fats: 0 },
+  { id: 126, name: 'Creatine Monohydrate', icon: '⚡', category: 'supplements', serving: '5g', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 127, name: 'Creatine HCL', icon: '⚡', category: 'supplements', serving: '2g', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 128, name: 'BCAA 2:1:1', icon: '🔗', category: 'supplements', serving: '5g', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 129, name: 'EAA (Essential Aminos)', icon: '🔗', category: 'supplements', serving: '10g', calories: 40, protein: 10, carbs: 0, fats: 0 },
+  { id: 130, name: 'L-Glutamine', icon: '🧬', category: 'supplements', serving: '5g', calories: 20, protein: 5, carbs: 0, fats: 0 },
+  { id: 131, name: 'Beta-Alanine', icon: '🔥', category: 'supplements', serving: '3.2g', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 132, name: 'Citrulline Malate', icon: '💨', category: 'supplements', serving: '6g', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 133, name: 'L-Arginine', icon: '💨', category: 'supplements', serving: '3g', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 134, name: 'Pre-Workout (Stimulant)', icon: '⚡', category: 'supplements', serving: '1 scoop', calories: 10, protein: 0, carbs: 2, fats: 0 },
+  { id: 135, name: 'Pre-Workout (Stim-Free)', icon: '🧘', category: 'supplements', serving: '1 scoop', calories: 5, protein: 0, carbs: 1, fats: 0 },
+  { id: 136, name: 'Caffeine (200mg)', icon: '☕', category: 'supplements', serving: '1 pill', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 137, name: 'Fish Oil (Omega-3)', icon: '🐟', category: 'supplements', serving: '2 softgels', calories: 20, protein: 0, carbs: 0, fats: 2 },
+  { id: 138, name: 'Krill Oil', icon: '🦐', category: 'supplements', serving: '2 softgels', calories: 10, protein: 0, carbs: 0, fats: 1 },
+  { id: 139, name: 'Vitamin D3 (5000 IU)', icon: '☀️', category: 'supplements', serving: '1 softgel', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 140, name: 'Vitamin C (1000mg)', icon: '🍊', category: 'supplements', serving: '1 tablet', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 141, name: 'Multivitamin (Men)', icon: '💊', category: 'supplements', serving: '1 tablet', calories: 5, protein: 0, carbs: 1, fats: 0 },
+  { id: 142, name: 'Multivitamin (Women)', icon: '💊', category: 'supplements', serving: '1 tablet', calories: 5, protein: 0, carbs: 1, fats: 0 },
+  { id: 143, name: 'ZMA (Zinc/Mag/B6)', icon: '😴', category: 'supplements', serving: '3 capsules', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 144, name: 'Magnesium Glycinate', icon: '🧲', category: 'supplements', serving: '400mg', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 145, name: 'Zinc Picolinate', icon: '🛡️', category: 'supplements', serving: '30mg', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 146, name: 'Ashwagandha (KSM-66)', icon: '🌿', category: 'supplements', serving: '600mg', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 147, name: 'Rhodiola Rosea', icon: '🌿', category: 'supplements', serving: '500mg', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 148, name: 'Turkesterone', icon: '🦾', category: 'supplements', serving: '500mg', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 149, name: 'Tongkat Ali', icon: '🌿', category: 'supplements', serving: '400mg', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 150, name: 'Fadogia Agrestis', icon: '🌿', category: 'supplements', serving: '600mg', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 151, name: 'HMB (Beta-Hydroxy)', icon: '🛡️', category: 'supplements', serving: '3g', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 152, name: 'CLA (Conjugated LA)', icon: '🔥', category: 'supplements', serving: '3g', calories: 30, protein: 0, carbs: 0, fats: 3 },
+  { id: 153, name: 'L-Carnitine', icon: '🔥', category: 'supplements', serving: '2g', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 154, name: 'MCT Oil', icon: '🥥', category: 'supplements', serving: '1 tbsp (14g)', calories: 120, protein: 0, carbs: 0, fats: 14 },
+  { id: 155, name: 'Digestive Enzymes', icon: '🧫', category: 'supplements', serving: '1 capsule', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 156, name: 'Probiotics (50B CFU)', icon: '🦠', category: 'supplements', serving: '1 capsule', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 157, name: 'Fiber Supplement', icon: '🌾', category: 'supplements', serving: '1 scoop (5g)', calories: 15, protein: 0, carbs: 5, fats: 0 },
+  { id: 158, name: 'Electrolyte Mix', icon: '⚡', category: 'supplements', serving: '1 packet', calories: 10, protein: 0, carbs: 2, fats: 0 },
+  { id: 159, name: 'Greens Powder', icon: '🥬', category: 'supplements', serving: '1 scoop (8g)', calories: 30, protein: 2, carbs: 5, fats: 0 },
+  { id: 160, name: 'Joint Support (Gluc/Chon)', icon: '🦴', category: 'supplements', serving: '2 capsules', calories: 5, protein: 0, carbs: 1, fats: 0 },
+  { id: 161, name: 'Melatonin (5mg)', icon: '🌙', category: 'supplements', serving: '1 tablet', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 162, name: 'Taurine', icon: '❤️', category: 'supplements', serving: '2g', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 163, name: 'Alpha-GPC', icon: '🧠', category: 'supplements', serving: '300mg', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 164, name: 'Lion\'s Mane Mushroom', icon: '🍄', category: 'supplements', serving: '500mg', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 165, name: 'Vitamin B Complex', icon: '💊', category: 'supplements', serving: '1 capsule', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 166, name: 'Iron Supplement', icon: '🩸', category: 'supplements', serving: '18mg', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 167, name: 'Biotin (10000mcg)', icon: '💇', category: 'supplements', serving: '1 capsule', calories: 0, protein: 0, carbs: 0, fats: 0 },
+  { id: 168, name: 'Intra-Workout (Carb)', icon: '🏃', category: 'supplements', serving: '1 scoop (25g)', calories: 100, protein: 0, carbs: 25, fats: 0 },
+  { id: 169, name: 'Post-Workout Recovery', icon: '🔄', category: 'supplements', serving: '1 scoop', calories: 150, protein: 25, carbs: 10, fats: 1 }
+];
+
+let currentMealCategory = 'all';
+
+function showAddMealModal() {
+  const modal = document.getElementById('addMealModal');
+  if (!modal) return;
+  
+  // Show modal - override visibility/opacity from CSS
+  modal.style.display = 'flex';
+  modal.style.opacity = '1';
+  modal.style.visibility = 'visible';
+  document.body.style.overflow = 'hidden';
+  
+  // Fix transform on modal content
+  const content = modal.querySelector('.modal-content');
+  if (content) {
+    content.style.transform = 'translateY(0) scale(1)';
+  }
+  
+  // Reset to foods tab
+  switchMealTab('foods');
+  
+  // Populate foods list
+  renderFoodsList(gymFoods);
+  
+  // Reset search
+  const searchInput = document.getElementById('mealSearchInput');
+  if (searchInput) searchInput.value = '';
+  
+  // Reset category
+  currentMealCategory = 'all';
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.toLowerCase().includes('all'));
+  });
+}
+
+function closeMealModal() {
+  const modal = document.getElementById('addMealModal');
+  if (modal) {
+    modal.style.display = 'none';
+    modal.style.opacity = '0';
+    modal.style.visibility = 'hidden';
+    document.body.style.overflow = '';
+    
+    // Reset transform
+    const content = modal.querySelector('.modal-content');
+    if (content) {
+      content.style.transform = '';
+    }
+  }
+  
+  // Reset custom form
+  const form = document.getElementById('customMealForm');
+  if (form) form.reset();
+}
+
+// Close meal modal when clicking outside
+document.addEventListener('click', (e) => {
+  const modal = document.getElementById('addMealModal');
+  if (modal && e.target === modal) {
+    closeMealModal();
+  }
+});
+
+function switchMealTab(tab) {
+  const foodsTab = document.getElementById('foodsTab');
+  const customTab = document.getElementById('customTab');
+  const tabs = document.querySelectorAll('.meal-tab');
+  
+  tabs.forEach(t => t.classList.remove('active'));
+  
+  if (tab === 'foods') {
+    foodsTab.style.display = 'block';
+    customTab.style.display = 'none';
+    tabs[0]?.classList.add('active');
+  } else {
+    foodsTab.style.display = 'none';
+    customTab.style.display = 'block';
+    tabs[1]?.classList.add('active');
+  }
+}
+
+function renderFoodsList(foods) {
+  const container = document.getElementById('foodsList');
+  if (!container) return;
+  
+  if (foods.length === 0) {
+    container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: var(--space-xl); grid-column: 1/-1;">No foods found matching your search.</p>';
+    return;
+  }
+  
+  container.innerHTML = foods.map(food => `
+    <div class="food-item" onclick="addFoodToMeal(${food.id})">
+      <div class="food-item-header">
+        <span class="food-item-icon">${food.icon}</span>
+        <span class="food-item-name">${food.name}</span>
+      </div>
+      <div class="food-item-serving">${food.serving}</div>
+      <div class="food-item-macros">
+        <span class="cal"><span class="value">${food.calories}</span><span class="label">Cal</span></span>
+        <span class="pro"><span class="value">${food.protein}g</span><span class="label">Protein</span></span>
+        <span class="carb"><span class="value">${food.carbs}g</span><span class="label">Carbs</span></span>
+        <span class="fat"><span class="value">${food.fats}g</span><span class="label">Fat</span></span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterFoods() {
+  const searchInput = document.getElementById('mealSearchInput');
+  const searchTerm = searchInput?.value.toLowerCase() || '';
+  
+  let filtered = gymFoods;
+  
+  // Filter by category
+  if (currentMealCategory !== 'all') {
+    filtered = filtered.filter(food => food.category === currentMealCategory);
+  }
+  
+  // Filter by search term
+  if (searchTerm) {
+    filtered = filtered.filter(food => 
+      food.name.toLowerCase().includes(searchTerm) ||
+      food.category.toLowerCase().includes(searchTerm)
+    );
+  }
+  
+  renderFoodsList(filtered);
+}
+
+function filterByCategory(category) {
+  currentMealCategory = category;
+  
+  // Update active button
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    const btnCategory = btn.textContent.toLowerCase();
+    btn.classList.toggle('active', btnCategory === category || (category === 'all' && btnCategory === 'all'));
+  });
+  
+  filterFoods();
+}
+
+function addFoodToMeal(foodId) {
+  const food = gymFoods.find(f => f.id === foodId);
+  if (!food) return;
+  
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || '{}');
+  if (!user.email) {
+    showToast('Please log in to track meals', 'error');
+    return;
+  }
+  
+  // Initialize meal logs if not exists
+  user.mealLogs = user.mealLogs || [];
+  
+  // Determine meal type based on current time
+  const hour = new Date().getHours();
+  let mealType = 'snack';
+  if (hour >= 5 && hour < 11) mealType = 'breakfast';
+  else if (hour >= 11 && hour < 15) mealType = 'lunch';
+  else if (hour >= 17 && hour < 21) mealType = 'dinner';
+  
+  const mealEntry = {
+    id: Date.now(),
+    name: food.name,
+    icon: food.icon,
+    serving: food.serving,
+    calories: food.calories,
+    protein: food.protein,
+    carbs: food.carbs,
+    fats: food.fats,
+    mealType: mealType,
+    date: new Date().toISOString()
+  };
+  
+  user.mealLogs.push(mealEntry);
+  localStorage.setItem('Kynotra_user', JSON.stringify(user));
+  
+  // Update users array
+  const users = JSON.parse(localStorage.getItem('Kynotra_users') || '[]');
+  const userIndex = users.findIndex(u => u.email === user.email);
+  if (userIndex !== -1) {
+    users[userIndex] = user;
+    localStorage.setItem('Kynotra_users', JSON.stringify(users));
+  }
+  
+  showToast(`Added ${food.name} to your ${mealType}! 🍽️`, 'success');
+  closeMealModal();
+  
+  // Refresh the meals display if on nutrition page
+  if (typeof updateMealsDisplay === 'function') {
+    updateMealsDisplay();
+  }
+}
+
+function addCustomMeal(event) {
+  event.preventDefault();
+  
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || '{}');
+  if (!user.email) {
+    showToast('Please log in to track meals', 'error');
+    return;
+  }
+  
+  const name = document.getElementById('customMealName')?.value?.trim();
+  const serving = document.getElementById('customServing')?.value?.trim() || '1 serving';
+  const calories = parseInt(document.getElementById('customCalories')?.value) || 0;
+  const protein = parseFloat(document.getElementById('customProtein')?.value) || 0;
+  const carbs = parseFloat(document.getElementById('customCarbs')?.value) || 0;
+  const fats = parseFloat(document.getElementById('customFats')?.value) || 0;
+  const mealType = document.getElementById('customMealType')?.value || 'snack';
+  
+  if (!name) {
+    showToast('Please enter a meal name', 'error');
+    return;
+  }
+  
+  if (calories === 0 && protein === 0 && fats === 0) {
+    showToast('Please enter at least some nutrition values', 'error');
+    return;
+  }
+  
+  // Initialize meal logs if not exists
+  user.mealLogs = user.mealLogs || [];
+  
+  const mealEntry = {
+    id: Date.now(),
+    name: name,
+    icon: getMealIcon(mealType),
+    serving: serving,
+    calories: calories,
+    protein: protein,
+    carbs: carbs,
+    fats: fats,
+    mealType: mealType,
+    date: new Date().toISOString(),
+    isCustom: true
+  };
+  
+  user.mealLogs.push(mealEntry);
+  localStorage.setItem('Kynotra_user', JSON.stringify(user));
+  
+  // Update users array
+  const users = JSON.parse(localStorage.getItem('Kynotra_users') || '[]');
+  const userIndex = users.findIndex(u => u.email === user.email);
+  if (userIndex !== -1) {
+    users[userIndex] = user;
+    localStorage.setItem('Kynotra_users', JSON.stringify(users));
+  }
+  
+  showToast(`Added ${name} to your meals! 🍽️`, 'success');
+  closeMealModal();
+  
+  // Refresh the meals display if on nutrition page
+  if (typeof updateMealsDisplay === 'function') {
+    updateMealsDisplay();
+  }
+}
+
+function getMealIcon(mealType) {
+  const icons = {
+    breakfast: '🍳',
+    lunch: '🥗',
+    dinner: '🍽️',
+    snack: '🍌'
+  };
+  return icons[mealType] || '🍽️';
+}
+
+// ==========================================
+// BODY MEASUREMENTS TRACKING
+// ==========================================
+
+function showMeasurementsModal() {
+  const modal = document.getElementById('measurementsModal');
+  if (!modal) return;
+  
+  // Show modal
+  modal.style.display = 'flex';
+  modal.style.opacity = '1';
+  modal.style.visibility = 'visible';
+  document.body.style.overflow = 'hidden';
+  
+  // Fix transform on modal content
+  const content = modal.querySelector('.modal-content');
+  if (content) {
+    content.style.transform = 'translateY(0) scale(1)';
+  }
+  
+  // Pre-fill with last measurements if available
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || '{}');
+  if (user.measurements && user.measurements.length > 0) {
+    const lastMeas = user.measurements[user.measurements.length - 1];
+    if (lastMeas.weight) document.getElementById('measWeight').value = lastMeas.weight;
+    if (lastMeas.bodyFat) document.getElementById('measBodyFat').value = lastMeas.bodyFat;
+    if (lastMeas.chest) document.getElementById('measChest').value = lastMeas.chest;
+    if (lastMeas.shoulders) document.getElementById('measShoulders').value = lastMeas.shoulders;
+    if (lastMeas.arms) document.getElementById('measArms').value = lastMeas.arms;
+    if (lastMeas.forearms) document.getElementById('measForearms').value = lastMeas.forearms;
+    if (lastMeas.waist) document.getElementById('measWaist').value = lastMeas.waist;
+    if (lastMeas.hips) document.getElementById('measHips').value = lastMeas.hips;
+    if (lastMeas.thighs) document.getElementById('measThighs').value = lastMeas.thighs;
+    if (lastMeas.calves) document.getElementById('measCalves').value = lastMeas.calves;
+    if (lastMeas.neck) document.getElementById('measNeck').value = lastMeas.neck;
+  }
+}
+
+function closeMeasurementsModal() {
+  const modal = document.getElementById('measurementsModal');
+  if (modal) {
+    modal.style.display = 'none';
+    modal.style.opacity = '0';
+    modal.style.visibility = 'hidden';
+    document.body.style.overflow = '';
+    
+    // Reset transform
+    const content = modal.querySelector('.modal-content');
+    if (content) {
+      content.style.transform = '';
+    }
+  }
+  
+  // Reset form
+  const form = document.getElementById('measurementsForm');
+  if (form) form.reset();
+}
+
+// Close measurements modal when clicking outside
+document.addEventListener('click', (e) => {
+  const modal = document.getElementById('measurementsModal');
+  if (modal && e.target === modal) {
+    closeMeasurementsModal();
+  }
+});
+
+function saveMeasurements(event) {
+  event.preventDefault();
+  
+  const user = JSON.parse(localStorage.getItem('Kynotra_user') || '{}');
+  if (!user.email) {
+    showToast('Please log in to save measurements', 'error');
+    return;
+  }
+  
+  // Collect muscle measurement data (in inches)
+  const chest = parseFloat(document.getElementById('measChest')?.value) || null;
+  const shoulders = parseFloat(document.getElementById('measShoulders')?.value) || null;
+  const arms = parseFloat(document.getElementById('measArms')?.value) || null;
+  const forearms = parseFloat(document.getElementById('measForearms')?.value) || null;
+  const waist = parseFloat(document.getElementById('measWaist')?.value) || null;
+  const hips = parseFloat(document.getElementById('measHips')?.value) || null;
+  const thighs = parseFloat(document.getElementById('measThighs')?.value) || null;
+  const calves = parseFloat(document.getElementById('measCalves')?.value) || null;
+  const neck = parseFloat(document.getElementById('measNeck')?.value) || null;
+  const notes = document.getElementById('measNotes')?.value || '';
+  
+  // Check if at least one measurement was entered
+  const allValues = [chest, shoulders, arms, forearms, waist, hips, thighs, calves, neck];
+  if (allValues.every(v => v === null)) {
+    showToast('Please enter at least one measurement', 'error');
+    return;
+  }
+  
+  // Create measurement entry
+  const measurementEntry = {
+    id: Date.now(),
+    date: new Date().toISOString(),
+    chest: chest,
+    shoulders: shoulders,
+    arms: arms,
+    forearms: forearms,
+    waist: waist,
+    hips: hips,
+    thighs: thighs,
+    calves: calves,
+    neck: neck,
+    notes: notes
+  };
+  
+  // Initialize measurements array if not exists
+  user.measurements = user.measurements || [];
+  user.measurements.push(measurementEntry);
+  
+  localStorage.setItem('Kynotra_user', JSON.stringify(user));
+  
+  // Update users array
+  const users = JSON.parse(localStorage.getItem('Kynotra_users') || '[]');
+  const userIndex = users.findIndex(u => u.email === user.email);
+  if (userIndex !== -1) {
+    users[userIndex] = user;
+    localStorage.setItem('Kynotra_users', JSON.stringify(users));
+  }
+  
+  // Count how many measurements were logged
+  const loggedCount = allValues.filter(v => v !== null).length;
+  
+  showToast(`Logged ${loggedCount} measurements! 📏`, 'success');
+  closeMeasurementsModal();
+  
+  // Refresh page to show updated stats if applicable
+  if (typeof updateProgressStats === 'function') {
+    updateProgressStats();
+  }
+}
+
+// ==========================================
 // FORM HANDLERS
 // ==========================================
 function handleLogin(e) {
@@ -2103,6 +3302,24 @@ function handleLogin(e) {
     return;
   }
   
+  // Get pending profile data (from program/nutrition wizard)
+  const pendingProfile = JSON.parse(localStorage.getItem('Kynotra_pending_profile') || '{}');
+  const pendingType = localStorage.getItem('Kynotra_pending_type');
+  
+  // Merge pending profile data if exists
+  if (Object.keys(pendingProfile).length > 0) {
+    Object.assign(user, pendingProfile);
+    // Update in users array
+    const userIndex = users.findIndex(u => u.email === email);
+    if (userIndex >= 0) {
+      users[userIndex] = user;
+      localStorage.setItem('Kynotra_users', JSON.stringify(users));
+    }
+    // Clear pending data
+    localStorage.removeItem('Kynotra_pending_profile');
+    localStorage.removeItem('Kynotra_pending_type');
+  }
+  
   // Set current logged-in user
   localStorage.setItem('Kynotra_user', JSON.stringify(user));
   showToast('Logging in...', 'success');
@@ -2116,9 +3333,14 @@ function handleLogin(e) {
       window.location.href = _base + 'shop.html';
     } else if (redirect === 'programs') {
       window.location.href = _base + 'programs.html';
+    } else if (redirect === 'diet') {
+      window.location.href = _base + 'diet.html';
     } else if (redirect === 'subscribe') {
       const plan = urlParams.get('plan') || 'pro';
       window.location.href = _base + 'index.html#pricing';
+    } else if (pendingType) {
+      // Redirect to the page they were on
+      window.location.href = _base + (pendingType === 'program' ? 'programs.html' : 'diet.html');
     } else {
       window.location.href = _base + 'pages/dashboard/dashboard.html';
     }
@@ -2142,7 +3364,11 @@ function handleSignup(e) {
     return;
   }
   
-  // Create new user with subscription data
+  // Get pending profile data (from program/nutrition wizard)
+  const pendingProfile = JSON.parse(localStorage.getItem('Kynotra_pending_profile') || '{}');
+  const pendingType = localStorage.getItem('Kynotra_pending_type');
+  
+  // Create new user with subscription data and pending profile
   const user = { 
     id: Date.now(),
     name: firstName, 
@@ -2153,6 +3379,16 @@ function handleSignup(e) {
     subscriptionStatus: null,
     trialEndsAt: null,
     createdAt: new Date().toISOString(),
+    // Merge pending profile data
+    gender: pendingProfile.gender || null,
+    age: pendingProfile.age || null,
+    weight: pendingProfile.weight || null,
+    height: pendingProfile.height || null,
+    goal: pendingProfile.goal || null,
+    experienceLevel: pendingProfile.experienceLevel || null,
+    trainingLocation: pendingProfile.trainingLocation || null,
+    trainingDays: pendingProfile.trainingDays || null,
+    activityLevel: pendingProfile.activityLevel || null,
     progress: {
       workoutsCompleted: 0,
       currentStreak: 0,
@@ -2160,6 +3396,10 @@ function handleSignup(e) {
       caloriesBurned: 0
     }
   };
+  
+  // Clear pending data
+  localStorage.removeItem('Kynotra_pending_profile');
+  localStorage.removeItem('Kynotra_pending_type');
   
   // Add to users database
   users.push(user);
@@ -2169,14 +3409,21 @@ function handleSignup(e) {
   localStorage.setItem('Kynotra_user', JSON.stringify(user));
   showToast('Account created! Redirecting...', 'success');
   
-  // Handle plan parameter - auto-start trial if came from pricing
+  // Handle plan parameter or redirect parameter
   const urlParams = new URLSearchParams(window.location.search);
   const plan = urlParams.get('plan');
+  const redirect = urlParams.get('redirect');
   
   setTimeout(() => {
     if (plan && plan !== 'free') {
       // Redirect to pricing with trial flag
       window.location.href = _base + 'index.html?plan=' + plan + '&trial=true#pricing';
+    } else if (redirect) {
+      // Redirect back to where they came from
+      window.location.href = _base + redirect + '.html';
+    } else if (pendingType) {
+      // Redirect to the page they were on
+      window.location.href = _base + (pendingType === 'program' ? 'programs.html' : 'diet.html');
     } else {
       window.location.href = _base + 'pages/dashboard/dashboard.html';
     }
@@ -2750,6 +3997,97 @@ document.addEventListener('click', (e) => {
 // ==========================================
 // SUBSCRIPTION MANAGEMENT
 // ==========================================
+
+// Show subscription prompt for logged out users
+function showSubscriptionPrompt(type) {
+  // Get the data they entered
+  let userData = {};
+  
+  if (type === 'program') {
+    userData = {
+      gender: document.getElementById('progGender')?.value,
+      age: document.getElementById('progAge')?.value,
+      weight: document.getElementById('progWeight')?.value,
+      height: document.getElementById('progHeight')?.value,
+      goal: document.getElementById('goalSelect')?.value,
+      experienceLevel: document.getElementById('levelSelect')?.value,
+      trainingLocation: document.getElementById('locationSelect')?.value,
+      trainingDays: document.getElementById('daysSelect')?.value
+    };
+  } else if (type === 'nutrition') {
+    userData = {
+      gender: document.getElementById('calcGender')?.value,
+      age: document.getElementById('calcAge')?.value,
+      weight: document.getElementById('calcWeight')?.value,
+      height: document.getElementById('calcHeight')?.value,
+      activityLevel: document.getElementById('calcActivity')?.value,
+      goal: document.getElementById('calcGoal')?.value
+    };
+    // Map nutrition goal to fitness goal
+    const goalMap = { 'lose': 'weight-loss', 'gain': 'muscle-gain', 'maintain': 'maintenance', 'bulk': 'muscle-gain' };
+    userData.goal = goalMap[userData.goal] || userData.goal;
+  }
+  
+  // Save pending data for after signup
+  localStorage.setItem('Kynotra_pending_profile', JSON.stringify(userData));
+  localStorage.setItem('Kynotra_pending_type', type);
+  
+  // Create modal
+  const modalHtml = `
+    <div id="subscriptionModal" style="position: fixed; inset: 0; z-index: 10001; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; padding: var(--space-lg);">
+      <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); max-width: 500px; width: 100%; padding: var(--space-2xl); text-align: center; position: relative;">
+        <button onclick="closeSubscriptionModal()" style="position: absolute; top: var(--space-md); right: var(--space-md); background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;">✕</button>
+        
+        <div style="width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #00b809); display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-xl);">
+          <span style="font-size: 2rem;">🔒</span>
+        </div>
+        
+        <h2 style="font-family: var(--font-heading); font-size: 1.8rem; text-transform: uppercase; margin-bottom: var(--space-md);">
+          Unlock Your <span style="color: var(--accent);">${type === 'program' ? 'Program' : 'Nutrition Plan'}</span>
+        </h2>
+        
+        <p style="color: var(--text-secondary); margin-bottom: var(--space-xl); line-height: 1.6;">
+          Create a free account to get your personalized ${type === 'program' ? 'workout program' : 'nutrition plan'}. We've saved your information and it will be ready instantly after signup.
+        </p>
+        
+        <div style="background: var(--primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: var(--space-lg); margin-bottom: var(--space-xl);">
+          <div style="display: flex; align-items: center; gap: var(--space-sm); justify-content: center; margin-bottom: var(--space-sm);">
+            <span style="color: var(--accent);">✓</span>
+            <span>Free 7-day trial</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: var(--space-sm); justify-content: center; margin-bottom: var(--space-sm);">
+            <span style="color: var(--accent);">✓</span>
+            <span>AI-generated programs</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: var(--space-sm); justify-content: center;">
+            <span style="color: var(--accent);">✓</span>
+            <span>Personalized nutrition plans</span>
+          </div>
+        </div>
+        
+        <a href="${_base}pages/auth/signup.html?redirect=${type === 'program' ? 'programs' : 'diet'}" class="btn btn-primary btn-block" style="font-size: 1.1rem; padding: var(--space-md) var(--space-xl);">
+          Create Free Account →
+        </a>
+        
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: var(--space-lg);">
+          Already have an account? <a href="${_base}pages/auth/login.html?redirect=${type === 'program' ? 'programs' : 'diet'}" style="color: var(--accent);">Log In</a>
+        </p>
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSubscriptionModal() {
+  const modal = document.getElementById('subscriptionModal');
+  if (modal) {
+    modal.remove();
+    document.body.style.overflow = '';
+  }
+}
+
 function startTrial(plan) {
   const user = JSON.parse(localStorage.getItem('Kynotra_user') || 'null');
   

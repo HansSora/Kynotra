@@ -148,7 +148,7 @@
             </div>
             
             <div class="workout-exercises">
-              <div class="exercise-row">
+              <div class="exercise-row" data-exercise="Dumbbell Bench Press">
                 <div class="exercise-info">
                   <span class="exercise-num">1</span>
                   <div>
@@ -158,9 +158,12 @@
                 </div>
                 <div class="exercise-sets">4 × 8-10</div>
                 <div class="exercise-weight"><span class="wt" data-lbs="70">70 lbs</span> each</div>
-                <button class="btn btn-sm btn-outline">Log</button>
+                <div class="exercise-actions">
+                  <button class="btn btn-sm btn-outline log-btn" data-exercise="Dumbbell Bench Press" onclick="openLogModal('Dumbbell Bench Press', 4, '8-10', 70)">Log</button>
+                  <button class="btn btn-sm btn-secondary unlog-btn" data-exercise="Dumbbell Bench Press" onclick="unlogExercise('Dumbbell Bench Press')" style="display: none;">Unlog</button>
+                </div>
               </div>
-              <div class="exercise-row">
+              <div class="exercise-row" data-exercise="T-Bar Rows">
                 <div class="exercise-info">
                   <span class="exercise-num">2</span>
                   <div>
@@ -170,9 +173,12 @@
                 </div>
                 <div class="exercise-sets">4 × 8-10</div>
                 <div class="exercise-weight"><span class="wt" data-lbs="135">135 lbs</span></div>
-                <button class="btn btn-sm btn-outline">Log</button>
+                <div class="exercise-actions">
+                  <button class="btn btn-sm btn-outline log-btn" data-exercise="T-Bar Rows" onclick="openLogModal('T-Bar Rows', 4, '8-10', 135)">Log</button>
+                  <button class="btn btn-sm btn-secondary unlog-btn" data-exercise="T-Bar Rows" onclick="unlogExercise('T-Bar Rows')" style="display: none;">Unlog</button>
+                </div>
               </div>
-              <div class="exercise-row">
+              <div class="exercise-row" data-exercise="Arnold Press">
                 <div class="exercise-info">
                   <span class="exercise-num">3</span>
                   <div>
@@ -182,9 +188,12 @@
                 </div>
                 <div class="exercise-sets">3 × 10-12</div>
                 <div class="exercise-weight"><span class="wt" data-lbs="40">40 lbs</span> each</div>
-                <button class="btn btn-sm btn-outline">Log</button>
+                <div class="exercise-actions">
+                  <button class="btn btn-sm btn-outline log-btn" data-exercise="Arnold Press" onclick="openLogModal('Arnold Press', 3, '10-12', 40)">Log</button>
+                  <button class="btn btn-sm btn-secondary unlog-btn" data-exercise="Arnold Press" onclick="unlogExercise('Arnold Press')" style="display: none;">Unlog</button>
+                </div>
               </div>
-              <div class="exercise-row">
+              <div class="exercise-row" data-exercise="Cable Crossovers">
                 <div class="exercise-info">
                   <span class="exercise-num">4</span>
                   <div>
@@ -194,9 +203,12 @@
                 </div>
                 <div class="exercise-sets">3 × 12-15</div>
                 <div class="exercise-weight"><span class="wt" data-lbs="30">30 lbs</span> each</div>
-                <button class="btn btn-sm btn-outline">Log</button>
+                <div class="exercise-actions">
+                  <button class="btn btn-sm btn-outline log-btn" data-exercise="Cable Crossovers" onclick="openLogModal('Cable Crossovers', 3, '12-15', 30)">Log</button>
+                  <button class="btn btn-sm btn-secondary unlog-btn" data-exercise="Cable Crossovers" onclick="unlogExercise('Cable Crossovers')" style="display: none;">Unlog</button>
+                </div>
               </div>
-              <div class="exercise-row">
+              <div class="exercise-row" data-exercise="Superset: Curls + Pushdowns">
                 <div class="exercise-info">
                   <span class="exercise-num">5</span>
                   <div>
@@ -206,7 +218,10 @@
                 </div>
                 <div class="exercise-sets">3 × 12</div>
                 <div class="exercise-weight"><span class="wt" data-lbs="25">25 lbs</span> / <span class="wt" data-lbs="50">50 lbs</span></div>
-                <button class="btn btn-sm btn-outline">Log</button>
+                <div class="exercise-actions">
+                  <button class="btn btn-sm btn-outline log-btn" data-exercise="Superset: Curls + Pushdowns" onclick="openLogModal('Superset: Curls + Pushdowns', 3, '12', 25)">Log</button>
+                  <button class="btn btn-sm btn-secondary unlog-btn" data-exercise="Superset: Curls + Pushdowns" onclick="unlogExercise('Superset: Curls + Pushdowns')" style="display: none;">Unlog</button>
+                </div>
               </div>
             </div>
             
@@ -227,7 +242,6 @@
                     <th>Workout</th>
                     <th>Duration</th>
                     <th>Exercises</th>
-                    <th>Volume</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -236,35 +250,30 @@
                     <td>Leg Day</td>
                     <td>72 min</td>
                     <td>6</td>
-                    <td><span class="wt" data-lbs="18500">18,500 lbs</span></td>
                   </tr>
                   <tr>
                     <td>Tue, Dec 31</td>
                     <td>Pull Day</td>
                     <td>65 min</td>
                     <td>5</td>
-                    <td><span class="wt" data-lbs="12400">12,400 lbs</span></td>
                   </tr>
                   <tr>
                     <td>Mon, Dec 30</td>
                     <td>Push Day</td>
                     <td>58 min</td>
                     <td>5</td>
-                    <td><span class="wt" data-lbs="10800">10,800 lbs</span></td>
                   </tr>
                   <tr>
                     <td>Sat, Dec 28</td>
                     <td>Lower Body</td>
                     <td>68 min</td>
                     <td>6</td>
-                    <td><span class="wt" data-lbs="16200">16,200 lbs</span></td>
                   </tr>
                   <tr>
                     <td>Fri, Dec 27</td>
                     <td>Upper Body</td>
                     <td>62 min</td>
                     <td>5</td>
-                    <td><span class="wt" data-lbs="11600">11,600 lbs</span></td>
                   </tr>
                 </tbody>
               </table>
@@ -272,6 +281,29 @@
           </div>
 
         </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- Log Exercise Modal -->
+  <div id="logModal" class="modal" style="display: none;">
+    <div class="modal-overlay" onclick="closeLogModal()"></div>
+    <div class="modal-content" style="max-width: 500px;">
+      <button type="button" class="modal-close" onclick="closeLogModal()">&times;</button>
+      <div class="modal-header">
+        <h2 id="logModalTitle">Log Exercise</h2>
+      </div>
+      <div class="modal-body">
+        <form id="logExerciseForm">
+          <div id="logSetsContainer"></div>
+          <div class="form-group" style="margin-top: var(--space-lg);">
+            <label class="form-label">Notes (optional)</label>
+            <textarea class="form-input" id="logNotes" placeholder="How did it feel? Any adjustments?" rows="2"></textarea>
+          </div>
+          <div style="display: flex; gap: var(--space-md); margin-top: var(--space-xl);">
+            <button type="button" class="btn btn-primary btn-block" onclick="saveExerciseLog()">Save Log</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -394,6 +426,23 @@
       font-size: 0.9rem;
       color: var(--text-secondary);
     }
+    .exercise-actions {
+      display: flex;
+      gap: var(--space-xs);
+    }
+    .exercise-row.logged {
+      border-left: 3px solid var(--success);
+      background: rgba(0, 200, 83, 0.05);
+    }
+    .exercise-row.logged .log-btn {
+      background: var(--success);
+      border-color: var(--success);
+      color: #fff;
+      opacity: 0.8;
+    }
+    .exercise-row.logged .unlog-btn {
+      display: inline-flex !important;
+    }
     
     @media (max-width: 768px) {
       .grid-7 {
@@ -408,5 +457,31 @@
       }
     }
   </style>
+  <script>
+    // Check logged exercises on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      checkLoggedExercises();
+    });
+    
+    function checkLoggedExercises() {
+      const user = JSON.parse(localStorage.getItem('Kynotra_user') || '{}');
+      const todayLogs = getTodayLogs(user);
+      
+      document.querySelectorAll('.exercise-row[data-exercise]').forEach(row => {
+        const exerciseName = row.getAttribute('data-exercise');
+        const logBtn = row.querySelector('.log-btn');
+        if (todayLogs.some(log => log.exercise === exerciseName)) {
+          row.classList.add('logged');
+          if (logBtn) logBtn.textContent = 'Logged ✓';
+        }
+      });
+    }
+    
+    function getTodayLogs(user) {
+      if (!user.workoutLogs) return [];
+      const today = new Date().toDateString();
+      return user.workoutLogs.filter(log => new Date(log.date).toDateString() === today);
+    }
+  </script>
 </body>
 </html>

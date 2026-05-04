@@ -279,7 +279,7 @@
                     <span>Not logged yet</span>
                   </div>
                 </div>
-                <button class="btn btn-sm btn-outline btn-block" style="margin-top: var(--space-md);">+ Log Dinner</button>
+                <button class="btn btn-sm btn-outline btn-block" style="margin-top: var(--space-md);" onclick="showAddMealModal()">+ Log Dinner</button>
               </div>
             </div>
           </div>
@@ -287,54 +287,78 @@
           <!-- Weekly Overview -->
           <div class="stat-card">
             <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: var(--space-lg);">This Week's Adherence</h3>
-            <div class="week-adherence">
-              <div class="day-bar">
-                <div class="bar" style="--fill: 95%;">
-                  <div class="bar-fill"></div>
+            <div class="week-adherence-v2">
+              <div class="adherence-bar-container">
+                <div class="adherence-day">
+                  <div class="adherence-bar-wrap">
+                    <span class="adherence-percent">95%</span>
+                    <div class="adherence-bar">
+                      <div class="adherence-fill" style="--fill: 95%;"></div>
+                    </div>
+                  </div>
+                  <span class="adherence-label">Mon</span>
                 </div>
-                <span class="day-label">Mon</span>
-              </div>
-              <div class="day-bar">
-                <div class="bar" style="--fill: 102%;">
-                  <div class="bar-fill over"></div>
+                <div class="adherence-day">
+                  <div class="adherence-bar-wrap">
+                    <span class="adherence-percent over">102%</span>
+                    <div class="adherence-bar">
+                      <div class="adherence-fill over" style="--fill: 100%;"></div>
+                    </div>
+                  </div>
+                  <span class="adherence-label">Tue</span>
                 </div>
-                <span class="day-label">Tue</span>
-              </div>
-              <div class="day-bar">
-                <div class="bar" style="--fill: 88%;">
-                  <div class="bar-fill"></div>
+                <div class="adherence-day">
+                  <div class="adherence-bar-wrap">
+                    <span class="adherence-percent">88%</span>
+                    <div class="adherence-bar">
+                      <div class="adherence-fill" style="--fill: 88%;"></div>
+                    </div>
+                  </div>
+                  <span class="adherence-label">Wed</span>
                 </div>
-                <span class="day-label">Wed</span>
-              </div>
-              <div class="day-bar">
-                <div class="bar" style="--fill: 100%;">
-                  <div class="bar-fill perfect"></div>
+                <div class="adherence-day">
+                  <div class="adherence-bar-wrap">
+                    <span class="adherence-percent perfect">100%</span>
+                    <div class="adherence-bar">
+                      <div class="adherence-fill perfect" style="--fill: 100%;"></div>
+                    </div>
+                  </div>
+                  <span class="adherence-label">Thu</span>
                 </div>
-                <span class="day-label">Thu</span>
-              </div>
-              <div class="day-bar today">
-                <div class="bar" style="--fill: 66%;">
-                  <div class="bar-fill"></div>
+                <div class="adherence-day today">
+                  <div class="adherence-bar-wrap">
+                    <span class="adherence-percent low">66%</span>
+                    <div class="adherence-bar">
+                      <div class="adherence-fill low" style="--fill: 66%;"></div>
+                    </div>
+                  </div>
+                  <span class="adherence-label">Fri</span>
                 </div>
-                <span class="day-label">Fri</span>
-              </div>
-              <div class="day-bar">
-                <div class="bar" style="--fill: 0%;">
-                  <div class="bar-fill"></div>
+                <div class="adherence-day">
+                  <div class="adherence-bar-wrap">
+                    <span class="adherence-percent empty">—</span>
+                    <div class="adherence-bar">
+                      <div class="adherence-fill" style="--fill: 0%;"></div>
+                    </div>
+                  </div>
+                  <span class="adherence-label">Sat</span>
                 </div>
-                <span class="day-label">Sat</span>
-              </div>
-              <div class="day-bar">
-                <div class="bar" style="--fill: 0%;">
-                  <div class="bar-fill"></div>
+                <div class="adherence-day">
+                  <div class="adherence-bar-wrap">
+                    <span class="adherence-percent empty">—</span>
+                    <div class="adherence-bar">
+                      <div class="adherence-fill" style="--fill: 0%;"></div>
+                    </div>
+                  </div>
+                  <span class="adherence-label">Sun</span>
                 </div>
-                <span class="day-label">Sun</span>
               </div>
             </div>
-            <div style="display: flex; justify-content: center; gap: var(--space-xl); margin-top: var(--space-lg); font-size: 0.8rem; color: var(--text-muted);">
-              <span><span style="display: inline-block; width: 12px; height: 12px; background: var(--accent); border-radius: 2px; margin-right: 4px;"></span> On target</span>
-              <span><span style="display: inline-block; width: 12px; height: 12px; background: var(--success); border-radius: 2px; margin-right: 4px;"></span> Perfect</span>
-              <span><span style="display: inline-block; width: 12px; height: 12px; background: var(--warning); border-radius: 2px; margin-right: 4px;"></span> Over</span>
+            <div class="adherence-legend">
+              <span class="legend-item"><span class="legend-dot" style="background: var(--accent);"></span> On target</span>
+              <span class="legend-item"><span class="legend-dot" style="background: var(--success);"></span> Perfect</span>
+              <span class="legend-item"><span class="legend-dot" style="background: var(--warning);"></span> Over</span>
+              <span class="legend-item"><span class="legend-dot" style="background: #ef4444;"></span> Low</span>
             </div>
           </div>
 
@@ -349,6 +373,96 @@
   </footer>
 
   <script src="../../js/app.js"></script>
+
+  <!-- Add Meal Modal -->
+  <div class="modal-overlay" id="addMealModal" style="display: none;">
+    <div class="modal-content add-meal-modal">
+      <button class="modal-close" onclick="closeMealModal()">&times;</button>
+      <h2 style="font-family: var(--font-heading); text-transform: uppercase; margin-bottom: var(--space-lg);">Add Meal</h2>
+      
+      <!-- Tabs -->
+      <div class="meal-tabs">
+        <button class="meal-tab active" onclick="switchMealTab('foods')">Choose Food</button>
+        <button class="meal-tab" onclick="switchMealTab('custom')">Custom Meal</button>
+      </div>
+      
+      <!-- Foods List Tab -->
+      <div class="meal-tab-content" id="foodsTab">
+        <!-- Search -->
+        <div class="form-group" style="margin-bottom: var(--space-lg);">
+          <input type="text" class="form-input" id="mealSearchInput" placeholder="Search foods..." oninput="filterFoods()">
+        </div>
+        
+        <!-- Category Filter -->
+        <div class="food-categories" style="margin-bottom: var(--space-lg);">
+          <button class="category-btn active" onclick="filterByCategory('all')">All</button>
+          <button class="category-btn" onclick="filterByCategory('protein')">Protein</button>
+          <button class="category-btn" onclick="filterByCategory('carbs')">Carbs</button>
+          <button class="category-btn" onclick="filterByCategory('dairy')">Dairy</button>
+          <button class="category-btn" onclick="filterByCategory('fruits')">Fruits</button>
+          <button class="category-btn" onclick="filterByCategory('vegetables')">Vegetables</button>
+          <button class="category-btn" onclick="filterByCategory('snacks')">Snacks</button>
+          <button class="category-btn" onclick="filterByCategory('drinks')">Drinks</button>
+          <button class="category-btn" onclick="filterByCategory('supplements')">Supplements</button>
+        </div>
+        
+        <!-- Foods Grid -->
+        <div class="foods-list" id="foodsList">
+          <!-- Foods will be populated by JavaScript -->
+        </div>
+      </div>
+      
+      <!-- Custom Meal Tab -->
+      <div class="meal-tab-content" id="customTab" style="display: none;">
+        <form id="customMealForm" onsubmit="addCustomMeal(event)">
+          <div class="form-group">
+            <label class="form-label">Meal Name *</label>
+            <input type="text" class="form-input" id="customMealName" placeholder="e.g., Homemade Protein Bowl" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Serving Size</label>
+            <input type="text" class="form-input" id="customServing" placeholder="e.g., 1 bowl, 200g, 1 cup">
+          </div>
+          
+          <div class="grid-2" style="gap: var(--space-md);">
+            <div class="form-group">
+              <label class="form-label">Calories (kcal) *</label>
+              <input type="number" class="form-input" id="customCalories" placeholder="0" min="0" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Protein (g) *</label>
+              <input type="number" class="form-input" id="customProtein" placeholder="0" min="0" step="0.1" required>
+            </div>
+          </div>
+          
+          <div class="grid-2" style="gap: var(--space-md);">
+            <div class="form-group">
+              <label class="form-label">Carbs (g)</label>
+              <input type="number" class="form-input" id="customCarbs" placeholder="0" min="0" step="0.1">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Fats (g) *</label>
+              <input type="number" class="form-input" id="customFats" placeholder="0" min="0" step="0.1" required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Meal Type</label>
+            <select class="form-input" id="customMealType">
+              <option value="breakfast">🍳 Breakfast</option>
+              <option value="lunch">🥗 Lunch</option>
+              <option value="dinner">🍽️ Dinner</option>
+              <option value="snack">🍌 Snack</option>
+            </select>
+          </div>
+          
+          <button type="submit" class="btn btn-primary btn-block" style="margin-top: var(--space-lg);">Add Custom Meal</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <style>
     .macro-card {
       display: flex;
@@ -492,52 +606,120 @@
     .meal-macros .carbs { color: var(--info); }
     .meal-macros .fats { color: var(--warning); }
     
-    .week-adherence {
+    /* Adherence Chart V2 */
+    .week-adherence-v2 {
+      padding: var(--space-md) 0;
+    }
+    
+    .adherence-bar-container {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      height: 150px;
-      gap: var(--space-md);
+      gap: var(--space-lg);
+      height: 180px;
+      padding: 0 var(--space-md);
     }
-    .day-bar {
-      flex: 1;
+    
+    .adherence-day {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: var(--space-sm);
+      flex: 1;
+      max-width: 50px;
     }
-    .day-bar .bar {
-      width: 100%;
+    
+    .adherence-bar-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-xs);
+      height: 150px;
+      justify-content: flex-end;
+    }
+    
+    .adherence-percent {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--accent);
+      min-height: 18px;
+    }
+    
+    .adherence-percent.perfect { color: var(--success); }
+    .adherence-percent.over { color: var(--warning); }
+    .adherence-percent.low { color: #ef4444; }
+    .adherence-percent.empty { color: var(--text-muted); }
+    
+    .adherence-bar {
+      width: 12px;
       height: 120px;
-      background: var(--primary);
-      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
       position: relative;
       overflow: hidden;
     }
-    .day-bar .bar-fill {
+    
+    .adherence-fill {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
       height: var(--fill);
       max-height: 100%;
-      background: var(--accent);
-      border-radius: var(--radius-sm);
-      transition: height 0.3s ease;
+      background: linear-gradient(to top, var(--accent), rgba(0, 230, 10, 0.7));
+      border-radius: 6px;
+      transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .day-bar .bar-fill.over {
-      background: var(--warning);
+    
+    .adherence-fill.perfect {
+      background: linear-gradient(to top, var(--success), rgba(16, 185, 129, 0.7));
     }
-    .day-bar .bar-fill.perfect {
-      background: var(--success);
+    
+    .adherence-fill.over {
+      background: linear-gradient(to top, var(--warning), rgba(245, 158, 11, 0.7));
     }
-    .day-bar.today .day-label {
-      color: var(--accent);
-      font-weight: 600;
+    
+    .adherence-fill.low {
+      background: linear-gradient(to top, #ef4444, rgba(239, 68, 68, 0.7));
     }
-    .day-label {
+    
+    .adherence-label {
       font-size: 0.75rem;
       color: var(--text-muted);
+      font-weight: 500;
+    }
+    
+    .adherence-day.today .adherence-label {
+      color: var(--accent);
+      font-weight: 700;
+    }
+    
+    .adherence-day.today .adherence-bar {
+      box-shadow: 0 0 8px rgba(0, 230, 10, 0.3);
+    }
+    
+    .adherence-legend {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: var(--space-lg);
+      margin-top: var(--space-xl);
+      padding-top: var(--space-md);
+      border-top: 1px solid var(--border-color);
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
     }
     
     @media (max-width: 768px) {
@@ -553,6 +735,180 @@
       }
       .macro-value {
         font-size: 1.4rem;
+      }
+    }
+    
+    /* Add Meal Modal Styles */
+    .add-meal-modal {
+      max-width: 700px;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+    
+    .meal-tabs {
+      display: flex;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-lg);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: var(--space-md);
+    }
+    
+    .meal-tab {
+      padding: var(--space-sm) var(--space-lg);
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: var(--radius-md);
+      transition: all 0.2s ease;
+    }
+    
+    .meal-tab:hover {
+      color: var(--text-primary);
+      background: var(--primary);
+    }
+    
+    .meal-tab.active {
+      color: var(--accent);
+      background: rgba(0, 230, 10, 0.1);
+    }
+    
+    .food-categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+    }
+    
+    .category-btn {
+      padding: 6px 12px;
+      background: var(--primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-full);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .category-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    
+    .category-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg-dark);
+    }
+    
+    .foods-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: var(--space-md);
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: var(--space-sm);
+    }
+    
+    .food-item {
+      background: var(--primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .food-item:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    
+    .food-item-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-sm);
+    }
+    
+    .food-item-icon {
+      font-size: 1.2rem;
+    }
+    
+    .food-item-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      flex: 1;
+    }
+    
+    .food-item-serving {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: var(--space-sm);
+    }
+    
+    .food-item-macros {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      padding-top: var(--space-sm);
+      border-top: 1px solid var(--border-color);
+    }
+    
+    .food-item-macros span {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    
+    .food-item-macros .value {
+      font-weight: 700;
+    }
+    
+    .food-item-macros .label {
+      color: var(--text-muted);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+    }
+    
+    .food-item-macros .cal .value { color: #fff; }
+    .food-item-macros .pro .value { color: var(--accent); }
+    .food-item-macros .carb .value { color: var(--info); }
+    .food-item-macros .fat .value { color: var(--warning); }
+    
+    .foods-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .foods-list::-webkit-scrollbar-track {
+      background: var(--primary);
+      border-radius: 3px;
+    }
+    
+    .foods-list::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 3px;
+    }
+    
+    .foods-list::-webkit-scrollbar-thumb:hover {
+      background: var(--accent);
+    }
+    
+    @media (max-width: 600px) {
+      .foods-list {
+        grid-template-columns: 1fr;
+      }
+      
+      .food-categories {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: var(--space-sm);
+      }
+      
+      .category-btn {
+        white-space: nowrap;
       }
     }
   </style>

@@ -181,7 +181,7 @@
           <div class="stat-card" style="margin-bottom: var(--space-xl);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
               <h3 style="font-size: 1.1rem; font-weight: 600;">Body Measurements</h3>
-              <button class="btn btn-sm btn-primary">+ Log Measurements</button>
+              <button class="btn btn-sm btn-primary" onclick="showMeasurementsModal()">+ Log Measurements</button>
             </div>
             <div class="table-container">
               <table>
@@ -248,6 +248,108 @@
     </div>
   </div>
 
+  <!-- Log Measurements Modal -->
+  <div class="modal-overlay" id="measurementsModal" style="display: none;">
+    <div class="modal-content" style="max-width: 550px;">
+      <button class="modal-close" onclick="closeMeasurementsModal()">&times;</button>
+      <h2 style="font-family: var(--font-heading); text-transform: uppercase; margin-bottom: var(--space-lg);">Log Measurements</h2>
+      
+      <form id="measurementsForm" onsubmit="saveMeasurements(event)">
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: var(--space-lg);">Enter your current muscle measurements in inches. Leave blank to skip.</p>
+        
+        <div class="grid-2" style="gap: var(--space-md);">
+          <!-- Chest -->
+          <div class="form-group">
+            <label class="form-label">Chest</label>
+            <div style="display: flex; gap: var(--space-xs);">
+              <input type="number" class="form-input" id="measChest" placeholder="0" step="0.1">
+              <span class="meas-unit" style="padding: 10px; color: var(--text-muted);">in</span>
+            </div>
+          </div>
+
+          <!-- Shoulders -->
+          <div class="form-group">
+            <label class="form-label">Shoulders</label>
+            <div style="display: flex; gap: var(--space-xs);">
+              <input type="number" class="form-input" id="measShoulders" placeholder="0" step="0.1">
+              <span class="meas-unit" style="padding: 10px; color: var(--text-muted);">in</span>
+            </div>
+          </div>
+
+          <!-- Arms (Biceps) -->
+          <div class="form-group">
+            <label class="form-label">Arms (Biceps)</label>
+            <div style="display: flex; gap: var(--space-xs);">
+              <input type="number" class="form-input" id="measArms" placeholder="0" step="0.1">
+              <span class="meas-unit" style="padding: 10px; color: var(--text-muted);">in</span>
+            </div>
+          </div>
+
+          <!-- Forearms -->
+          <div class="form-group">
+            <label class="form-label">Forearms</label>
+            <div style="display: flex; gap: var(--space-xs);">
+              <input type="number" class="form-input" id="measForearms" placeholder="0" step="0.1">
+              <span class="meas-unit" style="padding: 10px; color: var(--text-muted);">in</span>
+            </div>
+          </div>
+
+          <!-- Waist -->
+          <div class="form-group">
+            <label class="form-label">Waist</label>
+            <div style="display: flex; gap: var(--space-xs);">
+              <input type="number" class="form-input" id="measWaist" placeholder="0" step="0.1">
+              <span class="meas-unit" style="padding: 10px; color: var(--text-muted);">in</span>
+            </div>
+          </div>
+
+          <!-- Hips -->
+          <div class="form-group">
+            <label class="form-label">Hips</label>
+            <div style="display: flex; gap: var(--space-xs);">
+              <input type="number" class="form-input" id="measHips" placeholder="0" step="0.1">
+              <span class="meas-unit" style="padding: 10px; color: var(--text-muted);">in</span>
+            </div>
+          </div>
+
+          <!-- Thighs -->
+          <div class="form-group">
+            <label class="form-label">Thighs</label>
+            <div style="display: flex; gap: var(--space-xs);">
+              <input type="number" class="form-input" id="measThighs" placeholder="0" step="0.1">
+              <span class="meas-unit" style="padding: 10px; color: var(--text-muted);">in</span>
+            </div>
+          </div>
+
+          <!-- Calves -->
+          <div class="form-group">
+            <label class="form-label">Calves</label>
+            <div style="display: flex; gap: var(--space-xs);">
+              <input type="number" class="form-input" id="measCalves" placeholder="0" step="0.1">
+              <span class="meas-unit" style="padding: 10px; color: var(--text-muted);">in</span>
+            </div>
+          </div>
+
+          <!-- Neck -->
+          <div class="form-group">
+            <label class="form-label">Neck</label>
+            <div style="display: flex; gap: var(--space-xs);">
+              <input type="number" class="form-input" id="measNeck" placeholder="0" step="0.1">
+              <span class="meas-unit" style="padding: 10px; color: var(--text-muted);">in</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: var(--space-md);">
+          <label class="form-label">Notes (optional)</label>
+          <textarea class="form-input" id="measNotes" rows="2" placeholder="Any additional notes..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top: var(--space-lg);">Save Measurements</button>
+      </form>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer style="padding: var(--space-xl) 0; border-top: 1px solid var(--border-color); text-align: center;">
     <p style="color: var(--text-muted); font-size: 0.85rem;">&copy; 2026 Kynotra. All rights reserved.</p>
@@ -260,15 +362,43 @@
     Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
     Chart.defaults.font.family = "'Inter', sans-serif";
 
-    // Weight Progress Chart
+    // Weight Progress Chart Data for different time ranges
+    const weightData = {
+      '3m': {
+        labels: ['Oct 1', 'Oct 8', 'Oct 15', 'Oct 22', 'Nov 1', 'Nov 8', 'Nov 15', 'Nov 22', 'Dec 1', 'Dec 8', 'Dec 15', 'Dec 22', 'Jan 1', 'Jan 3'],
+        data: [79.4, 79.8, 79.5, 80.1, 80.3, 79.9, 80.5, 80.8, 81.2, 80.9, 81.5, 81.8, 82.3, 82.6],
+        min: 78,
+        max: 85
+      },
+      '6m': {
+        labels: ['Jul', 'Jul 15', 'Aug', 'Aug 15', 'Sep', 'Sep 15', 'Oct', 'Oct 15', 'Nov', 'Nov 15', 'Dec', 'Dec 15', 'Jan'],
+        data: [77.5, 77.8, 78.2, 77.9, 78.5, 78.8, 79.4, 79.8, 80.3, 80.8, 81.2, 81.8, 82.6],
+        min: 76,
+        max: 85
+      },
+      '1y': {
+        labels: ['Jan \'25', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan \'26'],
+        data: [74.5, 75.0, 75.8, 76.2, 76.0, 76.8, 77.5, 78.2, 78.5, 79.4, 80.3, 81.5, 82.6],
+        min: 72,
+        max: 85
+      },
+      'all': {
+        labels: ['Jul \'24', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan \'25', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan \'26'],
+        data: [70.5, 71.2, 71.8, 72.5, 72.0, 73.0, 74.5, 75.0, 75.8, 76.2, 76.0, 76.8, 77.5, 78.2, 78.5, 79.4, 80.3, 81.5, 82.6],
+        min: 68,
+        max: 85
+      }
+    };
+
+    // Weight Progress Chart - realistic fluctuations in KG
     const weightCtx = document.getElementById('weightChart').getContext('2d');
-    new Chart(weightCtx, {
+    const weightChart = new Chart(weightCtx, {
       type: 'line',
       data: {
-        labels: ['Oct 1', 'Oct 15', 'Nov 1', 'Nov 15', 'Dec 1', 'Dec 15', 'Jan 1', 'Jan 3'],
+        labels: weightData['3m'].labels,
         datasets: [{
-          label: 'Weight (lbs)',
-          data: [175, 176, 177, 178, 179, 180, 181, 182],
+          label: 'Weight (kg)',
+          data: weightData['3m'].data,
           borderColor: '#00E60A',
           backgroundColor: 'rgba(0, 230, 10, 0.1)',
           fill: true,
@@ -283,12 +413,28 @@
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { display: false }
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const kg = context.raw;
+                const lbs = (kg * 2.20462).toFixed(1);
+                return `${kg} kg (${lbs} lbs)`;
+              }
+            }
+          }
         },
         scales: {
           y: {
             beginAtZero: false,
-            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+            min: weightData['3m'].min,
+            max: weightData['3m'].max,
+            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            ticks: {
+              callback: function(value) {
+                return value + ' kg';
+              }
+            }
           },
           x: {
             grid: { display: false }
@@ -297,7 +443,9 @@
       }
     });
 
-    // Strength Progress Chart
+    // Strength Progress Chart - starts from 0
+    // PRs: Bench 225, Squat 285, Deadlift 335, OHP 140 (all in lbs)
+    // Started: Bench 185, Squat 225, Deadlift 275, OHP 115
     const strengthCtx = document.getElementById('strengthChart').getContext('2d');
     new Chart(strengthCtx, {
       type: 'line',
@@ -345,12 +493,28 @@
           legend: {
             position: 'top',
             labels: { usePointStyle: true, padding: 20 }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const lbs = context.raw;
+                const kg = (lbs * 0.453592).toFixed(1);
+                return `${context.dataset.label}: ${lbs} lbs (${kg} kg)`;
+              }
+            }
           }
         },
         scales: {
           y: {
-            beginAtZero: false,
-            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+            beginAtZero: true,
+            min: 0,
+            max: 400,
+            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            ticks: {
+              callback: function(value) {
+                return value + ' lbs';
+              }
+            }
           },
           x: {
             grid: { display: false }
@@ -391,7 +555,8 @@
     createSparkline('deadliftChart', [275, 290, 305, 315, 325, 330, 335], '#F59E0B');
     createSparkline('ohpChart', [115, 120, 125, 130, 135, 135, 140], '#8B5CF6');
 
-    // Weekly Volume Chart
+    // Weekly Volume Chart - realistic values matching workouts
+    // Recent workouts: ~14k-25k lbs per session, 4-5 sessions/week = ~60-100k per week
     const volumeCtx = document.getElementById('volumeChart').getContext('2d');
     new Chart(volumeCtx, {
       type: 'bar',
@@ -399,7 +564,7 @@
         labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
         datasets: [{
           label: 'Total Volume (lbs)',
-          data: [45000, 52000, 48000, 55000, 58000, 62000],
+          data: [58640, 67480, 62340, 71520, 68950, 75280],
           backgroundColor: 'rgba(0, 230, 10, 0.6)',
           borderColor: '#00E60A',
           borderWidth: 1,
@@ -410,15 +575,25 @@
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { display: false }
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const lbs = context.raw;
+                const kg = Math.round(lbs * 0.453592);
+                return `${lbs.toLocaleString()} lbs (${kg.toLocaleString()} kg)`;
+              }
+            }
+          }
         },
         scales: {
           y: {
             beginAtZero: true,
+            max: 100000,
             grid: { color: 'rgba(255, 255, 255, 0.05)' },
             ticks: {
               callback: function(value) {
-                return value.toLocaleString() + ' lbs';
+                return (value / 1000) + 'k lbs';
               }
             }
           },
@@ -434,7 +609,16 @@
       btn.addEventListener('click', function() {
         document.querySelectorAll('.chart-range').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
-        // In a real app, this would reload chart data for the selected range
+        
+        const range = this.dataset.range;
+        const rangeData = weightData[range];
+        
+        // Update chart data
+        weightChart.data.labels = rangeData.labels;
+        weightChart.data.datasets[0].data = rangeData.data;
+        weightChart.options.scales.y.min = rangeData.min;
+        weightChart.options.scales.y.max = rangeData.max;
+        weightChart.update();
       });
     });
 

@@ -104,7 +104,7 @@
     });
 
     function loadOrders() {
-      const orders = JSON.parse(localStorage.getItem('Kynotra_orders') || '[]');
+      const orders = getOrdersToDisplay();
       const container = document.getElementById('ordersContainer');
       const emptyState = document.getElementById('emptyOrders');
 
@@ -130,7 +130,7 @@
         const statusColor = getStatusColor(order.status);
 
         html += `
-          <div class="stat-card" style="margin-bottom: var(--space-lg);">
+          <div class="stat-card" style="margin-bottom: var(--space-lg); ${order.status === 'Failed' ? 'border-left: 3px solid #EF4444;' : ''} ${order.status === 'Delivered' ? 'border-left: 3px solid #10B981;' : ''}">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-md); margin-bottom: var(--space-md);">
               <div>
                 <div style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--accent); margin-bottom: 4px;">${order.id}</div>
@@ -193,6 +193,7 @@
                   <span>Out for Delivery</span>
                   <span>Delivered</span>
                 </div>
+                ${order.trackingNumber ? `<div style="margin-top: var(--space-sm); font-size: 0.8rem; color: var(--text-muted);">Tracking: <span style="color: var(--info);">${order.trackingNumber}</span></div>` : ''}
               </div>
             ` : ''}
 
@@ -213,13 +214,39 @@
             ${order.status === 'Delivered' ? `
               <div style="margin-top: var(--space-md); padding-top: var(--space-md); border-top: 1px solid var(--border-color);">
                 <div class="progress-bar" style="height: 6px;">
-                  <div class="progress-bar-fill" style="width: 100%;"></div>
+                  <div class="progress-bar-fill" style="width: 100%; background: var(--success);"></div>
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-top: var(--space-sm); font-size: 0.75rem; color: var(--text-muted);">
-                  <span style="color: var(--accent);">Processing</span>
-                  <span style="color: var(--accent);">Shipped</span>
-                  <span style="color: var(--accent);">Out for Delivery</span>
-                  <span style="color: var(--accent);">Delivered</span>
+                  <span style="color: var(--success);">Processing</span>
+                  <span style="color: var(--success);">Shipped</span>
+                  <span style="color: var(--success);">Out for Delivery</span>
+                  <span style="color: var(--success);">Delivered ✓</span>
+                </div>
+                ${order.deliveredDate ? `<div style="margin-top: var(--space-sm); font-size: 0.8rem; color: var(--success);">✓ Delivered on ${new Date(order.deliveredDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>` : ''}
+              </div>
+            ` : ''}
+
+            ${order.status === 'Failed' ? `
+              <div style="margin-top: var(--space-md); padding-top: var(--space-md); border-top: 1px solid var(--border-color);">
+                <div style="display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-md); background: rgba(239, 68, 68, 0.1); border-radius: var(--radius-md); border: 1px solid rgba(239, 68, 68, 0.3);">
+                  <span style="font-size: 1.2rem;">❌</span>
+                  <div>
+                    <div style="font-weight: 600; color: #EF4444; font-size: 0.9rem;">Order Failed</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">${order.failureReason || 'An error occurred processing your order'}</div>
+                  </div>
+                </div>
+                <button class="btn btn-sm btn-outline" style="margin-top: var(--space-md);" onclick="retryOrder('${order.id}')">🔄 Retry Order</button>
+              </div>
+            ` : ''}
+
+            ${order.status === 'Refunded' ? `
+              <div style="margin-top: var(--space-md); padding-top: var(--space-md); border-top: 1px solid var(--border-color);">
+                <div style="display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-md); background: rgba(107, 114, 128, 0.1); border-radius: var(--radius-md); border: 1px solid rgba(107, 114, 128, 0.3);">
+                  <span style="font-size: 1.2rem;">💰</span>
+                  <div>
+                    <div style="font-weight: 600; color: #6B7280; font-size: 0.9rem;">Order Refunded</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">${order.refundReason || 'Refund processed'} - $${order.total.toFixed(2)} returned to payment method</div>
+                  </div>
                 </div>
               </div>
             ` : ''}
@@ -230,15 +257,147 @@
       container.innerHTML = html;
     }
 
+    function retryOrder(orderId) {
+      showToast('Redirecting to checkout...', 'info');
+      setTimeout(() => {
+        window.location.href = '../../shop.html';
+      }, 1000);
+    }
+
     function getStatusColor(status) {
       switch (status) {
         case 'Processing': return '#F59E0B';
         case 'Shipped': return '#3B82F6';
         case 'Out for Delivery': return '#8B5CF6';
-        case 'Delivered': return '#00E60A';
+        case 'Delivered': return '#10B981';
+        case 'Failed': return '#EF4444';
         case 'Cancelled': return '#EF4444';
+        case 'Refunded': return '#6B7280';
         default: return '#6B7280';
       }
+    }
+
+    // Sample orders for demo purposes
+    const sampleOrders = [
+      {
+        id: 'KYN-2026-0502',
+        date: '2026-05-02T10:30:00',
+        status: 'Processing',
+        items: [
+          { name: 'Whey Protein Isolate', qty: 1 },
+          { name: 'Creatine Monohydrate', qty: 1 }
+        ],
+        subtotal: 79.98,
+        shipping: 0,
+        total: 79.98,
+        shippingInfo: { name: 'John Doe', city: 'Los Angeles', country: 'USA' }
+      },
+      {
+        id: 'KYN-2026-0428',
+        date: '2026-04-28T14:15:00',
+        status: 'Shipped',
+        items: [
+          { name: 'Pre-Workout Energy', qty: 2 },
+          { name: 'BCAA Recovery', qty: 1 }
+        ],
+        subtotal: 94.97,
+        shipping: 5.99,
+        total: 100.96,
+        shippingInfo: { name: 'John Doe', city: 'Los Angeles', country: 'USA' },
+        trackingNumber: '1Z999AA10123456784'
+      },
+      {
+        id: 'KYN-2026-0425',
+        date: '2026-04-25T09:45:00',
+        status: 'Out for Delivery',
+        items: [
+          { name: 'Resistance Bands Set', qty: 1 },
+          { name: 'Foam Roller', qty: 1 }
+        ],
+        subtotal: 47.98,
+        shipping: 0,
+        total: 47.98,
+        shippingInfo: { name: 'John Doe', city: 'Los Angeles', country: 'USA' }
+      },
+      {
+        id: 'KYN-2026-0420',
+        date: '2026-04-20T11:20:00',
+        status: 'Delivered',
+        items: [
+          { name: 'Mass Gainer 5lb', qty: 1 },
+          { name: 'Shaker Bottle', qty: 2 }
+        ],
+        subtotal: 64.97,
+        shipping: 0,
+        total: 64.97,
+        shippingInfo: { name: 'John Doe', city: 'Los Angeles', country: 'USA' },
+        deliveredDate: '2026-04-23T14:00:00'
+      },
+      {
+        id: 'KYN-2026-0415',
+        date: '2026-04-15T16:00:00',
+        status: 'Failed',
+        items: [
+          { name: 'Premium Gym Gloves', qty: 1 },
+          { name: 'Wrist Wraps', qty: 1 }
+        ],
+        subtotal: 45.98,
+        shipping: 5.99,
+        total: 51.97,
+        shippingInfo: { name: 'John Doe', city: 'Los Angeles', country: 'USA' },
+        failureReason: 'Payment declined - Card expired'
+      },
+      {
+        id: 'KYN-2026-0410',
+        date: '2026-04-10T08:30:00',
+        status: 'Delivered',
+        items: [
+          { name: 'Fish Oil Omega-3', qty: 2 },
+          { name: 'Vitamin D3', qty: 1 },
+          { name: 'Zinc Supplement', qty: 1 }
+        ],
+        subtotal: 52.96,
+        shipping: 0,
+        total: 52.96,
+        shippingInfo: { name: 'John Doe', city: 'Los Angeles', country: 'USA' },
+        deliveredDate: '2026-04-14T11:15:00'
+      },
+      {
+        id: 'KYN-2026-0401',
+        date: '2026-04-01T13:45:00',
+        status: 'Failed',
+        items: [
+          { name: 'Gym Bag Pro', qty: 1 }
+        ],
+        subtotal: 79.99,
+        shipping: 0,
+        total: 79.99,
+        shippingInfo: { name: 'John Doe', city: 'Los Angeles', country: 'USA' },
+        failureReason: 'Delivery address unverified'
+      },
+      {
+        id: 'KYN-2026-0325',
+        date: '2026-03-25T10:00:00',
+        status: 'Delivered',
+        items: [
+          { name: 'Lifting Belt', qty: 1 },
+          { name: 'Knee Sleeves', qty: 1 }
+        ],
+        subtotal: 89.98,
+        shipping: 0,
+        total: 89.98,
+        shippingInfo: { name: 'John Doe', city: 'Los Angeles', country: 'USA' },
+        deliveredDate: '2026-03-29T15:30:00'
+      }
+    ];
+
+    // Combine real orders with sample orders for demo
+    function getOrdersToDisplay() {
+      const realOrders = JSON.parse(localStorage.getItem('Kynotra_orders') || '[]');
+      // Merge real orders at the top, then sample orders
+      const allOrders = [...realOrders, ...sampleOrders];
+      // Sort by date descending (newest first)
+      return allOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
     }
   </script>
 </body>

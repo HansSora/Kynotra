@@ -110,8 +110,8 @@
             
             <div style="display: flex; gap: var(--space-md); flex-wrap: wrap;">
               <a href="workouts.html" class="btn btn-primary">Continue Program →</a>
-              <button class="btn btn-outline">View Full Program</button>
-              <button class="btn btn-outline" style="color: var(--warning); border-color: var(--warning);">Pause Program</button>
+              <button class="btn btn-outline" onclick="showFullProgramModal()">View Full Program</button>
+              <button class="btn btn-outline" id="pauseProgramBtn" onclick="showPauseProgramModal()" style="color: var(--warning); border-color: var(--warning);">Pause Program</button>
             </div>
           </div>
 
@@ -263,12 +263,469 @@
     </div>
   </div>
 
+  <!-- View Full Program Modal -->
+  <div class="modal-overlay" id="fullProgramModal" style="display: none;">
+    <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+      <button class="modal-close" onclick="closeFullProgramModal()">&times;</button>
+      <h2 style="font-family: var(--font-heading); text-transform: uppercase; margin-bottom: var(--space-xs);">Muscle Builder Pro</h2>
+      <p style="color: var(--text-muted); margin-bottom: var(--space-lg);">12 Week Push/Pull/Legs Hypertrophy Program • Intermediate</p>
+      
+      <div style="display: flex; gap: var(--space-md); margin-bottom: var(--space-xl); flex-wrap: wrap;">
+        <div style="padding: var(--space-md) var(--space-lg); background: var(--primary); border-radius: var(--radius-md);">
+          <span style="color: var(--text-muted); font-size: 0.75rem;">Duration</span>
+          <div style="font-weight: 600;">12 Weeks</div>
+        </div>
+        <div style="padding: var(--space-md) var(--space-lg); background: var(--primary); border-radius: var(--radius-md);">
+          <span style="color: var(--text-muted); font-size: 0.75rem;">Frequency</span>
+          <div style="font-weight: 600;">5 Days/Week</div>
+        </div>
+        <div style="padding: var(--space-md) var(--space-lg); background: var(--primary); border-radius: var(--radius-md);">
+          <span style="color: var(--text-muted); font-size: 0.75rem;">Equipment</span>
+          <div style="font-weight: 600;">Full Gym</div>
+        </div>
+        <div style="padding: var(--space-md) var(--space-lg); background: var(--primary); border-radius: var(--radius-md);">
+          <span style="color: var(--text-muted); font-size: 0.75rem;">Goal</span>
+          <div style="font-weight: 600;">Muscle Building</div>
+        </div>
+      </div>
+
+      <!-- Week Selector -->
+      <div style="margin-bottom: var(--space-lg);">
+        <label class="form-label">Select Week</label>
+        <select class="form-input" id="programWeekSelector" onchange="updateProgramWeekView()" style="max-width: 200px;">
+          <option value="1">Week 1</option>
+          <option value="2">Week 2</option>
+          <option value="3">Week 3</option>
+          <option value="4">Week 4</option>
+          <option value="5">Week 5</option>
+          <option value="6" selected>Week 6 (Current)</option>
+          <option value="7">Week 7</option>
+          <option value="8">Week 8</option>
+          <option value="9">Week 9</option>
+          <option value="10">Week 10</option>
+          <option value="11">Week 11</option>
+          <option value="12">Week 12</option>
+        </select>
+      </div>
+
+      <!-- Weekly Schedule -->
+      <div id="programWeekSchedule">
+        <!-- Day 1: Push -->
+        <div class="program-day-card" style="background: var(--primary); border-radius: var(--radius-md); padding: var(--space-lg); margin-bottom: var(--space-md);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
+            <h4 style="font-family: var(--font-heading); text-transform: uppercase; color: var(--accent);">Day 1 — Push (Chest/Shoulders/Triceps)</h4>
+            <span class="tag tag-success">Completed</span>
+          </div>
+          <div class="table-container" style="margin: 0;">
+            <table style="font-size: 0.85rem;">
+              <thead>
+                <tr>
+                  <th>Exercise</th>
+                  <th>Sets</th>
+                  <th>Reps</th>
+                  <th>Rest</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Barbell Bench Press</td><td>4</td><td>6-8</td><td>3 min</td></tr>
+                <tr><td>Incline Dumbbell Press</td><td>3</td><td>8-10</td><td>2 min</td></tr>
+                <tr><td>Overhead Press</td><td>4</td><td>6-8</td><td>2 min</td></tr>
+                <tr><td>Lateral Raises</td><td>3</td><td>12-15</td><td>60s</td></tr>
+                <tr><td>Cable Flyes</td><td>3</td><td>10-12</td><td>60s</td></tr>
+                <tr><td>Tricep Pushdowns</td><td>3</td><td>10-12</td><td>60s</td></tr>
+                <tr><td>Overhead Tricep Extension</td><td>3</td><td>10-12</td><td>60s</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Day 2: Pull -->
+        <div class="program-day-card" style="background: var(--primary); border-radius: var(--radius-md); padding: var(--space-lg); margin-bottom: var(--space-md);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
+            <h4 style="font-family: var(--font-heading); text-transform: uppercase; color: var(--accent);">Day 2 — Pull (Back/Biceps)</h4>
+            <span class="tag tag-success">Completed</span>
+          </div>
+          <div class="table-container" style="margin: 0;">
+            <table style="font-size: 0.85rem;">
+              <thead>
+                <tr>
+                  <th>Exercise</th>
+                  <th>Sets</th>
+                  <th>Reps</th>
+                  <th>Rest</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Deadlift</td><td>4</td><td>5-6</td><td>3 min</td></tr>
+                <tr><td>Pull-ups / Lat Pulldown</td><td>4</td><td>6-10</td><td>2 min</td></tr>
+                <tr><td>Barbell Rows</td><td>4</td><td>6-8</td><td>2 min</td></tr>
+                <tr><td>Cable Rows</td><td>3</td><td>10-12</td><td>90s</td></tr>
+                <tr><td>Face Pulls</td><td>3</td><td>15-20</td><td>60s</td></tr>
+                <tr><td>Barbell Curls</td><td>3</td><td>8-10</td><td>60s</td></tr>
+                <tr><td>Hammer Curls</td><td>3</td><td>10-12</td><td>60s</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Day 3: Legs -->
+        <div class="program-day-card" style="background: var(--primary); border-radius: var(--radius-md); padding: var(--space-lg); margin-bottom: var(--space-md);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
+            <h4 style="font-family: var(--font-heading); text-transform: uppercase; color: var(--accent);">Day 3 — Legs</h4>
+            <span class="tag tag-success">Completed</span>
+          </div>
+          <div class="table-container" style="margin: 0;">
+            <table style="font-size: 0.85rem;">
+              <thead>
+                <tr>
+                  <th>Exercise</th>
+                  <th>Sets</th>
+                  <th>Reps</th>
+                  <th>Rest</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Barbell Squats</td><td>4</td><td>6-8</td><td>3 min</td></tr>
+                <tr><td>Romanian Deadlifts</td><td>4</td><td>8-10</td><td>2 min</td></tr>
+                <tr><td>Leg Press</td><td>3</td><td>10-12</td><td>2 min</td></tr>
+                <tr><td>Leg Curls</td><td>3</td><td>10-12</td><td>90s</td></tr>
+                <tr><td>Leg Extensions</td><td>3</td><td>12-15</td><td>60s</td></tr>
+                <tr><td>Calf Raises</td><td>4</td><td>12-15</td><td>60s</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Day 4: Push -->
+        <div class="program-day-card" style="background: var(--primary); border-radius: var(--radius-md); padding: var(--space-lg); margin-bottom: var(--space-md);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
+            <h4 style="font-family: var(--font-heading); text-transform: uppercase; color: var(--accent);">Day 4 — Push (Volume)</h4>
+            <span class="tag tag-secondary">Upcoming</span>
+          </div>
+          <div class="table-container" style="margin: 0;">
+            <table style="font-size: 0.85rem;">
+              <thead>
+                <tr>
+                  <th>Exercise</th>
+                  <th>Sets</th>
+                  <th>Reps</th>
+                  <th>Rest</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Dumbbell Bench Press</td><td>4</td><td>8-10</td><td>2 min</td></tr>
+                <tr><td>Incline Machine Press</td><td>3</td><td>10-12</td><td>90s</td></tr>
+                <tr><td>Arnold Press</td><td>3</td><td>10-12</td><td>90s</td></tr>
+                <tr><td>Rear Delt Flyes</td><td>3</td><td>12-15</td><td>60s</td></tr>
+                <tr><td>Pec Deck</td><td>3</td><td>12-15</td><td>60s</td></tr>
+                <tr><td>Skull Crushers</td><td>3</td><td>10-12</td><td>60s</td></tr>
+                <tr><td>Dips</td><td>3</td><td>AMRAP</td><td>90s</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Day 5: Pull -->
+        <div class="program-day-card" style="background: var(--primary); border-radius: var(--radius-md); padding: var(--space-lg); margin-bottom: var(--space-md);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
+            <h4 style="font-family: var(--font-heading); text-transform: uppercase; color: var(--accent);">Day 5 — Pull (Volume)</h4>
+            <span class="tag tag-secondary">Upcoming</span>
+          </div>
+          <div class="table-container" style="margin: 0;">
+            <table style="font-size: 0.85rem;">
+              <thead>
+                <tr>
+                  <th>Exercise</th>
+                  <th>Sets</th>
+                  <th>Reps</th>
+                  <th>Rest</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Weighted Pull-ups</td><td>4</td><td>6-8</td><td>2 min</td></tr>
+                <tr><td>T-Bar Rows</td><td>4</td><td>8-10</td><td>2 min</td></tr>
+                <tr><td>Single Arm Dumbbell Row</td><td>3</td><td>10-12</td><td>90s</td></tr>
+                <tr><td>Straight Arm Pulldowns</td><td>3</td><td>12-15</td><td>60s</td></tr>
+                <tr><td>Reverse Pec Deck</td><td>3</td><td>12-15</td><td>60s</td></tr>
+                <tr><td>Preacher Curls</td><td>3</td><td>10-12</td><td>60s</td></tr>
+                <tr><td>Cable Curls</td><td>3</td><td>12-15</td><td>60s</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Rest Days -->
+        <div class="program-day-card" style="background: var(--primary-light); border-radius: var(--radius-md); padding: var(--space-lg); margin-bottom: var(--space-md); border: 1px dashed var(--border-color);">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h4 style="font-family: var(--font-heading); text-transform: uppercase; color: var(--text-muted);">Days 6 & 7 — Rest</h4>
+            <span style="color: var(--text-muted); font-size: 0.85rem;">Recovery & Active Rest</span>
+          </div>
+          <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: var(--space-sm);">Focus on sleep, nutrition, and light mobility work. Optional: 20-30 min light cardio or stretching.</p>
+        </div>
+      </div>
+
+      <!-- Program Notes -->
+      <div style="background: var(--primary); border-radius: var(--radius-md); padding: var(--space-lg); margin-top: var(--space-lg);">
+        <h4 style="font-size: 0.9rem; font-weight: 600; margin-bottom: var(--space-sm);">Program Notes</h4>
+        <ul style="color: var(--text-secondary); font-size: 0.85rem; padding-left: var(--space-lg); margin: 0;">
+          <li>Progressive overload: Aim to increase weight or reps each week</li>
+          <li>Warm up properly before compound movements</li>
+          <li>Track all lifts to monitor progress</li>
+          <li>Deload in weeks 4 and 8 (reduce volume by 40%)</li>
+        </ul>
+      </div>
+
+      <div style="margin-top: var(--space-xl); display: flex; gap: var(--space-md);">
+        <button class="btn btn-primary" onclick="closeFullProgramModal(); window.location.href='workouts.html';">Continue Training →</button>
+        <button class="btn btn-outline" onclick="closeFullProgramModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pause Program Modal -->
+  <div class="modal-overlay" id="pauseProgramModal" style="display: none;">
+    <div class="modal-content" style="max-width: 500px;">
+      <button class="modal-close" onclick="closePauseProgramModal()">&times;</button>
+      <div id="pauseModalContent">
+        <div style="text-align: center;">
+          <div style="font-size: 3rem; margin-bottom: var(--space-md);">⏸️</div>
+          <h2 style="font-family: var(--font-heading); text-transform: uppercase; margin-bottom: var(--space-sm);">Pause Program?</h2>
+          <p style="color: var(--text-secondary); margin-bottom: var(--space-lg);">Your progress will be saved and you can resume anytime.</p>
+        </div>
+        
+        <div style="background: var(--primary); border-radius: var(--radius-md); padding: var(--space-lg); margin-bottom: var(--space-lg);">
+          <h4 style="font-size: 0.9rem; margin-bottom: var(--space-md);">Muscle Builder Pro</h4>
+          <div style="display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.85rem;">
+            <span>Current Progress</span>
+            <span style="color: var(--accent); font-weight: 600;">Week 6 of 12 (31%)</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Reason for pausing (optional)</label>
+          <select class="form-input" id="pauseReason">
+            <option value="">Select a reason...</option>
+            <option value="injury">Injury / Health issue</option>
+            <option value="travel">Travel / Vacation</option>
+            <option value="busy">Too busy with work/life</option>
+            <option value="motivation">Need a mental break</option>
+            <option value="switching">Switching to another program</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div style="display: flex; gap: var(--space-md); margin-top: var(--space-xl);">
+          <button class="btn btn-primary" onclick="confirmPauseProgram()" style="background: var(--warning); flex: 1;">Pause Program</button>
+          <button class="btn btn-outline" onclick="closePauseProgramModal()" style="flex: 1;">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Paused State Content -->
+      <div id="resumeModalContent" style="display: none;">
+        <div style="text-align: center;">
+          <div style="font-size: 3rem; margin-bottom: var(--space-md);">▶️</div>
+          <h2 style="font-family: var(--font-heading); text-transform: uppercase; margin-bottom: var(--space-sm);">Resume Program?</h2>
+          <p style="color: var(--text-secondary); margin-bottom: var(--space-lg);">Ready to get back on track?</p>
+        </div>
+        
+        <div style="background: var(--primary); border-radius: var(--radius-md); padding: var(--space-lg); margin-bottom: var(--space-lg);">
+          <h4 style="font-size: 0.9rem; margin-bottom: var(--space-md);">Muscle Builder Pro</h4>
+          <div style="display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.85rem; margin-bottom: var(--space-xs);">
+            <span>Saved Progress</span>
+            <span style="color: var(--accent); font-weight: 600;">Week 6 of 12 (31%)</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.85rem;">
+            <span>Paused Duration</span>
+            <span id="pausedDuration">—</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: var(--space-md); margin-top: var(--space-xl);">
+          <button class="btn btn-primary" onclick="confirmResumeProgram()" style="flex: 1;">Resume Program</button>
+          <button class="btn btn-outline" onclick="closePauseProgramModal()" style="flex: 1;">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer style="padding: var(--space-xl) 0; border-top: 1px solid var(--border-color); text-align: center;">
     <p style="color: var(--text-muted); font-size: 0.85rem;">&copy; 2026 Kynotra. All rights reserved.</p>
   </footer>
 
   <script src="../../js/app.js"></script>
+  <script>
+    // Program pause state
+    let isProgramPaused = false;
+    let pausedDate = null;
+
+    // Check localStorage for pause state
+    function checkPauseState() {
+      const user = JSON.parse(localStorage.getItem('Kynotra_user') || '{}');
+      if (user.activeProgram && user.activeProgram.paused) {
+        isProgramPaused = true;
+        pausedDate = new Date(user.activeProgram.pausedDate);
+        updatePauseButtonState();
+      }
+    }
+
+    // Update pause button appearance
+    function updatePauseButtonState() {
+      const btn = document.getElementById('pauseProgramBtn');
+      if (isProgramPaused) {
+        btn.textContent = 'Resume Program';
+        btn.style.color = 'var(--success)';
+        btn.style.borderColor = 'var(--success)';
+      } else {
+        btn.textContent = 'Pause Program';
+        btn.style.color = 'var(--warning)';
+        btn.style.borderColor = 'var(--warning)';
+      }
+    }
+
+    // Show Full Program Modal
+    function showFullProgramModal() {
+      const modal = document.getElementById('fullProgramModal');
+      modal.style.display = 'flex';
+      modal.style.opacity = '1';
+      modal.style.visibility = 'visible';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeFullProgramModal() {
+      const modal = document.getElementById('fullProgramModal');
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    // Update week view when selector changes
+    function updateProgramWeekView() {
+      const week = document.getElementById('programWeekSelector').value;
+      // In a real app, this would fetch week-specific data
+      showToast(`Viewing Week ${week}`, 'info');
+    }
+
+    // Show Pause/Resume Program Modal
+    function showPauseProgramModal() {
+      const modal = document.getElementById('pauseProgramModal');
+      const pauseContent = document.getElementById('pauseModalContent');
+      const resumeContent = document.getElementById('resumeModalContent');
+
+      if (isProgramPaused) {
+        pauseContent.style.display = 'none';
+        resumeContent.style.display = 'block';
+        // Calculate paused duration
+        if (pausedDate) {
+          const now = new Date();
+          const diffDays = Math.floor((now - pausedDate) / (1000 * 60 * 60 * 24));
+          document.getElementById('pausedDuration').textContent = diffDays === 0 ? 'Today' : `${diffDays} day${diffDays !== 1 ? 's' : ''}`;
+        }
+      } else {
+        pauseContent.style.display = 'block';
+        resumeContent.style.display = 'none';
+      }
+
+      modal.style.display = 'flex';
+      modal.style.opacity = '1';
+      modal.style.visibility = 'visible';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePauseProgramModal() {
+      const modal = document.getElementById('pauseProgramModal');
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    // Confirm pause program
+    function confirmPauseProgram() {
+      const reason = document.getElementById('pauseReason').value;
+      
+      // Save pause state
+      const user = JSON.parse(localStorage.getItem('Kynotra_user') || '{}');
+      user.activeProgram = user.activeProgram || { name: 'Muscle Builder Pro', week: 6, totalWeeks: 12 };
+      user.activeProgram.paused = true;
+      user.activeProgram.pausedDate = new Date().toISOString();
+      user.activeProgram.pauseReason = reason;
+      localStorage.setItem('Kynotra_user', JSON.stringify(user));
+
+      isProgramPaused = true;
+      pausedDate = new Date();
+      updatePauseButtonState();
+      closePauseProgramModal();
+
+      // Update UI to show paused state
+      updateActiveProgramUI(true);
+      showToast('Program paused. Your progress is saved! ⏸️', 'success');
+    }
+
+    // Confirm resume program
+    function confirmResumeProgram() {
+      // Clear pause state
+      const user = JSON.parse(localStorage.getItem('Kynotra_user') || '{}');
+      if (user.activeProgram) {
+        user.activeProgram.paused = false;
+        user.activeProgram.pausedDate = null;
+        user.activeProgram.pauseReason = null;
+      }
+      localStorage.setItem('Kynotra_user', JSON.stringify(user));
+
+      isProgramPaused = false;
+      pausedDate = null;
+      updatePauseButtonState();
+      closePauseProgramModal();
+
+      // Update UI to show active state
+      updateActiveProgramUI(false);
+      showToast('Welcome back! Program resumed. 💪', 'success');
+    }
+
+    // Update active program card UI
+    function updateActiveProgramUI(paused) {
+      const statusTag = document.querySelector('.stat-card .tag-success');
+      const continueBtn = document.querySelector('.stat-card a.btn-primary');
+
+      if (paused) {
+        if (statusTag) {
+          statusTag.textContent = 'Paused';
+          statusTag.classList.remove('tag-success');
+          statusTag.classList.add('tag-warning');
+        }
+        if (continueBtn) {
+          continueBtn.textContent = 'Program Paused';
+          continueBtn.style.opacity = '0.5';
+          continueBtn.style.pointerEvents = 'none';
+        }
+      } else {
+        if (statusTag) {
+          statusTag.textContent = 'Currently Active';
+          statusTag.classList.remove('tag-warning');
+          statusTag.classList.add('tag-success');
+        }
+        if (continueBtn) {
+          continueBtn.textContent = 'Continue Program →';
+          continueBtn.style.opacity = '1';
+          continueBtn.style.pointerEvents = 'auto';
+        }
+      }
+    }
+
+    // Close modals on overlay click
+    document.getElementById('fullProgramModal').addEventListener('click', function(e) {
+      if (e.target === this) closeFullProgramModal();
+    });
+    document.getElementById('pauseProgramModal').addEventListener('click', function(e) {
+      if (e.target === this) closePauseProgramModal();
+    });
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      checkPauseState();
+      if (isProgramPaused) {
+        updateActiveProgramUI(true);
+      }
+    });
+  </script>
   <style>
     .programs-grid {
       display: grid;

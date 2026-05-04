@@ -86,32 +86,28 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-  animation: pageFadeIn 0.5s ease-out;
+  animation: pageFadeIn 0.3s ease-out;
 }
 
 @keyframes pageFadeIn {
   from {
     opacity: 0;
-    transform: translateY(12px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
 body.page-exit {
-  animation: pageFadeOut 0.3s ease-in forwards;
+  animation: pageFadeOut 0.2s ease-in forwards;
 }
 
 @keyframes pageFadeOut {
   from {
     opacity: 1;
-    transform: translateY(0);
   }
   to {
     opacity: 0;
-    transform: translateY(-8px);
   }
 }
 
@@ -301,7 +297,7 @@ input, select, textarea {
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(42, 42, 69, 0.5);
   z-index: 1000;
-  transition: all var(--transition-base);
+  transition: background var(--transition-base), box-shadow var(--transition-base);
 }
 
 .navbar.scrolled {
@@ -2351,14 +2347,11 @@ tr:hover td {
   align-items: center;
   gap: var(--space-md);
   padding: var(--space-lg);
-  background: var(--gradient-card);
+  background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   margin-bottom: var(--space-xl);
   flex-wrap: wrap;
-  position: sticky;
-  top: calc(var(--nav-height) + var(--space-md));
-  z-index: 100;
 }
 
 .filter-btn {
@@ -2431,6 +2424,23 @@ tr:hover td {
 /* ==========================================
    MODAL OVERLAY
    ========================================== */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+}
+
+.modal > .modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: -1;
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -2452,6 +2462,7 @@ tr:hover td {
 }
 
 .modal-content {
+  position: relative;
   background: var(--bg-dark);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-xl);
@@ -2468,10 +2479,8 @@ tr:hover td {
 }
 
 .modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   margin-bottom: var(--space-xl);
+  padding-right: 50px; /* Space for close button */
 }
 
 .modal-header h2 {
@@ -2482,6 +2491,9 @@ tr:hover td {
 }
 
 .modal-close {
+  position: absolute;
+  top: var(--space-lg);
+  right: var(--space-lg);
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -2494,12 +2506,17 @@ tr:hover td {
   align-items: center;
   justify-content: center;
   transition: all var(--transition-fast);
+  z-index: 1;
 }
 
 .modal-close:hover {
   background: var(--accent);
   color: #0f0f1a;
   border-color: var(--accent);
+}
+
+.modal-body {
+  padding-top: var(--space-md);
 }
 
 /* ==========================================
@@ -2683,9 +2700,6 @@ tr:hover td {
   .filter-bar {
     flex-direction: column;
     align-items: stretch;
-    position: sticky;
-    top: calc(var(--nav-height) + var(--space-sm));
-    z-index: 100;
   }
 
   .search-input {

@@ -59,30 +59,17 @@
     </div>
   </nav>
 
-  <!-- Page Header -->
-  <div class="page-header" style="padding: var(--space-xl) 0 var(--space-lg); margin-top: 80px;">
-    <div class="container">
-      <h1 style="font-size: 2rem; margin-bottom: var(--space-xs);">Exercise <span class="accent-text">Library</span></h1>
-      <p style="margin-bottom: var(--space-sm);">Complete database of exercises with demonstrations, instructions, and tips</p>
-      <div class="breadcrumb">
-        <a href="index.html">Home</a>
-        <span class="separator">›</span>
-        <span>Exercise Library</span>
-      </div>
-    </div>
-  </div>
-
   <!-- Filter & Search -->
-  <section style="padding: var(--space-lg) 0;">
+  <section style="padding: var(--space-lg) 0; margin-top: var(--nav-height);">
     <div class="container">
       <div class="filter-bar">
-        <button class="filter-btn active" onclick="filterExercises('all', this)">All</button>
-        <button class="filter-btn" onclick="filterExercises('chest', this)">Chest</button>
-        <button class="filter-btn" onclick="filterExercises('back', this)">Back</button>
-        <button class="filter-btn" onclick="filterExercises('shoulders', this)">Shoulders</button>
-        <button class="filter-btn" onclick="filterExercises('legs', this)">Legs</button>
-        <button class="filter-btn" onclick="filterExercises('arms', this)">Arms</button>
-        <button class="filter-btn" onclick="filterExercises('core', this)">Core</button>
+        <button type="button" class="filter-btn active" onclick="filterExercises('all', this)">All</button>
+        <button type="button" class="filter-btn" onclick="filterExercises('chest', this)">Chest</button>
+        <button type="button" class="filter-btn" onclick="filterExercises('back', this)">Back</button>
+        <button type="button" class="filter-btn" onclick="filterExercises('shoulders', this)">Shoulders</button>
+        <button type="button" class="filter-btn" onclick="filterExercises('legs', this)">Legs</button>
+        <button type="button" class="filter-btn" onclick="filterExercises('arms', this)">Arms</button>
+        <button type="button" class="filter-btn" onclick="filterExercises('core', this)">Core</button>
         <div class="search-input">
           <span>🔍</span>
           <input type="text" placeholder="Search exercises..." id="exerciseSearch" oninput="searchExercises(this.value)">

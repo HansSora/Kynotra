@@ -37,58 +37,39 @@
     </div>
   </nav>
 
-  <!-- Page Header -->
-  <div class="page-header">
-    <div class="container">
-      <h1>Workout <span class="accent-text">Programs</span></h1>
-      <p>AI-generated training programs tailored to your goals, experience level, and available equipment</p>
-      <div class="breadcrumb">
-        <a href="index.html">Home</a>
-        <span class="separator">›</span>
-        <span>Programs</span>
-      </div>
-    </div>
-  </div>
-
   <!-- Program Generator -->
-  <section class="section">
+  <section class="section" style="margin-top: var(--nav-height);">
     <div class="container">
-      <div class="section-header">
-        <h2>Generate Your <span class="accent-text">Program</span></h2>
-        <p>Tell us about your goals and get an AI-personalized workout plan instantly</p>
+      <!-- Change Program Button (visible when program exists) -->
+      <div id="programHeader" style="display: none; text-align: center; margin-bottom: var(--space-xl);">
+        <button type="button" class="btn btn-outline" onclick="openProgramModal()">
+          ⚙️ Change Program
+        </button>
       </div>
 
-      <div class="calculator-widget" style="max-width: 700px;">
+      <!-- Generated Program Display -->
+      <div id="generatedProgram" style="display: none;"></div>
+
+      <!-- Subscription Prompt for logged out users -->
+      <div id="programSubscriptionPrompt" style="display: none;"></div>
+    </div>
+  </section>
+
+  <!-- Program Generator Modal -->
+  <div id="programModal" class="modal" style="display: none;">
+    <div class="modal-overlay" onclick="closeProgramModal()"></div>
+    <div class="modal-content" style="max-width: 700px; max-height: 90vh; overflow-y: auto;">
+      <button type="button" class="modal-close" onclick="closeProgramModal()">&times;</button>
+      <div class="modal-header">
+        <h2>Generate Your <span class="accent-text">Program</span></h2>
+        <p style="color: var(--text-secondary); margin-top: var(--space-xs);">Customize your workout plan</p>
+      </div>
+      <div class="modal-body">
         <form id="programGenerator">
-
-          <!-- Step Indicator -->
-          <div class="wizard-steps" style="display: flex; justify-content: center; gap: var(--space-sm); margin-bottom: var(--space-2xl);">
-            <div class="wizard-step active" id="stepDot1" style="display: flex; align-items: center; gap: var(--space-xs);">
-              <span class="step-num" style="width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: #0f0f1a; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;">1</span>
-              <span style="font-size: 0.8rem; color: var(--text-secondary);">Body</span>
-            </div>
-            <div style="width: 40px; height: 2px; background: var(--border-color); align-self: center;" id="stepLine1"></div>
-            <div class="wizard-step" id="stepDot2" style="display: flex; align-items: center; gap: var(--space-xs);">
-              <span class="step-num" style="width: 32px; height: 32px; border-radius: 50%; background: var(--border-color); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;">2</span>
-              <span style="font-size: 0.8rem; color: var(--text-secondary);">Goals</span>
-            </div>
-            <div style="width: 40px; height: 2px; background: var(--border-color); align-self: center;" id="stepLine2"></div>
-            <div class="wizard-step" id="stepDot3" style="display: flex; align-items: center; gap: var(--space-xs);">
-              <span class="step-num" style="width: 32px; height: 32px; border-radius: 50%; background: var(--border-color); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;">3</span>
-              <span style="font-size: 0.8rem; color: var(--text-secondary);">Training</span>
-            </div>
-            <div style="width: 40px; height: 2px; background: var(--border-color); align-self: center;" id="stepLine3"></div>
-            <div class="wizard-step" id="stepDot4" style="display: flex; align-items: center; gap: var(--space-xs);">
-              <span class="step-num" style="width: 32px; height: 32px; border-radius: 50%; background: var(--border-color); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;">4</span>
-              <span style="font-size: 0.8rem; color: var(--text-secondary);">Summary</span>
-            </div>
-          </div>
-
-          <!-- Step 1: Body Details -->
-          <div class="wizard-panel" id="wizardStep1">
-            <h3 style="font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 1px; margin-bottom: var(--space-xs); font-size: 1.3rem;">Tell Us About Yourself</h3>
-            <p style="color: var(--text-secondary); margin-bottom: var(--space-xl); font-size: 0.95rem;">We'll use this to personalize your rep ranges, volume, and intensity.</p>
-
+          <!-- Body Details -->
+          <div class="form-section" style="margin-bottom: var(--space-xl);">
+            <h4 style="font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 1px; margin-bottom: var(--space-md); font-size: 1rem; color: var(--accent);">Body Details</h4>
+            
             <div class="unit-toggle" style="display: flex; width: fit-content; margin: 0 auto var(--space-lg) auto;">
               <button type="button" class="btn btn-unit active" id="progUnitImperial" onclick="setProgUnit('imperial')">
                 Imperial (lbs / in)
@@ -98,7 +79,7 @@
               </button>
             </div>
 
-            <div class="grid-2" style="gap: var(--space-lg);">
+            <div class="grid-2" style="gap: var(--space-md);">
               <div class="form-group">
                 <label class="form-label">Gender</label>
                 <div class="custom-select" id="progGenderSelect">
@@ -134,19 +115,14 @@
                 <input type="number" class="form-input" id="progHeight" placeholder="70" min="36" max="96" step="0.1">
               </div>
             </div>
-
-            <div style="display: flex; justify-content: flex-end; margin-top: var(--space-xl);">
-              <button type="button" class="btn btn-primary" onclick="wizardNext(1)">Next — Goals →</button>
-            </div>
           </div>
 
-          <!-- Step 2: Goals & Experience -->
-          <div class="wizard-panel" id="wizardStep2" style="display: none;">
-            <h3 style="font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 1px; margin-bottom: var(--space-xs); font-size: 1.3rem;">What's Your Goal?</h3>
-            <p style="color: var(--text-secondary); margin-bottom: var(--space-xl); font-size: 0.95rem;">This determines training style, rep ranges, and program structure.</p>
-
-            <div class="grid-2" style="gap: var(--space-lg);">
-              <div class="form-group" style="grid-column: 1 / -1;">
+          <!-- Goals & Experience -->
+          <div class="form-section" style="margin-bottom: var(--space-xl);">
+            <h4 style="font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 1px; margin-bottom: var(--space-md); font-size: 1rem; color: var(--accent);">Goals & Experience</h4>
+            
+            <div class="grid-2" style="gap: var(--space-md);">
+              <div class="form-group">
                 <label class="form-label">Primary Goal</label>
                 <div class="custom-select" id="goalSelectWrapper">
                   <input type="hidden" id="goalSelect" value="">
@@ -180,7 +156,7 @@
                   </div>
                 </div>
               </div>
-              <div class="form-group" style="grid-column: 1 / -1;">
+              <div class="form-group">
                 <label class="form-label">Experience Level</label>
                 <div class="custom-select" id="levelSelectWrapper">
                   <input type="hidden" id="levelSelect" value="">
@@ -207,20 +183,14 @@
                 </div>
               </div>
             </div>
-
-            <div style="display: flex; justify-content: space-between; margin-top: var(--space-xl);">
-              <button type="button" class="btn btn-secondary" onclick="wizardPrev(2)">← Back</button>
-              <button type="button" class="btn btn-primary" onclick="wizardNext(2)">Next — Training →</button>
-            </div>
           </div>
 
-          <!-- Step 3: Training Preferences -->
-          <div class="wizard-panel" id="wizardStep3" style="display: none;">
-            <h3 style="font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 1px; margin-bottom: var(--space-xs); font-size: 1.3rem;">Training Setup</h3>
-            <p style="color: var(--text-secondary); margin-bottom: var(--space-xl); font-size: 0.95rem;">Where will you train and how often?</p>
-
-            <div class="grid-2" style="gap: var(--space-lg);">
-              <div class="form-group" style="grid-column: 1 / -1;">
+          <!-- Training Preferences -->
+          <div class="form-section" style="margin-bottom: var(--space-xl);">
+            <h4 style="font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 1px; margin-bottom: var(--space-md); font-size: 1rem; color: var(--accent);">Training Setup</h4>
+            
+            <div class="grid-2" style="gap: var(--space-md);">
+              <div class="form-group">
                 <label class="form-label">Training Location</label>
                 <div class="custom-select" id="locationSelectWrapper">
                   <input type="hidden" id="locationSelect" value="">
@@ -246,7 +216,7 @@
                   </div>
                 </div>
               </div>
-              <div class="form-group" style="grid-column: 1 / -1;">
+              <div class="form-group">
                 <label class="form-label">Days Per Week</label>
                 <div class="custom-select" id="daysSelectWrapper">
                   <input type="hidden" id="daysSelect" value="">
@@ -277,37 +247,15 @@
                 </div>
               </div>
             </div>
-
-            <div style="display: flex; justify-content: space-between; margin-top: var(--space-xl);">
-              <button type="button" class="btn btn-secondary" onclick="wizardPrev(3)">← Back</button>
-              <button type="button" class="btn btn-primary" onclick="wizardNext(3)">Next — Review →</button>
-            </div>
           </div>
 
-          <!-- Step 4: Summary & Generate -->
-          <div class="wizard-panel" id="wizardStep4" style="display: none;">
-            <h3 style="font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 1px; margin-bottom: var(--space-xs); font-size: 1.3rem;">Review & Generate</h3>
-            <p style="color: var(--text-secondary); margin-bottom: var(--space-xl); font-size: 0.95rem;">Confirm your details and generate your personalized program.</p>
-
-            <div id="wizardSummary" style="background: var(--primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: var(--space-xl); margin-bottom: var(--space-xl);">
-              <!-- Filled dynamically by JS -->
-            </div>
-
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <button type="button" class="btn btn-secondary" onclick="wizardPrev(4)">← Back</button>
-              <button type="button" class="btn btn-primary" style="font-size: 1rem; padding: 16px 40px;" onclick="generateProgram()">
-                🤖 Generate My Program
-              </button>
-            </div>
-          </div>
-
+          <button type="button" class="btn btn-primary btn-block" style="font-size: 1rem; padding: 16px 40px;" onclick="generateProgramFromModal()">
+            🤖 Generate My Program
+          </button>
         </form>
       </div>
-
-      <!-- Generated Program Display -->
-      <div id="generatedProgram" style="display: none; margin-top: var(--space-3xl);"></div>
     </div>
-  </section>
+  </div>
 
   <!-- Pre-Built Programs -->
   <section class="section" style="background: var(--primary);">
@@ -319,12 +267,12 @@
 
       <!-- Filter Bar -->
       <div class="filter-bar">
-        <button class="filter-btn active" onclick="filterPrograms('all', this)">All</button>
-        <button class="filter-btn" onclick="filterPrograms('muscle', this)">Muscle Gain</button>
-        <button class="filter-btn" onclick="filterPrograms('fat-loss', this)">Fat Loss</button>
-        <button class="filter-btn" onclick="filterPrograms('strength', this)">Strength</button>
-        <button class="filter-btn" onclick="filterPrograms('home', this)">Home</button>
-        <button class="filter-btn" onclick="filterPrograms('beginner', this)">Beginner</button>
+        <button type="button" class="filter-btn active" onclick="filterPrograms('all', this)">All</button>
+        <button type="button" class="filter-btn" onclick="filterPrograms('muscle', this)">Muscle Gain</button>
+        <button type="button" class="filter-btn" onclick="filterPrograms('fat-loss', this)">Fat Loss</button>
+        <button type="button" class="filter-btn" onclick="filterPrograms('strength', this)">Strength</button>
+        <button type="button" class="filter-btn" onclick="filterPrograms('home', this)">Home</button>
+        <button type="button" class="filter-btn" onclick="filterPrograms('beginner', this)">Beginner</button>
         <div class="search-input">
           <span>🔍</span>
           <input type="text" placeholder="Search programs..." id="programSearch">
@@ -448,11 +396,11 @@
 
       <!-- Day Tabs -->
       <div class="filter-bar" style="justify-content: center;">
-        <button class="filter-btn active" onclick="showDay('day1', this)">Day 1: Push</button>
-        <button class="filter-btn" onclick="showDay('day2', this)">Day 2: Pull</button>
-        <button class="filter-btn" onclick="showDay('day3', this)">Day 3: Legs</button>
-        <button class="filter-btn" onclick="showDay('day4', this)">Day 4: Upper</button>
-        <button class="filter-btn" onclick="showDay('day5', this)">Day 5: Lower</button>
+        <button type="button" class="filter-btn active" onclick="showDay('day1', this)">Day 1: Push</button>
+        <button type="button" class="filter-btn" onclick="showDay('day2', this)">Day 2: Pull</button>
+        <button type="button" class="filter-btn" onclick="showDay('day3', this)">Day 3: Legs</button>
+        <button type="button" class="filter-btn" onclick="showDay('day4', this)">Day 4: Upper</button>
+        <button type="button" class="filter-btn" onclick="showDay('day5', this)">Day 5: Lower</button>
       </div>
 
       <!-- Day 1: Push -->
@@ -776,7 +724,7 @@
   </section>
 
   <!-- CTA -->
-  <section class="section" style="background: var(--primary); text-align: center;">
+  <section id="programsCTA" class="section" style="background: var(--primary); text-align: center;">
     <div class="container">
       <h2 style="font-family: var(--font-heading); font-size: clamp(2rem, 4vw, 3rem); text-transform: uppercase; margin-bottom: var(--space-md);">
         Get Your <span class="text-gradient">Personalized Program</span>

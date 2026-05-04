@@ -34,28 +34,34 @@
     </div>
   </nav>
 
-  <!-- Page Header -->
-  <div class="page-header">
+  <!-- Nutrition Results Section -->
+  <section class="section" style="margin-top: var(--nav-height);">
     <div class="container">
-      <h1>Diet & <span class="accent-text">Nutrition</span></h1>
-      <p>Science-based meal plans and macro calculations to fuel your goals</p>
-      <div class="breadcrumb">
-        <a href="index.html">Home</a>
-        <span class="separator">›</span>
-        <span>Nutrition</span>
+      <!-- Change Nutrition Button (visible when results exist) -->
+      <div id="nutritionHeader" style="display: none; text-align: center; margin-bottom: var(--space-xl);">
+        <button type="button" class="btn btn-outline" onclick="openNutritionModal()">
+          ⚙️ Change Nutrition Plan
+        </button>
       </div>
+
+      <!-- Nutrition Results Display -->
+      <div id="nutritionResults" style="display: none;"></div>
+
+      <!-- Subscription Prompt for logged out users -->
+      <div id="nutritionSubscriptionPrompt" style="display: none;"></div>
     </div>
-  </div>
+  </section>
 
-  <!-- Calorie & Macro Calculator -->
-  <section class="section">
-    <div class="container">
-      <div class="section-header">
+  <!-- Nutrition Calculator Modal -->
+  <div id="nutritionModal" class="modal" style="display: none;">
+    <div class="modal-overlay" onclick="closeNutritionModal()"></div>
+    <div class="modal-content" style="max-width: 600px; max-height: 90vh; overflow-y: auto;">
+      <button type="button" class="modal-close" onclick="closeNutritionModal()">&times;</button>
+      <div class="modal-header">
         <h2>Calorie & Macro <span class="accent-text">Calculator</span></h2>
-        <p>Calculate your daily calorie needs and optimal macronutrient breakdown</p>
+        <p style="color: var(--text-secondary); margin-top: var(--space-xs);">Calculate your daily calorie needs</p>
       </div>
-
-      <div class="calculator-widget" style="max-width: 600px;">
+      <div class="modal-body">
         <form id="calorieCalculator">
           <div style="display: flex; justify-content: center; margin-bottom: var(--space-lg);">
             <div class="unit-toggle">
@@ -63,7 +69,7 @@
               <button type="button" class="btn btn-unit" id="unitMetric" onclick="setUnit('metric')">Metric (kg / cm)</button>
             </div>
           </div>
-          <div class="grid-2" style="gap: var(--space-lg);">
+          <div class="grid-2" style="gap: var(--space-md);">
             <div class="form-group">
               <label class="form-label">Gender</label>
               <div class="custom-select has-value" id="calcGenderWrapper">
@@ -163,105 +169,13 @@
               </div>
             </div>
           </div>
-          <button type="button" class="btn btn-primary btn-block" style="margin-top: var(--space-xl);" onclick="calculateCalories()">
+          <button type="button" class="btn btn-primary btn-block" style="margin-top: var(--space-xl);" onclick="calculateCaloriesFromModal()">
             🧮 Calculate My Macros
           </button>
         </form>
-
-        <div id="calorieResult" style="display: none;">
-          <div class="calculator-result" style="margin-top: var(--space-xl);">
-            <div class="result-value" id="totalCalories">2,400</div>
-            <div class="result-label">Daily Calories</div>
-          </div>
-          <div class="macro-row" style="justify-content: center; margin-top: var(--space-lg);">
-            <div class="macro-item">
-              <div class="macro-value accent-text" id="macroProtein">180g</div>
-              <div class="macro-label">Protein</div>
-            </div>
-            <div class="macro-item">
-              <div class="macro-value" style="color: var(--info);" id="macroCarbs">270g</div>
-              <div class="macro-label">Carbs</div>
-            </div>
-            <div class="macro-item">
-              <div class="macro-value" style="color: var(--warning);" id="macroFats">80g</div>
-              <div class="macro-label">Fats</div>
-            </div>
-          </div>
-        </div>
       </div>
-    </div>
-  </section>
-
-  <!-- Full Screen Results Modal -->
-  <div id="resultsModal" style="display: none; position: fixed; inset: 0; z-index: 10000; background: linear-gradient(135deg, #0a0a14 0%, #141428 50%, #0a0a14 100%); overflow-y: auto;">
-    <div style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: var(--space-2xl); text-align: center;">
-      
-      <!-- Close button -->
-      <button onclick="closeResultsModal()" style="position: absolute; top: var(--space-xl); right: var(--space-xl); font-size: 1.5rem; color: var(--text-muted); cursor: pointer; background: none; border: none; transition: color 0.3s;">✕</button>
-      
-      <!-- Success Icon -->
-      <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #00b809); display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-xl); animation: pulseGlow 2s infinite;">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0a0a14" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="20 6 9 17 4 12"></polyline>
-        </svg>
-      </div>
-      
-      <!-- Title -->
-      <h1 style="font-family: var(--font-heading); font-size: 2.5rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: var(--space-sm);">Your <span style="color: var(--accent);">Results</span></h1>
-      <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: var(--space-2xl);">Personalized nutrition targets based on your profile</p>
-      
-      <!-- Main Calorie Display -->
-      <div style="background: var(--bg-card); border: 2px solid var(--accent); border-radius: var(--radius-xl); padding: var(--space-2xl) var(--space-3xl); margin-bottom: var(--space-2xl); box-shadow: 0 0 60px rgba(0, 230, 10, 0.15);">
-        <div style="font-size: 4rem; font-weight: 700; color: var(--accent); line-height: 1;" id="modalCalories">2,400</div>
-        <div style="font-size: 1.2rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-top: var(--space-sm);">Daily Calories</div>
-      </div>
-      
-      <!-- Macro Breakdown -->
-      <div style="display: flex; gap: var(--space-2xl); flex-wrap: wrap; justify-content: center; margin-bottom: var(--space-3xl);">
-        <div style="text-align: center; min-width: 120px;">
-          <div style="width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto var(--space-md);">
-            <div style="font-size: 1.8rem; font-weight: 700; color: var(--accent);" id="modalProtein">180g</div>
-          </div>
-          <div style="font-size: 0.9rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Protein</div>
-          <div style="font-size: 0.75rem; color: var(--text-muted);" id="modalProteinPct">30%</div>
-        </div>
-        <div style="text-align: center; min-width: 120px;">
-          <div style="width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--info); display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto var(--space-md);">
-            <div style="font-size: 1.8rem; font-weight: 700; color: var(--info);" id="modalCarbs">270g</div>
-          </div>
-          <div style="font-size: 0.9rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Carbs</div>
-          <div style="font-size: 0.75rem; color: var(--text-muted);" id="modalCarbsPct">45%</div>
-        </div>
-        <div style="text-align: center; min-width: 120px;">
-          <div style="width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--warning); display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto var(--space-md);">
-            <div style="font-size: 1.8rem; font-weight: 700; color: var(--warning);" id="modalFats">80g</div>
-          </div>
-          <div style="font-size: 0.9rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Fats</div>
-          <div style="font-size: 0.75rem; color: var(--text-muted);" id="modalFatsPct">25%</div>
-        </div>
-      </div>
-      
-      <!-- Goal Badge -->
-      <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--space-lg) var(--space-2xl); margin-bottom: var(--space-2xl);">
-        <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: var(--space-xs);">Your Goal</div>
-        <div style="font-size: 1.3rem; font-weight: 600; color: var(--text-primary);" id="modalGoal">Muscle Gain (+300 cal)</div>
-      </div>
-      
-      <!-- CTA Button -->
-      <button onclick="closeResultsModal()" class="btn btn-primary btn-lg" style="padding: var(--space-lg) var(--space-3xl); font-size: 1.1rem;">
-        View Your Personalized Plan →
-      </button>
-      
-      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: var(--space-lg);">Scroll down for your complete meal plan and recommendations</p>
     </div>
   </div>
-  
-  <style>
-    @keyframes pulseGlow {
-      0%, 100% { box-shadow: 0 0 20px rgba(0, 230, 10, 0.4); }
-      50% { box-shadow: 0 0 40px rgba(0, 230, 10, 0.7); }
-    }
-  </style>
 
   <!-- Diet Plans -->
   <div id="personalizedContent" style="display: none;">

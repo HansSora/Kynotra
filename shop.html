@@ -34,21 +34,8 @@
     </div>
   </nav>
 
-  <!-- Page Header -->
-  <div class="page-header">
-    <div class="container">
-      <h1>Fitness <span class="accent-text">Shop</span></h1>
-      <p>Premium equipment, supplements, and apparel to power your training</p>
-      <div class="breadcrumb">
-        <a href="index.html">Home</a>
-        <span class="separator">›</span>
-        <span>Shop</span>
-      </div>
-    </div>
-  </div>
-
   <!-- Shop Banner -->
-  <section class="section" style="padding-bottom: 0;">
+  <section class="section" style="padding-bottom: 0; margin-top: var(--nav-height);">
     <div class="container">
       <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); border-radius: var(--radius-xl); padding: var(--space-2xl) var(--space-3xl); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-xl);">
         <div>
@@ -64,11 +51,11 @@
   <section class="section" id="products">
     <div class="container">
       <div class="filter-bar">
-        <button class="filter-btn active" onclick="filterProducts('all', this)">All Products</button>
-        <button class="filter-btn" onclick="filterProducts('equipment', this)">Equipment</button>
-        <button class="filter-btn" onclick="filterProducts('supplements', this)">Supplements</button>
-        <button class="filter-btn" onclick="filterProducts('apparel', this)">Apparel</button>
-        <button class="filter-btn" onclick="filterProducts('accessories', this)">Accessories</button>
+        <button type="button" class="filter-btn active" onclick="filterProducts('all', this)">All Products</button>
+        <button type="button" class="filter-btn" onclick="filterProducts('equipment', this)">Equipment</button>
+        <button type="button" class="filter-btn" onclick="filterProducts('supplements', this)">Supplements</button>
+        <button type="button" class="filter-btn" onclick="filterProducts('apparel', this)">Apparel</button>
+        <button type="button" class="filter-btn" onclick="filterProducts('accessories', this)">Accessories</button>
         <div class="search-input">
           <span>🔍</span>
           <input type="text" placeholder="Search products..." id="productSearch">
