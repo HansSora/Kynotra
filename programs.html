@@ -282,7 +282,7 @@
       <!-- Programs Grid -->
       <div class="grid-3" id="programsGrid">
         <!-- Muscle Builder Pro -->
-        <div class="card animate-in" data-category="muscle" data-level="intermediate">
+        <div class="card animate-in program-clickable" data-category="muscle" data-level="intermediate" onclick="openProgramDetail('muscle-builder-pro')">
           <div class="card-image">
             <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=600&q=80" alt="Muscle building workout">
             <span class="card-badge">Popular</span>
@@ -299,7 +299,7 @@
         </div>
 
         <!-- Shred & Lean -->
-        <div class="card animate-in" data-category="fat-loss" data-level="all">
+        <div class="card animate-in program-clickable" data-category="fat-loss" data-level="all" onclick="openProgramDetail('shred-lean')">
           <div class="card-image">
             <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80" alt="HIIT training">
             <span class="card-badge">Best Seller</span>
@@ -316,7 +316,7 @@
         </div>
 
         <!-- Strength Foundation -->
-        <div class="card animate-in" data-category="strength" data-level="advanced">
+        <div class="card animate-in program-clickable" data-category="strength" data-level="advanced" onclick="openProgramDetail('strength-foundation')">
           <div class="card-image">
             <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&q=80" alt="Barbell deadlift">
             <span class="card-badge">New</span>
@@ -333,7 +333,7 @@
         </div>
 
         <!-- Beginner Blueprint -->
-        <div class="card animate-in" data-category="muscle" data-level="beginner">
+        <div class="card animate-in program-clickable" data-category="muscle" data-level="beginner" onclick="openProgramDetail('beginner-blueprint')">
           <div class="card-image">
             <img src="https://images.unsplash.com/photo-1534367507873-d2d7e24c797f?w=600&q=80" alt="Beginner workout">
             <span class="card-badge">Beginner</span>
@@ -350,7 +350,7 @@
         </div>
 
         <!-- Home Warrior -->
-        <div class="card animate-in" data-category="home fat-loss" data-level="all">
+        <div class="card animate-in program-clickable" data-category="home fat-loss" data-level="all" onclick="openProgramDetail('home-warrior')">
           <div class="card-image">
             <img src="https://images.unsplash.com/photo-1616803689943-5601631c7fec?w=600&q=80" alt="Home workout">
             <span class="card-badge">Home</span>
@@ -367,7 +367,7 @@
         </div>
 
         <!-- Athletic Performance -->
-        <div class="card animate-in" data-category="strength" data-level="intermediate">
+        <div class="card animate-in program-clickable" data-category="strength" data-level="intermediate" onclick="openProgramDetail('athletic-performance')">
           <div class="card-image">
             <img src="https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=600&q=80" alt="Athletic training">
             <span class="card-badge">Pro</span>
@@ -770,5 +770,438 @@
   </footer>
 
   <script src="js/app.js"></script>
-</body>
-</html>
+
+  <!-- Program Detail Modal -->
+  <div class="modal-overlay" id="programDetailModal" style="display: none;">
+    <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+      <button class="modal-close" onclick="closeProgramDetail()">&times;</button>
+      <div id="programDetailContent"></div>
+    </div>
+  </div>
+
+  <style>
+    .program-clickable { cursor: pointer; }
+    .program-clickable:hover { border-color: var(--accent); }
+    .pd-header { display: flex; gap: var(--space-lg); margin-bottom: var(--space-xl); flex-wrap: wrap; }
+    .pd-header img { width: 280px; height: 180px; object-fit: cover; border-radius: var(--radius-md); flex-shrink: 0; }
+    .pd-info { flex: 1; min-width: 250px; }
+    .pd-info h2 { font-family: var(--font-heading); font-size: 1.8rem; text-transform: uppercase; margin-bottom: var(--space-xs); }
+    .pd-tags { display: flex; gap: var(--space-xs); flex-wrap: wrap; margin: var(--space-md) 0; }
+    .pd-tag { background: var(--primary); padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; color: var(--text-muted); }
+    .pd-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: var(--space-md); margin: var(--space-xl) 0; }
+    .pd-stat { background: var(--primary); padding: var(--space-md); border-radius: var(--radius-md); text-align: center; }
+    .pd-stat-val { font-family: var(--font-heading); font-size: 1.5rem; color: var(--accent); }
+    .pd-stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+    .pd-section { margin-top: var(--space-xl); }
+    .pd-section h3 { font-family: var(--font-heading); text-transform: uppercase; font-size: 1.1rem; margin-bottom: var(--space-md); color: var(--accent); }
+    .pd-day { background: var(--primary); border-radius: var(--radius-md); padding: var(--space-lg); margin-bottom: var(--space-md); }
+    .pd-day h4 { font-family: var(--font-heading); text-transform: uppercase; font-size: 0.95rem; margin-bottom: var(--space-sm); }
+    .pd-day table { width: 100%; font-size: 0.85rem; border-collapse: collapse; }
+    .pd-day th, .pd-day td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border-color); }
+    .pd-day th { color: var(--text-muted); font-weight: 500; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .pd-notes { background: var(--primary); padding: var(--space-lg); border-radius: var(--radius-md); margin-top: var(--space-lg); }
+    .pd-notes h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: var(--space-sm); color: var(--accent); }
+    .pd-notes ul { padding-left: var(--space-lg); color: var(--text-secondary); font-size: 0.85rem; }
+    .pd-notes li { margin-bottom: 6px; }
+    @media (max-width: 768px) {
+      .pd-header img { width: 100%; height: 200px; }
+    }
+  </style>
+
+  <script>
+  const programData = {
+    'muscle-builder-pro': {
+      name: 'Muscle Builder Pro',
+      img: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=600&q=80',
+      badge: 'Popular',
+      desc: 'A comprehensive 12-week hypertrophy program built around the Push/Pull/Legs split. Designed for intermediate lifters who want to maximize muscle growth through progressive overload, compound movements, and targeted isolation work.',
+      duration: '12 Weeks',
+      frequency: '5 Days/Week',
+      equipment: 'Full Gym',
+      level: 'Intermediate',
+      goal: 'Muscle Growth',
+      split: 'Push/Pull/Legs',
+      tags: ['Hypertrophy', 'Progressive Overload', 'Compound Focus', 'PPL Split'],
+      schedule: [
+        { day: 'Day 1 — Push (Chest/Shoulders/Triceps)', exercises: [
+          ['Barbell Bench Press', '4', '6-8', '3 min'],
+          ['Incline Dumbbell Press', '3', '8-10', '2 min'],
+          ['Overhead Press', '3', '8-10', '2 min'],
+          ['Cable Flyes', '3', '12-15', '90s'],
+          ['Lateral Raises', '4', '12-15', '60s'],
+          ['Tricep Rope Pushdowns', '3', '12-15', '60s'],
+          ['Overhead Tricep Extension', '3', '10-12', '60s']
+        ]},
+        { day: 'Day 2 — Pull (Back/Biceps)', exercises: [
+          ['Barbell Deadlift', '4', '5-6', '3 min'],
+          ['Weighted Pull-Ups', '4', '6-8', '2 min'],
+          ['Barbell Rows', '3', '8-10', '2 min'],
+          ['Seated Cable Rows', '3', '10-12', '90s'],
+          ['Face Pulls', '3', '15-20', '60s'],
+          ['Barbell Curls', '3', '10-12', '60s'],
+          ['Hammer Curls', '3', '10-12', '60s']
+        ]},
+        { day: 'Day 3 — Legs', exercises: [
+          ['Barbell Back Squat', '4', '6-8', '3 min'],
+          ['Romanian Deadlift', '3', '8-10', '2 min'],
+          ['Leg Press', '3', '10-12', '2 min'],
+          ['Walking Lunges', '3', '12 each', '90s'],
+          ['Leg Curls', '3', '12-15', '60s'],
+          ['Calf Raises', '4', '15-20', '60s']
+        ]},
+        { day: 'Day 4 — Upper (Volume)', exercises: [
+          ['Dumbbell Bench Press', '4', '8-10', '2 min'],
+          ['T-Bar Rows', '4', '8-10', '2 min'],
+          ['Arnold Press', '3', '10-12', '90s'],
+          ['Cable Crossovers', '3', '12-15', '60s'],
+          ['Superset: Curls + Pushdowns', '3', '12 each', '90s']
+        ]},
+        { day: 'Day 5 — Lower (Volume)', exercises: [
+          ['Front Squats', '4', '6-8', '3 min'],
+          ['Hip Thrusts', '4', '8-10', '2 min'],
+          ['Bulgarian Split Squats', '3', '10-12 each', '90s'],
+          ['Leg Extensions', '3', '12-15', '60s'],
+          ['Nordic Hamstring Curls', '3', '8-10', '90s'],
+          ['Seated Calf Raises', '4', '15-20', '60s']
+        ]}
+      ],
+      notes: [
+        'Progressive overload: Add 2.5-5 lbs to compound lifts every 1-2 weeks',
+        'Deload in weeks 4 and 8 — reduce volume by 40%',
+        'Rest 2-3 min for heavy compounds, 60-90s for isolation',
+        'Track all lifts in a training log for accountability',
+        'Eat in a caloric surplus of 300-500 calories for optimal growth'
+      ]
+    },
+    'shred-lean': {
+      name: 'Shred & Lean',
+      img: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80',
+      badge: 'Best Seller',
+      desc: 'An 8-week fat loss program combining high-intensity interval training with strength training. Designed to maximize calorie burn while preserving muscle mass. Includes cardio protocols and pairs perfectly with a calorie-deficit nutrition plan.',
+      duration: '8 Weeks',
+      frequency: '5 Days/Week',
+      equipment: 'Home or Gym',
+      level: 'All Levels',
+      goal: 'Fat Loss',
+      split: 'Upper/Lower + HIIT',
+      tags: ['HIIT', 'Fat Burning', 'Cardio', 'Calorie Deficit'],
+      schedule: [
+        { day: 'Day 1 — Upper Strength', exercises: [
+          ['Dumbbell Bench Press', '4', '10-12', '90s'],
+          ['Bent Over Rows', '4', '10-12', '90s'],
+          ['Shoulder Press', '3', '12-15', '60s'],
+          ['Lat Pulldown', '3', '12-15', '60s'],
+          ['Bicep Curls', '3', '15', '45s'],
+          ['Tricep Dips', '3', '15', '45s']
+        ]},
+        { day: 'Day 2 — HIIT Cardio', exercises: [
+          ['Burpees', '4', '30s on/30s off', '—'],
+          ['Mountain Climbers', '4', '30s on/30s off', '—'],
+          ['Jump Squats', '4', '30s on/30s off', '—'],
+          ['High Knees', '4', '30s on/30s off', '—'],
+          ['Battle Ropes / Jump Rope', '4', '30s on/30s off', '—'],
+          ['Plank Hold', '3', '45s', '30s']
+        ]},
+        { day: 'Day 3 — Lower Strength', exercises: [
+          ['Goblet Squats', '4', '12-15', '90s'],
+          ['Dumbbell Lunges', '3', '12 each', '60s'],
+          ['Romanian Deadlift', '4', '10-12', '90s'],
+          ['Step-Ups', '3', '12 each', '60s'],
+          ['Leg Curls / Glute Bridge', '3', '15', '60s'],
+          ['Calf Raises', '3', '20', '45s']
+        ]},
+        { day: 'Day 4 — HIIT Circuit', exercises: [
+          ['Kettlebell Swings', '4', '15', '45s'],
+          ['Box Jumps', '4', '12', '45s'],
+          ['Renegade Rows', '3', '10 each', '45s'],
+          ['Thrusters', '4', '12', '45s'],
+          ['Sprint Intervals', '6', '20s on/40s off', '—'],
+          ['Ab Circuit (Crunches + Leg Raises)', '3', '20 each', '30s']
+        ]},
+        { day: 'Day 5 — Full Body Burn', exercises: [
+          ['Deadlift', '4', '8-10', '2 min'],
+          ['Push-Ups (AMRAP)', '3', 'Max', '60s'],
+          ['Pull-Ups / Inverted Rows', '3', 'Max', '60s'],
+          ['Walking Lunges', '3', '15 each', '60s'],
+          ['Farmer\'s Walk', '3', '40m', '60s'],
+          ['Plank Variations', '3', '45s each', '30s']
+        ]}
+      ],
+      notes: [
+        'Maintain a 500 calorie deficit for steady fat loss (1 lb/week)',
+        'Keep protein high (1g per lb bodyweight) to preserve muscle',
+        'Stay hydrated — aim for 1 gallon of water per day',
+        'Do 10 min steady-state cardio as a warm-up each session',
+        'Active recovery on rest days: walking, stretching, yoga'
+      ]
+    },
+    'strength-foundation': {
+      name: 'Strength Foundation',
+      img: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&q=80',
+      badge: 'New',
+      desc: 'A 16-week periodized powerlifting program designed for advanced lifters who want to push their squat, bench press, and deadlift to new PRs. Structured in 4-week mesocycles with progressive intensity increases and built-in deload weeks.',
+      duration: '16 Weeks',
+      frequency: '4 Days/Week',
+      equipment: 'Full Gym',
+      level: 'Advanced',
+      goal: 'Strength & PRs',
+      split: 'Squat/Bench/Dead/Accessories',
+      tags: ['Powerlifting', 'Periodized', 'PR Focused', 'Heavy Compounds'],
+      schedule: [
+        { day: 'Day 1 — Squat Focus', exercises: [
+          ['Barbell Back Squat', '5', '5 (80-90% 1RM)', '4 min'],
+          ['Pause Squats', '3', '3 (70%)', '3 min'],
+          ['Front Squats', '3', '8', '2 min'],
+          ['Leg Press', '3', '10', '2 min'],
+          ['Core: Ab Wheel Rollouts', '3', '12', '60s']
+        ]},
+        { day: 'Day 2 — Bench Focus', exercises: [
+          ['Barbell Bench Press', '5', '5 (80-90% 1RM)', '4 min'],
+          ['Close-Grip Bench Press', '3', '6-8', '3 min'],
+          ['Incline Dumbbell Press', '3', '8-10', '2 min'],
+          ['Weighted Dips', '3', '8', '2 min'],
+          ['Tricep Pushdowns', '3', '12-15', '60s']
+        ]},
+        { day: 'Day 3 — Deadlift Focus', exercises: [
+          ['Conventional Deadlift', '5', '3-5 (85-95% 1RM)', '5 min'],
+          ['Deficit Deadlifts', '3', '5 (70%)', '3 min'],
+          ['Barbell Rows', '4', '6-8', '2 min'],
+          ['Pull-Ups (Weighted)', '3', '6-8', '2 min'],
+          ['Farmer\'s Walk', '3', '40m', '2 min']
+        ]},
+        { day: 'Day 4 — Accessories', exercises: [
+          ['Overhead Press', '4', '6-8', '2 min'],
+          ['Chin-Ups', '4', '8-10', '90s'],
+          ['Face Pulls', '4', '15-20', '60s'],
+          ['Lateral Raises', '3', '15', '60s'],
+          ['Barbell Curls', '3', '10-12', '60s'],
+          ['Hanging Leg Raises', '3', '12-15', '60s']
+        ]}
+      ],
+      notes: [
+        'Week 1-4: Volume phase (sets of 5 at 75-80%)',
+        'Week 5-8: Intensity phase (sets of 3 at 82-88%)',
+        'Week 9-12: Peaking phase (sets of 1-3 at 90-95%)',
+        'Week 13-16: Test week + deload + new PRs',
+        'Deload every 4th week — reduce intensity by 40%',
+        'Sleep 8+ hours and eat at maintenance or slight surplus'
+      ]
+    },
+    'beginner-blueprint': {
+      name: 'Beginner Blueprint',
+      img: 'https://images.unsplash.com/photo-1534367507873-d2d7e24c797f?w=600&q=80',
+      badge: 'Beginner',
+      desc: 'An 8-week full-body program designed for gym newcomers. Focuses on learning proper form for compound movements, building foundational strength, and establishing consistent training habits. Simple, effective, and not overwhelming.',
+      duration: '8 Weeks',
+      frequency: '3 Days/Week',
+      equipment: 'Full Gym',
+      level: 'Beginner',
+      goal: 'Build Foundation',
+      split: 'Full Body (A/B)',
+      tags: ['Full Body', 'Compound Movements', 'Form Focused', 'Beginner Friendly'],
+      schedule: [
+        { day: 'Day A — Full Body (Monday)', exercises: [
+          ['Barbell Squat', '3', '8-10', '2 min'],
+          ['Barbell Bench Press', '3', '8-10', '2 min'],
+          ['Barbell Row', '3', '8-10', '2 min'],
+          ['Overhead Press', '3', '10-12', '90s'],
+          ['Lat Pulldown', '3', '10-12', '90s'],
+          ['Plank Hold', '3', '30-45s', '60s']
+        ]},
+        { day: 'Day B — Full Body (Wednesday)', exercises: [
+          ['Deadlift', '3', '5-8', '3 min'],
+          ['Incline Dumbbell Press', '3', '10-12', '90s'],
+          ['Seated Cable Row', '3', '10-12', '90s'],
+          ['Leg Press', '3', '10-12', '2 min'],
+          ['Dumbbell Lateral Raises', '3', '12-15', '60s'],
+          ['Bicep Curls', '2', '12-15', '60s']
+        ]},
+        { day: 'Day A — Full Body (Friday)', exercises: [
+          ['Barbell Squat', '3', '8-10', '2 min'],
+          ['Barbell Bench Press', '3', '8-10', '2 min'],
+          ['Barbell Row', '3', '8-10', '2 min'],
+          ['Overhead Press', '3', '10-12', '90s'],
+          ['Lat Pulldown', '3', '10-12', '90s'],
+          ['Plank Hold', '3', '30-45s', '60s']
+        ]}
+      ],
+      notes: [
+        'Alternate Day A and Day B each session (A/B/A one week, B/A/B the next)',
+        'Focus on FORM first — don\'t ego lift, start light',
+        'Add 5 lbs to lower body lifts and 2.5 lbs to upper body lifts each week',
+        'Rest at least 1 day between sessions for recovery',
+        'Watch the exercise library videos for proper technique',
+        'Aim for 0.8g protein per lb bodyweight to build muscle'
+      ]
+    },
+    'home-warrior': {
+      name: 'Home Warrior',
+      img: 'https://images.unsplash.com/photo-1616803689943-5601631c7fec?w=600&q=80',
+      badge: 'Home',
+      desc: 'A 10-week bodyweight-only program for building muscle and burning fat at home with zero equipment. Uses progressive calisthenics, tempo manipulation, and circuit training to create effective workouts you can do anywhere.',
+      duration: '10 Weeks',
+      frequency: '4 Days/Week',
+      equipment: 'None (Bodyweight)',
+      level: 'All Levels',
+      goal: 'Fat Loss + Muscle Tone',
+      split: 'Upper/Lower/Full/HIIT',
+      tags: ['Bodyweight', 'No Equipment', 'Home Workout', 'Calisthenics'],
+      schedule: [
+        { day: 'Day 1 — Upper Body', exercises: [
+          ['Push-Ups (Standard)', '4', '12-20', '60s'],
+          ['Diamond Push-Ups', '3', '8-12', '60s'],
+          ['Pike Push-Ups', '3', '8-12', '60s'],
+          ['Inverted Rows (under table)', '4', '10-15', '60s'],
+          ['Superman Hold', '3', '20s', '45s'],
+          ['Tricep Bench Dips', '3', '15-20', '45s']
+        ]},
+        { day: 'Day 2 — Lower Body', exercises: [
+          ['Bodyweight Squats', '4', '20', '60s'],
+          ['Bulgarian Split Squats', '3', '12 each', '60s'],
+          ['Glute Bridges', '4', '15-20', '45s'],
+          ['Single Leg RDL', '3', '10 each', '60s'],
+          ['Wall Sit', '3', '45s', '45s'],
+          ['Calf Raises (on step)', '4', '20', '30s']
+        ]},
+        { day: 'Day 3 — Full Body Strength', exercises: [
+          ['Burpees', '4', '10', '60s'],
+          ['Push-Up to Shoulder Tap', '3', '12', '60s'],
+          ['Pistol Squat Progression', '3', '6-8 each', '90s'],
+          ['Plank to Push-Up', '3', '10', '60s'],
+          ['Lateral Lunges', '3', '12 each', '60s'],
+          ['Dead Bug', '3', '12 each', '45s']
+        ]},
+        { day: 'Day 4 — HIIT Circuit', exercises: [
+          ['Jump Squats', '4', '30s on/15s off', '—'],
+          ['Mountain Climbers', '4', '30s on/15s off', '—'],
+          ['Burpees', '4', '30s on/15s off', '—'],
+          ['High Knees', '4', '30s on/15s off', '—'],
+          ['Plank Jacks', '4', '30s on/15s off', '—'],
+          ['Cooldown: Stretching', '1', '5 min', '—']
+        ]}
+      ],
+      notes: [
+        'Slow down the eccentric (lowering) phase for more time under tension',
+        'Progress by adding reps, slowing tempo, or reducing rest times',
+        'Weeks 1-3: Standard tempo | Weeks 4-6: 3-second negatives | Weeks 7-10: Supersets',
+        'A pull-up bar (doorframe) is optional but highly recommended',
+        'Great to pair with the Shred & Lean nutrition protocol'
+      ]
+    },
+    'athletic-performance': {
+      name: 'Athletic Performance',
+      img: 'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=600&q=80',
+      badge: 'Pro',
+      desc: 'A 12-week sports-focused program combining explosive strength, speed, agility, and conditioning. Ideal for athletes, recreational sports players, and active individuals who want functional performance — not just aesthetics.',
+      duration: '12 Weeks',
+      frequency: '5 Days/Week',
+      equipment: 'Full Gym',
+      level: 'Intermediate',
+      goal: 'Athletic Performance',
+      split: 'Strength/Power/Speed/Conditioning',
+      tags: ['Sports Specific', 'Explosive Power', 'Speed', 'Agility'],
+      schedule: [
+        { day: 'Day 1 — Max Strength', exercises: [
+          ['Barbell Back Squat', '5', '3-5', '3 min'],
+          ['Bench Press', '5', '3-5', '3 min'],
+          ['Weighted Pull-Ups', '4', '5-6', '2 min'],
+          ['Bulgarian Split Squat', '3', '8 each', '90s'],
+          ['Core: Pallof Press', '3', '10 each', '60s']
+        ]},
+        { day: 'Day 2 — Power & Plyometrics', exercises: [
+          ['Power Clean', '5', '3', '3 min'],
+          ['Box Jumps', '4', '5', '2 min'],
+          ['Medicine Ball Slams', '4', '8', '60s'],
+          ['Broad Jumps', '4', '5', '90s'],
+          ['Depth Jumps', '3', '5', '2 min']
+        ]},
+        { day: 'Day 3 — Speed & Agility', exercises: [
+          ['Sprint Intervals (40m)', '8', '1 rep', '90s walk back'],
+          ['Agility Ladder Drills', '4', '2 patterns', '60s'],
+          ['Cone Drills (5-10-5)', '6', '1 rep', '90s'],
+          ['Lateral Shuffles', '4', '20m each', '60s'],
+          ['Sled Push / Prowler', '4', '30m', '2 min']
+        ]},
+        { day: 'Day 4 — Upper Hypertrophy', exercises: [
+          ['Dumbbell Bench Press', '4', '8-10', '90s'],
+          ['Barbell Rows', '4', '8-10', '90s'],
+          ['Overhead Press', '3', '10-12', '90s'],
+          ['Face Pulls', '3', '15-20', '60s'],
+          ['Dumbbell Curls + Tricep Extension', '3', '12 each', '60s']
+        ]},
+        { day: 'Day 5 — Conditioning', exercises: [
+          ['Rowing Machine Intervals', '6', '250m', '90s'],
+          ['Kettlebell Swings', '4', '15', '60s'],
+          ['Battle Ropes', '4', '30s', '30s'],
+          ['Bear Crawls', '3', '20m', '60s'],
+          ['Assault Bike Sprints', '5', '20s on/40s off', '—']
+        ]}
+      ],
+      notes: [
+        'Phase 1 (Weeks 1-4): Build base strength and movement quality',
+        'Phase 2 (Weeks 5-8): Develop power and explosiveness',
+        'Phase 3 (Weeks 9-12): Peak sport-specific performance',
+        'Warm up 10-15 minutes with dynamic stretching before every session',
+        'Sleep 8+ hours — recovery is where performance gains happen',
+        'Include sport-specific skill practice on rest days'
+      ]
+    }
+  };
+
+  function openProgramDetail(id) {
+    const p = programData[id];
+    if (!p) return;
+
+    let scheduleHTML = '';
+    p.schedule.forEach(day => {
+      let rows = day.exercises.map(e =>
+        '<tr><td><strong>' + e[0] + '</strong></td><td>' + e[1] + '</td><td>' + e[2] + '</td><td>' + e[3] + '</td></tr>'
+      ).join('');
+      scheduleHTML += '<div class="pd-day"><h4>' + day.day + '</h4><table><thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Rest</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+    });
+
+    let notesHTML = p.notes.map(n => '<li>' + n + '</li>').join('');
+    let tagsHTML = p.tags.map(t => '<span class="pd-tag">' + t + '</span>').join('');
+
+    document.getElementById('programDetailContent').innerHTML =
+      '<div class="pd-header">' +
+        '<img src="' + p.img + '" alt="' + p.name + '">' +
+        '<div class="pd-info">' +
+          '<span class="card-badge" style="position:static; display:inline-block; margin-bottom:8px;">' + p.badge + '</span>' +
+          '<h2>' + p.name + '</h2>' +
+          '<p style="color:var(--text-secondary); font-size:0.92rem; line-height:1.6;">' + p.desc + '</p>' +
+          '<div class="pd-tags">' + tagsHTML + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="pd-stats">' +
+        '<div class="pd-stat"><div class="pd-stat-val">' + p.duration + '</div><div class="pd-stat-label">Duration</div></div>' +
+        '<div class="pd-stat"><div class="pd-stat-val">' + p.frequency + '</div><div class="pd-stat-label">Frequency</div></div>' +
+        '<div class="pd-stat"><div class="pd-stat-val">' + p.equipment + '</div><div class="pd-stat-label">Equipment</div></div>' +
+        '<div class="pd-stat"><div class="pd-stat-val">' + p.level + '</div><div class="pd-stat-label">Level</div></div>' +
+        '<div class="pd-stat"><div class="pd-stat-val">' + p.goal + '</div><div class="pd-stat-label">Goal</div></div>' +
+        '<div class="pd-stat"><div class="pd-stat-val">' + p.split + '</div><div class="pd-stat-label">Split</div></div>' +
+      '</div>' +
+      '<div class="pd-section"><h3>Weekly Schedule</h3>' + scheduleHTML + '</div>' +
+      '<div class="pd-notes"><h4>💡 Program Notes & Tips</h4><ul>' + notesHTML + '</ul></div>' +
+      '<div style="margin-top:var(--space-xl); display:flex; gap:var(--space-md);">' +
+        '<button class="btn btn-primary" onclick="closeProgramDetail()">Got It</button>' +
+        '<button class="btn btn-outline" onclick="closeProgramDetail()">Close</button>' +
+      '</div>';
+
+    const modal = document.getElementById('programDetailModal');
+    modal.style.display = 'flex';
+    modal.style.opacity = '1';
+    modal.style.visibility = 'visible';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeProgramDetail() {
+    const modal = document.getElementById('programDetailModal');
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('programDetailModal').addEventListener('click', function(e) {
+    if (e.target === this) closeProgramDetail();
+  });
+  </script>

@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kynotra — Presentation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0f;
+      --bg-card: #12121a;
+      --accent: #00f5d4;
+      --accent-dim: rgba(0, 245, 212, 0.15);
+      --text: #f0f0f5;
+      --text-muted: #8a8a9a;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --blue: #3b82f6;
+      --purple: #a855f7;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── Slide System ── */
+    .slide {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide-inner {
+      max-width: 1100px;
+      width: 100%;
+      z-index: 2;
+      animation: fadeSlideUp 0.8s ease-out both;
+    }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Slide Counter ── */
+    .slide-counter {
+      position: fixed;
+      bottom: 30px;
+      right: 40px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      z-index: 100;
+    }
+    .slide-counter span { color: var(--accent); font-size: 1.1rem; }
+
+    /* ── Navigation Dots ── */
+    .slide-nav {
+      position: fixed;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      z-index: 100;
+    }
+    .slide-nav a {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      opacity: 0.3;
+      transition: all 0.3s;
+      display: block;
+    }
+    .slide-nav a.active,
+    .slide-nav a:hover {
+      opacity: 1;
+      background: var(--accent);
+      transform: scale(1.3);
+    }
+
+    /* ── Typography ── */
+    .slide-label {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .slide-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      text-transform: uppercase;
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+
+    .slide-subtitle {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      max-width: 700px;
+    }
+
+    .accent { color: var(--accent); }
+    .gradient-text {
+      background: linear-gradient(135deg, var(--accent), var(--blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* ── Background Decorations ── */
+    .bg-glow {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      filter: blur(160px);
+      opacity: 0.12;
+      pointer-events: none;
+    }
+    .bg-glow-teal { background: var(--accent); top: -200px; right: -200px; }
+    .bg-glow-purple { background: var(--purple); bottom: -200px; left: -200px; }
+    .bg-glow-blue { background: var(--blue); top: 50%; left: 50%; transform: translate(-50%, -50%); }
+
+    .bg-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    /* ── Cards ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 32px 28px;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .card h3 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.15rem;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ── Problem → Solution ── */
+    .problem-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    .problem-item {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 28px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      transition: transform 0.3s ease;
+    }
+    .problem-item:hover { transform: translateY(-3px); }
+
+    .problem-icon {
+      font-size: 1.5rem;
+      min-width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .problem-icon.red { background: rgba(239, 68, 68, 0.15); }
+    .problem-icon.green { background: rgba(0, 245, 212, 0.15); }
+
+    .problem-item h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .problem-item p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .arrow-col {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: var(--accent);
+    }
+
+    /* ── Stats Row ── */
+    .stats-row {
+      display: flex;
+      gap: 40px;
+      margin-top: 50px;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+    }
+    .stat-number {
+      font-family: 'Oswald', sans-serif;
+      font-size: 2.8rem;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ── Etymology Block ── */
+    .etymology {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-top: 40px;
+      margin-bottom: 40px;
+    }
+
+    .ety-part {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 28px 36px;
+      text-align: center;
+      flex: 1;
+    }
+    .ety-part h3 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 2rem;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .ety-part .ety-origin {
+      font-size: 0.8rem;
+      color: var(--accent);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .ety-part p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .ety-plus {
+      font-family: 'Oswald', sans-serif;
+      font-size: 2.5rem;
+      color: var(--accent);
+    }
+
+    .ety-equals {
+      font-family: 'Oswald', sans-serif;
+      font-size: 2.5rem;
+      color: var(--accent);
+    }
+
+    .ety-result {
+      background: linear-gradient(135deg, rgba(0,245,212,0.1), rgba(59,130,246,0.1));
+      border: 2px solid var(--accent);
+    }
+    .ety-result h3 {
+      font-size: 2.4rem;
+      background: linear-gradient(135deg, var(--accent), var(--blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* ── Pricing ── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .pricing-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 36px 28px;
+      text-align: center;
+      position: relative;
+      transition: transform 0.3s;
+    }
+    .pricing-card:hover { transform: translateY(-4px); }
+    .pricing-card.featured {
+      border-color: var(--accent);
+      box-shadow: 0 0 40px rgba(0, 245, 212, 0.1);
+    }
+    .pricing-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: var(--bg);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 4px 16px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .pricing-card h3 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.3rem;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .pricing-price {
+      font-family: 'Oswald', sans-serif;
+      font-size: 2.5rem;
+      margin: 16px 0;
+    }
+    .pricing-price span { font-size: 0.9rem; color: var(--text-muted); }
+
+    .pricing-features {
+      list-style: none;
+      text-align: left;
+      margin-top: 20px;
+    }
+    .pricing-features li {
+      font-size: 0.85rem;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: var(--text-muted);
+    }
+    .pricing-features li::before {
+      content: '✓ ';
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .pricing-features li.disabled {
+      opacity: 0.35;
+    }
+    .pricing-features li.disabled::before {
+      content: '— ';
+      color: var(--text-muted);
+    }
+
+    /* ── CTA ── */
+    .cta-btn {
+      display: inline-block;
+      margin-top: 40px;
+      padding: 16px 48px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      border: none;
+      border-radius: 8px;
+      background: var(--accent);
+      color: var(--bg);
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 245, 212, 0.3);
+    }
+
+    /* ── Divider ── */
+    .slide-divider {
+      width: 60px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+      margin: 24px 0;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .slide { padding: 40px 20px; }
+      .problem-grid { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .etymology { flex-direction: column; gap: 12px; }
+      .stats-row { gap: 24px; }
+    }
+
+    @media print {
+      .slide { min-height: auto; page-break-after: always; padding: 40px; }
+      .slide-nav, .slide-counter { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Dots -->
+  <nav class="slide-nav" id="slideNav">
+    <a href="#slide1" class="active" title="Intro"></a>
+    <a href="#slide2" title="The Problem"></a>
+    <a href="#slide3" title="The Journey"></a>
+    <a href="#slide4" title="Features"></a>
+    <a href="#slide5" title="Pricing"></a>
+    <a href="#slide6" title="Summary"></a>
+  </nav>
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- SLIDE 1 — INTRO & BRAND                     -->
+  <!-- ════════════════════════════════════════════ -->
+  <section class="slide" id="slide1">
+    <div class="bg-glow bg-glow-teal"></div>
+    <div class="bg-grid"></div>
+    <div class="slide-inner">
+      <div class="slide-label">Investor Deck • 2026</div>
+      <h1 class="slide-title">
+        <span class="gradient-text">KYNOTRA</span><br>
+        Ultra Movement.<br>Ultra Results.
+      </h1>
+      <div class="slide-divider"></div>
+      <p class="slide-subtitle">
+        AI-powered fitness platform delivering personalized training, nutrition, and progress tracking — replacing the $200/month personal trainer.
+      </p>
+
+      <!-- Etymology -->
+      <div class="etymology">
+        <div class="ety-part">
+          <div class="ety-origin">Ancient Greek</div>
+          <h3>Kyno</h3>
+          <p>κίνηση — "Movement"</p>
+        </div>
+        <div class="ety-plus">+</div>
+        <div class="ety-part">
+          <div class="ety-origin">Latin root</div>
+          <h3>Tra</h3>
+          <p>Ultra — "Beyond"</p>
+        </div>
+        <div class="ety-equals">=</div>
+        <div class="ety-part ety-result">
+          <div class="ety-origin">Our Brand</div>
+          <h3>Kynotra</h3>
+          <p>Movement Beyond Limits</p>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat">
+          <div class="stat-number">50K+</div>
+          <div class="stat-label">Active Members</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">95%</div>
+          <div class="stat-label">Goal Completion</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">6</div>
+          <div class="stat-label">Pro Programs</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">24/7</div>
+          <div class="stat-label">AI Availability</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- SLIDE 2 — THE PROBLEM & SOLUTION            -->
+  <!-- ════════════════════════════════════════════ -->
+  <section class="slide" id="slide2">
+    <div class="bg-glow bg-glow-purple"></div>
+    <div class="bg-grid"></div>
+    <div class="slide-inner">
+      <div class="slide-label">Why Kynotra Exists</div>
+      <h1 class="slide-title">The Problem<br><span class="accent">We Solve</span></h1>
+      <div class="slide-divider"></div>
+      <p class="slide-subtitle" style="margin-bottom: 10px;">
+        Millions of people struggle with fitness — not because they lack willpower, but because they lack guidance. Kynotra bridges that gap.
+      </p>
+
+      <div class="problem-grid">
+        <div class="problem-item">
+          <div class="problem-icon red">❌</div>
+          <div>
+            <h4>Trainers are too expensive</h4>
+            <p>Personal trainers cost $200+/month, pricing out most people from expert guidance.</p>
+          </div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-icon green">✅</div>
+          <div>
+            <h4>AI programs for $19/mo</h4>
+            <p>Kynotra's AI generates expert-level personalized programs at a fraction of the cost.</p>
+          </div>
+        </div>
+
+        <div class="problem-item">
+          <div class="problem-icon red">❌</div>
+          <div>
+            <h4>"I don't know what to eat"</h4>
+            <p>Confusing nutrition advice leads to poor results and frustration.</p>
+          </div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-icon green">✅</div>
+          <div>
+            <h4>Science-backed meal plans</h4>
+            <p>Auto-calculated calories, macros, and full daily meal plans using the Mifflin-St Jeor equation.</p>
+          </div>
+        </div>
+
+        <div class="problem-item">
+          <div class="problem-icon red">❌</div>
+          <div>
+            <h4>No structure or tracking</h4>
+            <p>Without a system, people lose motivation and can't measure progress.</p>
+          </div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-icon green">✅</div>
+          <div>
+            <h4>Full dashboard analytics</h4>
+            <p>Workout logging, strength PRs, weight tracking, measurements — all in one place.</p>
+          </div>
+        </div>
+
+        <div class="problem-item">
+          <div class="problem-icon red">❌</div>
+          <div>
+            <h4>"Is my form correct?"</h4>
+            <p>Bad form leads to injuries and wasted effort in the gym.</p>
+          </div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-icon green">✅</div>
+          <div>
+            <h4>Exercise library + video demos</h4>
+            <p>Step-by-step instructions, pro tips, common mistakes, and embedded video for every exercise.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- SLIDE 3 — THE FITNESS JOURNEY                -->
+  <!-- ════════════════════════════════════════════ -->
+  <section class="slide" id="slide3">
+    <div class="bg-glow bg-glow-blue" style="top: -100px; left: -200px;"></div>
+    <div class="bg-grid"></div>
+    <div class="slide-inner">
+      <div class="slide-label">The Real Struggle</div>
+      <h1 class="slide-title">The Fitness Journey<br><span class="accent">Is Broken</span></h1>
+      <div class="slide-divider"></div>
+      <p class="slide-subtitle" style="margin-bottom: 40px;">Every year, millions start their fitness journey — but most quit within weeks. The problem isn't willpower. It's the system.</p>
+
+      <!-- Journey Timeline -->
+      <div style="position: relative; padding-left: 40px; margin-bottom: 50px;">
+        <!-- Vertical line -->
+        <div style="position: absolute; left: 14px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--danger), var(--warning), var(--text-muted));"></div>
+
+        <!-- Step 1 -->
+        <div style="position: relative; margin-bottom: 32px;">
+          <div style="position: absolute; left: -34px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--danger); box-shadow: 0 0 12px rgba(239,68,68,0.5);"></div>
+          <div style="background: var(--bg-card); border: 1px solid rgba(239,68,68,0.2); border-radius: 12px; padding: 20px 24px;">
+            <h4 style="font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 0.95rem; margin-bottom: 6px;">Week 1 — Overwhelmed</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">"Which program do I follow? What should I eat? Am I doing this right?" — Beginners face information overload from contradicting advice online. 73% of new gym members say they feel lost on day one.</p>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div style="position: relative; margin-bottom: 32px;">
+          <div style="position: absolute; left: -34px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--warning); box-shadow: 0 0 12px rgba(245,158,11,0.5);"></div>
+          <div style="background: var(--bg-card); border: 1px solid rgba(245,158,11,0.2); border-radius: 12px; padding: 20px 24px;">
+            <h4 style="font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 0.95rem; margin-bottom: 6px;">Week 3 — No Progress</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">Without proper programming and nutrition, results stall. No tracking means no way to know what's working. The gym becomes frustrating, not rewarding.</p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div style="position: relative; margin-bottom: 32px;">
+          <div style="position: absolute; left: -34px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--text-muted);"></div>
+          <div style="background: var(--bg-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 20px 24px;">
+            <h4 style="font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 0.95rem; margin-bottom: 6px;">Week 6 — Quit</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">80% of gym memberships go unused after 6 weeks. People don't fail fitness — the fitness industry fails them with generic plans, expensive trainers, and no support system.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- The Kynotra Way -->
+      <div style="background: linear-gradient(135deg, rgba(0,245,212,0.08), rgba(59,130,246,0.08)); border: 1px solid var(--accent); border-radius: 16px; padding: 36px 32px;">
+        <div style="display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap;">
+          <div style="font-size: 2.5rem;">💡</div>
+          <div style="flex: 1; min-width: 250px;">
+            <h3 style="font-family: 'Oswald', sans-serif; font-size: 1.3rem; text-transform: uppercase; margin-bottom: 10px;">Kynotra Fixes This</h3>
+            <p style="color: var(--text-secondary); font-size: 0.92rem; line-height: 1.7; margin-bottom: 20px;">Instead of guessing, Kynotra gives every user a clear, personalized path from day one:</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <span style="color: var(--accent); font-weight: 700; font-size: 1.1rem;">01</span>
+                <span style="font-size: 0.88rem;">AI builds your program in seconds</span>
+              </div>
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <span style="color: var(--accent); font-weight: 700; font-size: 1.1rem;">02</span>
+                <span style="font-size: 0.88rem;">Nutrition auto-calculated for your goal</span>
+              </div>
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <span style="color: var(--accent); font-weight: 700; font-size: 1.1rem;">03</span>
+                <span style="font-size: 0.88rem;">Every exercise explained with demos</span>
+              </div>
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <span style="color: var(--accent); font-weight: 700; font-size: 1.1rem;">04</span>
+                <span style="font-size: 0.88rem;">Dashboard tracks your progress daily</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- SLIDE 4 — PLATFORM FEATURES                 -->
+  <!-- ════════════════════════════════════════════ -->
+  <section class="slide" id="slide4">
+    <div class="bg-glow bg-glow-blue"></div>
+    <div class="bg-grid"></div>
+    <div class="slide-inner">
+      <div class="slide-label">What's Inside</div>
+      <h1 class="slide-title">All-In-One<br><span class="accent">Fitness Platform</span></h1>
+      <div class="slide-divider"></div>
+      <p class="slide-subtitle">Everything you need to train, eat, and grow — in a single ecosystem.</p>
+
+      <div class="card-grid">
+        <div class="card">
+          <span class="card-icon">🤖</span>
+          <h3>AI Program Generator</h3>
+          <p>Input your goal, experience, equipment, and schedule. The AI builds a complete multi-week program with exercises, sets, reps, and rest times.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">🥗</span>
+          <h3>Nutrition Calculator</h3>
+          <p>Mifflin-St Jeor BMR, TDEE, and goal-adjusted calories with full macro breakdowns. Includes 3 diet templates and 120+ food database.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">📊</span>
+          <h3>Progress Dashboard</h3>
+          <p>Track workouts, log meals, monitor weight, record body measurements, and visualize strength gains over time with interactive charts.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">🏋️</span>
+          <h3>Exercise Library</h3>
+          <p>Detailed breakdowns of every exercise with step-by-step form cues, pro tips, common mistakes, and embedded YouTube demos.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">💪</span>
+          <h3>6 Pro Programs</h3>
+          <p>Muscle Builder Pro, Shred & Lean, Powerlifting Fundamentals, Beginner Blueprint, Home Warrior, and Athletic Performance.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">🛒</span>
+          <h3>Equipment Shop</h3>
+          <p>12+ curated products across equipment, supplements, apparel, and accessories. Free shipping over $75.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- SLIDE 5 — PRICING MODEL                     -->
+  <!-- ════════════════════════════════════════════ -->
+  <section class="slide" id="slide5">
+    <div class="bg-glow bg-glow-teal" style="top: auto; bottom: -200px; right: auto; left: -200px;"></div>
+    <div class="bg-grid"></div>
+    <div class="slide-inner">
+      <div class="slide-label">Simple Pricing</div>
+      <h1 class="slide-title">Choose Your<br><span class="accent">Plan</span></h1>
+      <div class="slide-divider"></div>
+      <p class="slide-subtitle">Start free. Upgrade when you're ready for the full experience.</p>
+
+      <div class="pricing-grid">
+        <!-- Free -->
+        <div class="pricing-card">
+          <h3>Free</h3>
+          <div class="pricing-price">$0<span>/mo</span></div>
+          <ul class="pricing-features">
+            <li>Basic workout templates</li>
+            <li>Exercise library access</li>
+            <li>Community access</li>
+            <li class="disabled">AI workout programs</li>
+            <li class="disabled">Custom nutrition plans</li>
+            <li class="disabled">Progress analytics</li>
+            <li class="disabled">1-on-1 coaching</li>
+          </ul>
+        </div>
+
+        <!-- Pro -->
+        <div class="pricing-card featured">
+          <div class="pricing-badge">Most Popular</div>
+          <h3>Pro</h3>
+          <div class="pricing-price">$19<span>/mo</span></div>
+          <ul class="pricing-features">
+            <li>Everything in Free</li>
+            <li>AI workout programs</li>
+            <li>Custom nutrition plans</li>
+            <li>Progress analytics</li>
+            <li>Workout timer</li>
+            <li>Program saving</li>
+            <li class="disabled">1-on-1 coaching</li>
+          </ul>
+        </div>
+
+        <!-- Elite -->
+        <div class="pricing-card">
+          <h3>Elite</h3>
+          <div class="pricing-price">$39<span>/mo</span></div>
+          <ul class="pricing-features">
+            <li>Everything in Pro</li>
+            <li>1-on-1 coaching</li>
+            <li>Weekly check-ins</li>
+            <li>10% shop discount</li>
+            <li>Priority 24/7 support</li>
+            <li>Custom meal timing</li>
+            <li>Advanced analytics</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- SLIDE 6 — CLOSING / CTA                     -->
+  <!-- ════════════════════════════════════════════ -->
+  <section class="slide" id="slide6">
+    <div class="bg-glow bg-glow-teal"></div>
+    <div class="bg-glow bg-glow-purple" style="top: -200px; left: auto; right: -200px; bottom: auto;"></div>
+    <div class="bg-grid"></div>
+    <div class="slide-inner" style="text-align: center;">
+      <div class="slide-label">The Future of Fitness</div>
+      <h1 class="slide-title">
+        <span class="gradient-text">Movement<br>Beyond Limits.</span>
+      </h1>
+      <div class="slide-divider" style="margin: 24px auto;"></div>
+      <p class="slide-subtitle" style="margin: 0 auto; max-width: 600px; text-align: center;">
+        Kynotra combines AI technology, exercise science, and a passion for fitness into one platform that empowers anyone to train smarter, eat better, and achieve their goals — without the price tag of a personal trainer.
+      </p>
+
+      <div class="stats-row" style="justify-content: center; margin-top: 50px;">
+        <div class="stat">
+          <div class="stat-number">50K+</div>
+          <div class="stat-label">Active Members</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">95%</div>
+          <div class="stat-label">Goal Completion</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">$19</div>
+          <div class="stat-label">Per Month</div>
+        </div>
+      </div>
+
+      <a href="index.html" class="cta-btn">Visit Kynotra →</a>
+      <p style="margin-top: 20px; color: var(--text-muted); font-size: 0.85rem;">www.kynotra.com</p>
+    </div>
+  </section>
+
+  <div class="slide-counter">
+    <span id="currentSlide">1</span> / 6
+  </div>
+
+  <script>
+    // Intersection Observer for slide navigation
+    const slides = document.querySelectorAll('.slide');
+    const navDots = document.querySelectorAll('.slide-nav a');
+    const counterEl = document.getElementById('currentSlide');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const index = Array.from(slides).indexOf(entry.target);
+          navDots.forEach(d => d.classList.remove('active'));
+          navDots[index].classList.add('active');
+          counterEl.textContent = index + 1;
+
+          // Re-trigger animation
+          const inner = entry.target.querySelector('.slide-inner');
+          if (inner) {
+            inner.style.animation = 'none';
+            inner.offsetHeight; // force reflow
+            inner.style.animation = '';
+          }
+        }
+      });
+    }, { threshold: 0.5 });
+
+    slides.forEach(slide => observer.observe(slide));
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      const current = parseInt(counterEl.textContent) - 1;
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
+        if (current < slides.length - 1) slides[current + 1].scrollIntoView({ behavior: 'smooth' });
+      }
+      if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        if (current > 0) slides[current - 1].scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  </script>
+</body>
+</html>

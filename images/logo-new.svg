@@ -1,0 +1,11 @@
+<svg width="150" height="40" viewBox="0 0 150 40" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .k-shape { fill: #00F5D4; }
+    .text { font-family: 'Oswald', sans-serif; font-size: 30px; fill: #FFFFFF; }
+  </style>
+  <g transform="translate(10, 0)">
+    <path class="k-shape" d="M20 0 L0 20 L20 40 L25 40 L5 20 L25 0 Z"/>
+    <path class="k-shape" d="M22 20 L42 0 L47 0 L27 20 L47 40 L42 40 Z"/>
+  </g>
+  <text x="60" y="32" class="text">KYNOTRA</text>
+</svg>

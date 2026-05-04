@@ -188,7 +188,7 @@
 
       <div class="grid-3">
         <!-- Recommended Plan (highlighted) -->
-        <div class="card animate-in" id="recommendedPlanCard" style="border: 2px solid var(--accent);">
+        <div class="card animate-in diet-clickable" id="recommendedPlanCard" style="border: 2px solid var(--accent); cursor: pointer;" onclick="openDietDetail('recommended')">
           <div class="card-image">
             <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&q=80" alt="Your plan" id="recommendedPlanImg">
             <span class="card-badge" id="recommendedPlanBadge">Recommended</span>
@@ -204,7 +204,7 @@
         </div>
 
         <!-- Alternative Plan 1 -->
-        <div class="card animate-in" id="altPlan1Card">
+        <div class="card animate-in diet-clickable" id="altPlan1Card" style="cursor: pointer;" onclick="openDietDetail('high-protein')">
           <div class="card-image">
             <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80" alt="Alternative plan" id="altPlan1Img">
             <span class="card-badge" id="altPlan1Badge">Alternative</span>
@@ -220,7 +220,7 @@
         </div>
 
         <!-- Alternative Plan 2 -->
-        <div class="card animate-in" id="altPlan2Card">
+        <div class="card animate-in diet-clickable" id="altPlan2Card" style="cursor: pointer;" onclick="openDietDetail('flexible')">
           <div class="card-image">
             <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80" alt="Flexible plan" id="altPlan2Img">
             <span class="card-badge" id="altPlan2Badge">Flexible</span>
@@ -327,5 +327,177 @@
   </footer>
 
   <script src="js/app.js"></script>
+
+  <!-- Diet Detail Modal -->
+  <div class="modal-overlay" id="dietDetailModal" style="display: none;">
+    <div class="modal-content" style="max-width: 850px; max-height: 90vh; overflow-y: auto;">
+      <button class="modal-close" onclick="closeDietDetail()">&times;</button>
+      <div id="dietDetailContent"></div>
+    </div>
+  </div>
+
+  <style>
+    .diet-clickable:hover { border-color: var(--accent) !important; }
+    .dd-header { display: flex; gap: var(--space-lg); margin-bottom: var(--space-xl); flex-wrap: wrap; }
+    .dd-header img { width: 260px; height: 170px; object-fit: cover; border-radius: var(--radius-md); flex-shrink: 0; }
+    .dd-info { flex: 1; min-width: 250px; }
+    .dd-info h2 { font-family: var(--font-heading); font-size: 1.8rem; text-transform: uppercase; margin-bottom: var(--space-xs); }
+    .dd-macros { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-md); margin: var(--space-xl) 0; }
+    .dd-macro { background: var(--primary); padding: var(--space-md); border-radius: var(--radius-md); text-align: center; }
+    .dd-macro-val { font-family: var(--font-heading); font-size: 1.5rem; color: var(--accent); }
+    .dd-macro-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+    .dd-section { margin-top: var(--space-xl); }
+    .dd-section h3 { font-family: var(--font-heading); text-transform: uppercase; font-size: 1.1rem; margin-bottom: var(--space-md); color: var(--accent); }
+    .dd-meal { background: var(--primary); border-radius: var(--radius-md); padding: var(--space-lg); margin-bottom: var(--space-md); }
+    .dd-meal h4 { font-family: var(--font-heading); text-transform: uppercase; font-size: 0.9rem; margin-bottom: var(--space-sm); display: flex; justify-content: space-between; align-items: center; }
+    .dd-meal h4 span { font-size: 0.75rem; color: var(--accent); font-family: 'Inter', sans-serif; }
+    .dd-meal ul { padding-left: var(--space-lg); color: var(--text-secondary); font-size: 0.85rem; }
+    .dd-meal li { margin-bottom: 4px; }
+    .dd-tags { display: flex; gap: var(--space-xs); flex-wrap: wrap; margin: var(--space-md) 0; }
+    .dd-tag { background: var(--primary); padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; color: var(--text-muted); }
+    .dd-tip { background: rgba(0,245,212,0.08); border: 1px solid rgba(0,245,212,0.2); padding: var(--space-lg); border-radius: var(--radius-md); margin-top: var(--space-lg); }
+    .dd-tip h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: var(--space-sm); color: var(--accent); }
+    .dd-tip ul { padding-left: var(--space-lg); color: var(--text-secondary); font-size: 0.85rem; }
+    .dd-tip li { margin-bottom: 6px; }
+    @media (max-width: 768px) {
+      .dd-header img { width: 100%; height: 200px; }
+      .dd-macros { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+
+  <script>
+  const dietData = {
+    'recommended': {
+      name: 'Balanced Performance Plan',
+      badge: 'Recommended',
+      img: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&q=80',
+      desc: 'A well-rounded nutrition plan designed to fuel your training while supporting steady body composition improvements. Balances protein, carbs, and fats for optimal energy, recovery, and muscle growth. Calculated using the Mifflin-St Jeor equation based on your body metrics.',
+      calories: '2,400',
+      protein: '180g (30%)',
+      carbs: '270g (45%)',
+      fats: '67g (25%)',
+      tags: ['Balanced Macros', 'Muscle Growth', 'Science-Based', 'Sustainable'],
+      meals: [
+        { name: 'Meal 1 — Breakfast', time: '7:00 AM', cals: '520 cal', items: ['4 scrambled eggs (280 cal, 24g protein)', '2 slices whole wheat toast (160 cal, 26g carbs)', '1 tbsp butter (80 cal, 9g fat)', '1 banana'] },
+        { name: 'Meal 2 — Mid-Morning Snack', time: '10:00 AM', cals: '340 cal', items: ['1 scoop whey protein shake (120 cal, 25g protein)', '1 apple (95 cal)', '1 tbsp peanut butter (95 cal, 8g fat)', 'Handful of almonds (30 cal)'] },
+        { name: 'Meal 3 — Lunch', time: '1:00 PM', cals: '680 cal', items: ['8 oz grilled chicken breast (280 cal, 52g protein)', '1.5 cups white rice (310 cal, 68g carbs)', '1 cup steamed broccoli (55 cal)', 'Side salad with olive oil (35 cal)'] },
+        { name: 'Meal 4 — Pre-Workout', time: '4:00 PM', cals: '360 cal', items: ['1 cup oatmeal with honey (250 cal, 45g carbs)', '1 scoop whey protein (120 cal, 25g protein)', 'Mixed berries'] },
+        { name: 'Meal 5 — Dinner', time: '7:30 PM', cals: '500 cal', items: ['6 oz salmon fillet (280 cal, 34g protein, 14g fat)', '1 medium sweet potato (160 cal, 37g carbs)', 'Mixed vegetables (60 cal)', 'Drizzle of olive oil'] }
+      ],
+      tips: [
+        'Eat your largest meal 2-3 hours before training for optimal energy',
+        'Spread protein evenly across meals (30-40g per meal) for best absorption',
+        'Drink at least 0.5 oz water per lb of bodyweight daily',
+        'Post-workout: consume protein + fast carbs within 45 minutes',
+        'Adjust calories by ±200 based on weekly weight trends'
+      ]
+    },
+    'high-protein': {
+      name: 'High Protein Shred Plan',
+      badge: 'Alternative',
+      img: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80',
+      desc: 'A protein-prioritized plan designed for those in a cutting phase or anyone who wants to maximize muscle retention while losing fat. Higher protein intake (35%) helps preserve lean mass during a calorie deficit, with moderate carbs timed around workouts.',
+      calories: '2,200',
+      protein: '193g (35%)',
+      carbs: '220g (40%)',
+      fats: '61g (25%)',
+      tags: ['High Protein', 'Fat Loss', 'Muscle Retention', 'Cutting'],
+      meals: [
+        { name: 'Meal 1 — Breakfast', time: '7:00 AM', cals: '450 cal', items: ['6 egg whites + 2 whole eggs (260 cal, 36g protein)', '1 slice Ezekiel bread (80 cal)', '1/2 avocado (110 cal, 10g fat)'] },
+        { name: 'Meal 2 — Mid-Morning', time: '10:00 AM', cals: '280 cal', items: ['1 cup Greek yogurt 0% fat (130 cal, 23g protein)', '1/2 cup mixed berries (40 cal)', 'Drizzle of honey (60 cal)', '1 tbsp chia seeds (50 cal)'] },
+        { name: 'Meal 3 — Lunch', time: '1:00 PM', cals: '580 cal', items: ['8 oz turkey breast (240 cal, 48g protein)', '1 cup brown rice (215 cal, 45g carbs)', '1 cup mixed greens with lemon dressing (50 cal)', 'Steamed asparagus (75 cal)'] },
+        { name: 'Meal 4 — Pre-Workout', time: '4:00 PM', cals: '320 cal', items: ['1 scoop whey protein (120 cal, 25g protein)', '1 rice cake with peanut butter (130 cal)', 'Small banana (70 cal)'] },
+        { name: 'Meal 5 — Dinner', time: '7:30 PM', cals: '570 cal', items: ['8 oz lean beef (360 cal, 50g protein)', 'Large mixed salad with veggies (80 cal)', '1/2 cup quinoa (110 cal, 20g carbs)', 'Lemon olive oil dressing (20 cal)'] }
+      ],
+      tips: [
+        'Prioritize lean protein sources: chicken, turkey, fish, egg whites',
+        'Keep carbs mostly around the workout window (pre + post)',
+        'Vegetables are free — eat as much as you want for volume and satiety',
+        'If hungry, add another protein shake before bed (casein is ideal)',
+        'Weigh yourself daily at the same time, track the weekly average',
+        'Aim for 1-1.5 lbs of fat loss per week — any faster risks muscle loss'
+      ]
+    },
+    'flexible': {
+      name: 'Flexible Macro Plan',
+      badge: 'Flexible',
+      img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80',
+      desc: 'An IIFYM (If It Fits Your Macros) approach that gives you maximum flexibility with food choices. As long as you hit your daily macro targets, you choose what to eat. Great for people who want structure without rigid meal plans, or those with dietary preferences.',
+      calories: '2,400',
+      protein: '150g (25%)',
+      carbs: '300g (50%)',
+      fats: '67g (25%)',
+      tags: ['IIFYM', 'Flexible Dieting', 'Macro Tracking', 'Lifestyle Friendly'],
+      meals: [
+        { name: 'Meal 1 — Breakfast (Your Choice)', time: 'Morning', cals: '~550 cal', items: ['Option A: Protein pancakes with maple syrup + fruit', 'Option B: Eggs, bacon, toast, and orange juice', 'Option C: Overnight oats with protein powder + banana', 'Target: ~35g protein, ~60g carbs, ~15g fat'] },
+        { name: 'Meal 2 — Snack', time: 'Mid-Morning', cals: '~300 cal', items: ['Option A: Protein bar', 'Option B: Trail mix + jerky', 'Option C: Rice cakes with almond butter', 'Target: ~20g protein, ~30g carbs, ~10g fat'] },
+        { name: 'Meal 3 — Lunch (Your Choice)', time: 'Afternoon', cals: '~650 cal', items: ['Option A: Chicken burrito bowl', 'Option B: Tuna sandwich + side salad', 'Option C: Stir fry with tofu and rice', 'Target: ~40g protein, ~70g carbs, ~15g fat'] },
+        { name: 'Meal 4 — Pre/Post Workout', time: 'Around Training', cals: '~350 cal', items: ['Option A: Protein shake + banana', 'Option B: Greek yogurt with granola', 'Option C: Turkey wrap with fruit', 'Target: ~30g protein, ~40g carbs, ~5g fat'] },
+        { name: 'Meal 5 — Dinner (Your Choice)', time: 'Evening', cals: '~550 cal', items: ['Option A: Salmon with potatoes and vegetables', 'Option B: Pasta with lean meat sauce + salad', 'Option C: Chicken thighs with rice and broccoli', 'Target: ~35g protein, ~50g carbs, ~20g fat'] }
+      ],
+      tips: [
+        'Use a food tracking app (MyFitnessPal, MacroFactor) to log daily intake',
+        'Hit protein first — it\'s the most important macro for body composition',
+        'The 80/20 rule: 80% whole foods, 20% whatever you enjoy',
+        'No food is "off limits" — pizza, ice cream, etc. can fit your macros',
+        'Pre-log your meals in the morning so you know what\'s left for dinner',
+        'Aim to stay within ±50 calories of your target most days'
+      ]
+    }
+  };
+
+  function openDietDetail(id) {
+    const d = dietData[id];
+    if (!d) return;
+
+    let mealsHTML = '';
+    d.meals.forEach(meal => {
+      let items = meal.items.map(i => '<li>' + i + '</li>').join('');
+      mealsHTML += '<div class="dd-meal"><h4>' + meal.name + ' <span>' + meal.time + ' • ' + meal.cals + '</span></h4><ul>' + items + '</ul></div>';
+    });
+
+    let tagsHTML = d.tags.map(t => '<span class="dd-tag">' + t + '</span>').join('');
+    let tipsHTML = d.tips.map(t => '<li>' + t + '</li>').join('');
+
+    document.getElementById('dietDetailContent').innerHTML =
+      '<div class="dd-header">' +
+        '<img src="' + d.img + '" alt="' + d.name + '">' +
+        '<div class="dd-info">' +
+          '<span class="card-badge" style="position:static; display:inline-block; margin-bottom:8px;">' + d.badge + '</span>' +
+          '<h2>' + d.name + '</h2>' +
+          '<p style="color:var(--text-secondary); font-size:0.92rem; line-height:1.6;">' + d.desc + '</p>' +
+          '<div class="dd-tags">' + tagsHTML + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="dd-macros">' +
+        '<div class="dd-macro"><div class="dd-macro-val">' + d.calories + '</div><div class="dd-macro-label">Calories</div></div>' +
+        '<div class="dd-macro"><div class="dd-macro-val">' + d.protein + '</div><div class="dd-macro-label">Protein</div></div>' +
+        '<div class="dd-macro"><div class="dd-macro-val">' + d.carbs + '</div><div class="dd-macro-label">Carbs</div></div>' +
+        '<div class="dd-macro"><div class="dd-macro-val">' + d.fats + '</div><div class="dd-macro-label">Fats</div></div>' +
+      '</div>' +
+      '<div class="dd-section"><h3>Sample Daily Meals</h3>' + mealsHTML + '</div>' +
+      '<div class="dd-tip"><h4>💡 Nutrition Tips</h4><ul>' + tipsHTML + '</ul></div>' +
+      '<div style="margin-top:var(--space-xl); display:flex; gap:var(--space-md);">' +
+        '<button class="btn btn-primary" onclick="closeDietDetail()">Got It</button>' +
+        '<button class="btn btn-outline" onclick="closeDietDetail()">Close</button>' +
+      '</div>';
+
+    const modal = document.getElementById('dietDetailModal');
+    modal.style.display = 'flex';
+    modal.style.opacity = '1';
+    modal.style.visibility = 'visible';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDietDetail() {
+    const modal = document.getElementById('dietDetailModal');
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('dietDetailModal').addEventListener('click', function(e) {
+    if (e.target === this) closeDietDetail();
+  });
+  </script>
 </body>
 </html>
